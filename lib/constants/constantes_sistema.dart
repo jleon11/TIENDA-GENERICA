@@ -3,6 +3,23 @@ import 'package:flutter/material.dart';
 class SistemaConstantes {
   SistemaConstantes._();
 
+  /*Tamaños de pantalla dinamicas y demas caracteristicas*/
+
+  static const double anchoMaximoContenido = 1200;
+  static const double anchoMaximoHeader = 1400;
+
+  static const double mobile = 768;
+  static const double tablet = 1024;
+  static const double desktop = 1400;
+
+  static double anchoBoletin(double width) {
+    return (width * 0.96).clamp(320.0, 1800.0);
+  }
+
+  static bool esMovil(double width) {
+    return width < mobile;
+  }
+
   // ==================================
   // COLORES PRINCIPALES
   // ==================================
@@ -21,13 +38,20 @@ class SistemaConstantes {
 
   static const Color colorFondo = Colors.white;
 
-  // ==================================
-  // ANCHOS GENERALES
-  // ==================================
+  static const Color colorTextoSuave = Color(0xFF6B7280);
 
-  static const double anchoMaximoContenido = 1200;
+  static const Color colorFondoSuave = Color(0xFFF2F5FA);
 
-  static const double anchoMaximoHeader = 1400;
+  //==================================================
+  // TEXTO TAMAÑOS
+  //==================================================
+
+  static const double textoXS = 11;
+  static const double textoSM = 13;
+  static const double textoMD = 15;
+  static const double textoLG = 18;
+  static const double textoXL = 22;
+  static const double textoXXL = 26;
 
   // ==================================
   // ALTURAS
@@ -53,9 +77,18 @@ class SistemaConstantes {
   // PADDINGS
   // ==================================
 
+  static double paddingHorizontal(double width) {
+    if (width < mobile) return 16;
+    if (width < tablet) return 24;
+    return 40;
+  }
+
+  /*
   static const EdgeInsets paddingHorizontal = EdgeInsets.symmetric(
     horizontal: 20,
-  );
+  );*/
+
+  static const EdgeInsets paddingInput = EdgeInsets.symmetric(horizontal: 18);
 
   static const EdgeInsets paddingCard = EdgeInsets.all(12);
 
@@ -73,16 +106,13 @@ class SistemaConstantes {
   // SOMBRAS
   // ==================================
 
-  static const double cardSmallAncho = 220;
-  static const double cardSmallAlto = 380;
-
-  /// CARD NORMAL
-  static const double cardNormalAncho = 260;
-  static const double cardNormalAlto = 430;
-
-  /// CARD HERO
-  static const double cardGrandeAncho = 300;
-  static const double cardGrandeAlto = 500;
+  static List<BoxShadow> sombraSuave = [
+    BoxShadow(
+      color: Colors.black.withOpacity(0.05),
+      blurRadius: 10,
+      offset: const Offset(0, 4),
+    ),
+  ];
 
   static List<BoxShadow> sombraCard = [
     BoxShadow(
@@ -103,6 +133,18 @@ class SistemaConstantes {
   // ==================================
   // TEXTOS
   // ==================================
+
+  static const TextStyle tituloGrande = TextStyle(
+    fontSize: textoXXL,
+    fontWeight: FontWeight.w800,
+    color: colorAzulPrimario,
+  );
+
+  static const TextStyle subtitulo = TextStyle(
+    fontSize: textoMD,
+    height: 1.5,
+    color: colorTextoSuave,
+  );
 
   static const TextStyle tituloSeccion = TextStyle(
     fontSize: 22,
@@ -127,4 +169,31 @@ class SistemaConstantes {
     fontSize: 12,
     decoration: TextDecoration.lineThrough,
   );
+
+  static const Color colorPrimarioSuave = Color(0xFFF2F5FA);
+
+  static const double textoTituloXL = 24;
+  static const double textoNormal = 15;
+
+  static const double radioXL = 40;
+  static const double altoInputGrande = 58;
+
+  static const TextStyle tituloBoletin = TextStyle(
+    fontSize: textoTituloXL,
+    fontWeight: FontWeight.w800,
+    color: colorAzulPrimario,
+  );
+
+  /*CARDS*/
+
+  static const double cardSmallAncho = 220;
+  static const double cardSmallAlto = 380;
+
+  /// CARD NORMAL
+  static const double cardNormalAncho = 260;
+  static const double cardNormalAlto = 430;
+
+  /// CARD HERO
+  static const double cardGrandeAncho = 300;
+  static const double cardGrandeAlto = 500;
 }

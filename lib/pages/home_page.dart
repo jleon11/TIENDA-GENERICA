@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/data/demo_producto.dart';
+import 'package:tienda_motos/sections/boletin_informativo.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
 import 'package:tienda_motos/sections/categoria_section.dart';
 import 'package:tienda_motos/sections/promo_section.dart';
@@ -12,6 +13,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     final categorias = [
       {'nombre': 'Hogar', 'icono': Icons.home, 'activa': true},
       {'nombre': 'Accesorios', 'icono': Icons.extension},
@@ -56,34 +59,6 @@ class HomePage extends StatelessWidget {
         'precioAnterior': '18000',
         'precioActual': '12900',
         'imagen': 'assets/imagenes/promo5.jpg',
-      },
-      {
-        'nombre': 'Zapatillas Urban Style',
-        'sku': 'SN-006',
-        'precioAnterior': '95000',
-        'precioActual': '69900',
-        'imagen': 'assets/imagenes/promo6.jpg',
-      },
-      {
-        'nombre': 'Cámara Instantánea Retro',
-        'sku': 'CM-007',
-        'precioAnterior': '110000',
-        'precioActual': '79900',
-        'imagen': 'assets/imagenes/promo7.jpg',
-      },
-      {
-        'nombre': 'Control Remoto Drone DJI',
-        'sku': 'DR-008',
-        'precioAnterior': '150000',
-        'precioActual': '119900',
-        'imagen': 'assets/imagenes/promo8.jpg',
-      },
-      {
-        'nombre': 'Figura Coleccionable Guerrero Anime',
-        'sku': 'AN-009',
-        'precioAnterior': '35000',
-        'precioActual': '24900',
-        'imagen': 'assets/imagenes/promo9.jpg',
       },
     ];
 
@@ -175,53 +150,65 @@ class HomePage extends StatelessWidget {
         dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
       ),
       child: SingleChildScrollView(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: SistemaConstantes.anchoMaximoContenido,
-            ),
-            child: Padding(
-              padding: SistemaConstantes.paddingHorizontal,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 20),
-
-                  CategoriaSection(
-                    titulo: 'NUESTRAS CATEGORÍAS',
-                    items: categorias,
-                    itemBuilder: (c) => CategoriaItem(
-                      nombre: c['nombre'] as String,
-                      icono: c['icono'] as IconData,
-                      activa: (c['activa'] as bool?) ?? false,
-                    ),
+        child: Column(
+          children: [
+            /// CONTENIDO NORMAL CENTRADO
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: SistemaConstantes.anchoMaximoContenido,
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: SistemaConstantes.paddingHorizontal(width),
                   ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 20),
 
-                  const SizedBox(height: SistemaConstantes.espacioSeccion),
+                      CategoriaSection(
+                        titulo: 'NUESTRAS CATEGORÍAS',
+                        items: categorias,
+                        itemBuilder: (c) => CategoriaItem(
+                          nombre: c['nombre'] as String,
+                          icono: c['icono'] as IconData,
+                          activa: (c['activa'] as bool?) ?? false,
+                        ),
+                      ),
 
-                  PromoSection(
-                    titulo: 'PROMO DEL MES',
-                    items: promociones,
-                    badgeTexto: 'Promo del mes',
-                    badgeColor: Colors.red,
+                      const SizedBox(height: SistemaConstantes.espacioSeccion),
+
+                      PromoSection(
+                        titulo: 'PROMO DEL MES',
+                        items: promociones,
+                        badgeTexto: 'Promo del mes',
+                        badgeColor: Colors.red,
+                      ),
+
+                      const SizedBox(height: SistemaConstantes.espacioSeccion),
+
+                      ProductGridSection<DemoProducto>(
+                        titulo: 'LOS MÁS BUSCADOS',
+                        items: masBuscados,
+                        filas: 2,
+                        anchoItem: 260,
+                        alturaItem: 430,
+                        espaciado: 8,
+                      ),
+
+                      const SizedBox(height: 40),
+                    ],
                   ),
-
-                  const SizedBox(height: SistemaConstantes.espacioSeccion),
-
-                  ProductGridSection<DemoProducto>(
-                    titulo: 'LOS MÁS BUSCADOS',
-                    items: masBuscados,
-                    filas: 2,
-                    anchoItem: 260,
-                    alturaItem: 430,
-                    espaciado: 8,
-                  ),
-
-                  const SizedBox(height: 80),
-                ],
+                ),
               ),
             ),
-          ),
+
+            /// BOLETÍN ANCHO COMPLETO
+            const BoletinInformativo(),
+
+            const SizedBox(height: 40),
+          ],
         ),
       ),
     );
