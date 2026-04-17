@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/pages/header.dart';
 import 'package:tienda_motos/pages/home_page.dart';
+import 'package:tienda_motos/widgets/drawer_tienda.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       title: 'Tienda Motos',
 
       theme: ThemeData(
@@ -46,18 +46,22 @@ class MyApp extends StatelessWidget {
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: Colors.white,
+
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 14,
             vertical: 12,
           ),
+
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
+
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
+
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(
@@ -83,12 +87,19 @@ class LayoutPrincipal extends StatefulWidget {
 class _LayoutPrincipalState extends State<LayoutPrincipal> {
   int paginaSeleccionada = 0;
 
-  final List<Widget> paginas = const [HomePage()];
+  final List<Widget> paginas = const [HomePage(), HomePage(), HomePage()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: _buildDrawer(),
+      drawer: DrawerTienda(
+        paginaSeleccionada: paginaSeleccionada,
+        onCambiarPagina: (index) {
+          setState(() {
+            paginaSeleccionada = index;
+          });
+        },
+      ),
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
@@ -96,65 +107,6 @@ class _LayoutPrincipalState extends State<LayoutPrincipal> {
       ),
 
       body: paginas[paginaSeleccionada],
-    );
-  }
-
-  Widget _buildDrawer() {
-    return Drawer(
-      child: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              color: SistemaConstantes.colorAzulPrimario,
-              child: const Text(
-                'Menú',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-
-            _item(0, Icons.home, 'Inicio'),
-
-            _item(1, Icons.store, 'Productos'),
-
-            _item(2, Icons.contact_page, 'Contacto'),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _item(int index, IconData icono, String texto) {
-    final activo = paginaSeleccionada == index;
-
-    return ListTile(
-      leading: Icon(
-        icono,
-        color: activo ? SistemaConstantes.colorAzulPrimario : Colors.black87,
-      ),
-
-      title: Text(
-        texto,
-        style: TextStyle(
-          fontWeight: activo ? FontWeight.bold : FontWeight.normal,
-          color: activo ? SistemaConstantes.colorAzulPrimario : Colors.black87,
-        ),
-      ),
-
-      selected: activo,
-
-      onTap: () {
-        setState(() {
-          paginaSeleccionada = index;
-        });
-
-        Navigator.pop(context);
-      },
     );
   }
 }
