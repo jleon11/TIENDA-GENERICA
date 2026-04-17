@@ -5,8 +5,18 @@ mixin ContratoCardProducto {
   String get codigo;
   String get precioActual;
   String get cardImagen;
+
   String? get precioAnterior => null;
+
+  bool get mostrarDescuento => precioAnterior != null;
+
+  bool get mostrarBotonCarrito => true;
+
   bool get inventarioLimitado => false;
+
+  bool get agotado => false;
+
   String get cardEtiqueta => 'Exclusivo en línea';
+
   Color get cardColorEtiqueta => const Color(0xFF1E478D);
 }

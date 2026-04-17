@@ -1,8 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:tienda_motos/constants/constantes_sistema.dart';
+import 'package:tienda_motos/data/demo_producto.dart';
+import 'package:tienda_motos/sections/product_grid_section.dart';
+import 'package:tienda_motos/sections/categoria_section.dart';
+import 'package:tienda_motos/sections/promo_section.dart';
 import 'package:tienda_motos/widgets/categoria_item.dart';
-import 'package:tienda_motos/widgets/general_components/categoria_section.dart';
-import 'package:tienda_motos/widgets/general_components/promo_section.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -84,93 +87,143 @@ class HomePage extends StatelessWidget {
       },
     ];
 
+    final masBuscados = [
+      DemoProducto(
+        nombre: 'Camión LEGO Special Transport',
+        codigo: 'MB001',
+        precioActual: '24.99',
+        precioAnterior: '34.99',
+        cardImagen: 'assets/imagenes/masbuscado1.jpg',
+        inventarioLimitado: true,
+        cardEtiqueta: 'Más buscado',
+        cardColorEtiqueta: const Color(0xFFE53935),
+      ),
+      DemoProducto(
+        nombre: 'Consola Gamer X Pro + 2 Controles',
+        codigo: 'MB002',
+        precioActual: '399.99',
+        precioAnterior: '459.99',
+        cardImagen: 'assets/imagenes/masbuscado2.jpg',
+        inventarioLimitado: true,
+        cardEtiqueta: 'Oferta gamer',
+        cardColorEtiqueta: const Color(0xFF43A047),
+      ),
+      DemoProducto(
+        nombre: 'Tienda de Campaña McKinley 4 Personas',
+        codigo: 'MB003',
+        precioActual: '89.99',
+        precioAnterior: '119.99',
+        cardImagen: 'assets/imagenes/masbuscado3.jpg',
+        inventarioLimitado: false,
+        cardEtiqueta: 'Outdoor',
+        cardColorEtiqueta: const Color(0xFF1E88E5),
+      ),
+      DemoProducto(
+        nombre: 'Micrófonos Inalámbricos Profesionales',
+        codigo: 'MB004',
+        precioActual: '129.99',
+        precioAnterior: '159.99',
+        cardImagen: 'assets/imagenes/masbuscado4.jpg',
+        inventarioLimitado: true,
+        cardEtiqueta: 'Audio Pro',
+        cardColorEtiqueta: const Color(0xFF6D4C41),
+      ),
+      DemoProducto(
+        nombre: 'Adidas Urban White Edition',
+        codigo: 'MB005',
+        precioActual: '74.99',
+        precioAnterior: '99.99',
+        cardImagen: 'assets/imagenes/masbuscado5.jpg',
+        inventarioLimitado: false,
+        cardEtiqueta: 'Nuevo ingreso',
+        cardColorEtiqueta: const Color(0xFF3949AB),
+      ),
+      DemoProducto(
+        nombre: 'Auto Clásico Mini Colección',
+        codigo: 'MB006',
+        precioActual: '14.99',
+        precioAnterior: '19.99',
+        cardImagen: 'assets/imagenes/masbuscado6.jpg',
+        inventarioLimitado: true,
+        cardEtiqueta: 'Coleccionable',
+        cardColorEtiqueta: const Color(0xFF00897B),
+      ),
+      DemoProducto(
+        nombre: 'Zapatos Formales Premium Black',
+        codigo: 'MB007',
+        precioActual: '94.99',
+        precioAnterior: '129.99',
+        cardImagen: 'assets/imagenes/masbuscado7.jpg',
+        inventarioLimitado: false,
+        cardEtiqueta: 'Elegancia',
+        cardColorEtiqueta: const Color(0xFF212121),
+      ),
+      DemoProducto(
+        nombre: 'Nike Kids Flex Runner',
+        codigo: 'MB008',
+        precioActual: '49.99',
+        precioAnterior: '59.99',
+        cardImagen: 'assets/imagenes/masbuscado8.jpg',
+        inventarioLimitado: true,
+        cardEtiqueta: 'Infantil',
+        cardColorEtiqueta: const Color(0xFF000000),
+      ),
+    ];
+
     return ScrollConfiguration(
-      // 👇 FIX PRINCIPAL: habilita mouse drag en web/desktop para TODA la página
       behavior: ScrollConfiguration.of(context).copyWith(
         dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
       ),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1200),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 20),
+            constraints: const BoxConstraints(
+              maxWidth: SistemaConstantes.anchoMaximoContenido,
+            ),
+            child: Padding(
+              padding: SistemaConstantes.paddingHorizontal,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 20),
 
-                CategoriaSection(
-                  titulo: 'Nuestras Categorías',
-                  items: categorias,
-                  itemBuilder: (c) => CategoriaItem(
-                    nombre: c['nombre'] as String,
-                    icono: c['icono'] as IconData,
-                    activa: (c['activa'] as bool?) ?? false,
+                  CategoriaSection(
+                    titulo: 'NUESTRAS CATEGORÍAS',
+                    items: categorias,
+                    itemBuilder: (c) => CategoriaItem(
+                      nombre: c['nombre'] as String,
+                      icono: c['icono'] as IconData,
+                      activa: (c['activa'] as bool?) ?? false,
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 40),
+                  const SizedBox(height: SistemaConstantes.espacioSeccion),
 
-                PromoSection(items: promociones),
+                  PromoSection(
+                    titulo: 'PROMO DEL MES',
+                    items: promociones,
+                    badgeTexto: 'Promo del mes',
+                    badgeColor: Colors.red,
+                  ),
 
-                const SizedBox(height: 40),
+                  const SizedBox(height: SistemaConstantes.espacioSeccion),
 
-                _ProductosSection(),
+                  ProductGridSection<DemoProducto>(
+                    titulo: 'LOS MÁS BUSCADOS',
+                    items: masBuscados,
+                    filas: 2,
+                    anchoItem: 260,
+                    alturaItem: 430,
+                    espaciado: 0,
+                  ),
 
-                const SizedBox(height: 80),
-              ],
+                  const SizedBox(height: 80),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class _BannerSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 180,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.grey.shade200,
-      ),
-      alignment: Alignment.center,
-      child: const Text(
-        'Aquí irá un banner (slider)',
-        style: TextStyle(fontSize: 16),
-      ),
-    );
-  }
-}
-
-class _ProductosSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'LOS MÁS BUSCADOS',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF1E478D),
-          ),
-        ),
-
-        const SizedBox(height: 20),
-
-        Container(
-          height: 200,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.grey.shade200,
-          ),
-          alignment: Alignment.center,
-          child: const Text('Aquí irá el grid de productos'),
-        ),
-      ],
     );
   }
 }

@@ -1,5 +1,5 @@
-// header.dart
 import 'package:flutter/material.dart';
+import 'package:tienda_motos/constants/constantes_sistema.dart';
 
 class HeaderTienda extends StatelessWidget {
   const HeaderTienda({super.key});
@@ -8,87 +8,168 @@ class HeaderTienda extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    final bool esMovil = width < 900;
-    final bool esTablet = width >= 900 && width < 1300;
+    final esMovil = width < 900;
 
-    return Container(
-      height: 80,
+    final esTablet = width >= 900 && width < 1300;
+
+    return Material(
+      elevation: 2,
       color: Colors.white,
-      padding: EdgeInsets.symmetric(
-        horizontal: esMovil ? 12 : 30,
-      ),
-      child: Row(
-        children: [
-          /// 🔥 MENU
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: SistemaConstantes.anchoMaximoHeader,
           ),
+          child: Container(
+            height: SistemaConstantes.altoHeader,
 
-          const SizedBox(width: 10),
+            padding: EdgeInsets.symmetric(horizontal: esMovil ? 12 : 24),
 
-          /// 🔥 LOGO
-          Image.asset(
-            'assets/imagenes/logo-accesoriosGonzales-fondoBlanco.png',
-            height: esMovil ? 55 : 70,
-            fit: BoxFit.contain,
-          ),
-
-          const SizedBox(width: 15),
-
-          /// 🔥 BUSCADOR RESPONSIVE
-          Expanded(
-            child: Container(
-              height: 45,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: const Color(0xFF1E478D),
+            child: Row(
+              children: [
+                /// MENU
+                IconButton(
+                  icon: const Icon(Icons.menu, size: 28),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
                 ),
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Row(
-                children: [
-                  const SizedBox(width: 15),
 
-                  const Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Buscar producto',
-                        border: InputBorder.none,
-                        isDense: true,
+                const SizedBox(width: 10),
+
+                /// LOGO
+                InkWell(
+                  onTap: () {},
+                  child: Image.asset(
+                    'assets/imagenes/logo-accesoriosGonzales-fondoBlanco.png',
+                    height: esMovil ? 52 : 68,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+
+                const SizedBox(width: 18),
+
+                /// BUSCADOR
+                Expanded(
+                  child: Container(
+                    height: 46,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: SistemaConstantes.colorPrimario,
                       ),
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 14),
+
+                        const Icon(Icons.search, size: 20, color: Colors.grey),
+
+                        const SizedBox(width: 10),
+
+                        const Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Buscar productos...',
+                              border: InputBorder.none,
+                              isDense: true,
+                            ),
+                          ),
+                        ),
+
+                        Container(
+                          height: 46,
+                          width: esMovil ? 44 : 54,
+
+                          decoration: const BoxDecoration(
+                            color: SistemaConstantes.colorPrimario,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(28),
+                              bottomRight: Radius.circular(28),
+                            ),
+                          ),
+
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            onPressed: () {},
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                ),
 
-                  IconButton(
-                    icon: const Icon(Icons.search),
-                    onPressed: () {},
-                  ),
-                ],
+                const SizedBox(width: 16),
+
+                /// FAVORITOS
+                if (!esMovil)
+                  _iconoHeader(icono: Icons.favorite_border, color: Colors.red),
+
+                if (!esMovil) const SizedBox(width: 12),
+
+                /// CARRITO
+                _iconoHeader(
+                  icono: Icons.shopping_cart_outlined,
+                  color: Colors.red,
+                  badge: true,
+                ),
+
+                if (esTablet) const SizedBox(width: 6),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _iconoHeader({
+    required IconData icono,
+    required Color color,
+    bool badge = false,
+  }) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Icon(icono, color: color, size: 22),
+        ),
+
+        if (badge)
+          Positioned(
+            right: -2,
+            top: -2,
+            child: Container(
+              width: 18,
+              height: 18,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                '0',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
-
-          const SizedBox(width: 15),
-
-          /// ❤️ FAVORITOS
-          if (!esMovil)
-            const Icon(
-              Icons.favorite_border,
-              color: Colors.red,
-            ),
-
-          if (!esMovil) const SizedBox(width: 15),
-
-          /// 🛒 CARRITO
-          const Icon(
-            Icons.shopping_cart_outlined,
-            color: Colors.red,
-          ),
-        ],
-      ),
+      ],
     );
   }
 }
