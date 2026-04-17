@@ -2,7 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/data/demo_producto.dart';
-import 'package:tienda_motos/sections/boletin_informativo.dart';
+import 'package:tienda_motos/sections/boletin_informativo_section.dart';
+import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
 import 'package:tienda_motos/sections/categoria_section.dart';
 import 'package:tienda_motos/sections/promo_section.dart';
@@ -206,8 +207,9 @@ class HomePage extends StatelessWidget {
 
             /// BOLETÍN ANCHO COMPLETO
             const BoletinInformativo(),
+            const SizedBox(height: 5),
 
-            const SizedBox(height: 40),
+            const FooterSection(),
           ],
         ),
       ),

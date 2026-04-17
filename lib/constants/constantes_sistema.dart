@@ -25,6 +25,7 @@ class SistemaConstantes {
   // ==================================
 
   static const Color colorAzulPrimario = Color(0xFF1E478D);
+  static const Color colorAzulSecundario = Color(0xFF0E2A5A);
 
   static const Color colorSecundario = Color(0xFFE53935);
 
@@ -134,8 +135,14 @@ class SistemaConstantes {
   // TEXTOS
   // ==================================
 
-  static const TextStyle tituloGrande = TextStyle(
+  static const TextStyle tituloExtraGrande = TextStyle(
     fontSize: textoXXL,
+    fontWeight: FontWeight.w800,
+    color: colorAzulPrimario,
+  );
+
+  static const TextStyle tituloGrande = TextStyle(
+    fontSize: textoXL,
     fontWeight: FontWeight.w800,
     color: colorAzulPrimario,
   );

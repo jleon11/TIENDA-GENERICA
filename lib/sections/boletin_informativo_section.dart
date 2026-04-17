@@ -45,7 +45,7 @@ class _BoletinInformativoState extends State<BoletinInformativo> {
       color: SistemaConstantes.colorFondoSuave,
       padding: EdgeInsets.symmetric(
         horizontal: SistemaConstantes.paddingHorizontal(width),
-        vertical: SistemaConstantes.espacioXL,
+        vertical: SistemaConstantes.espacioLG,
       ),
 
       child: Center(
@@ -58,7 +58,7 @@ class _BoletinInformativoState extends State<BoletinInformativo> {
             padding: const EdgeInsets.all(SistemaConstantes.espacioMD),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(SistemaConstantes.radioLG),
+              borderRadius: BorderRadius.circular(SistemaConstantes.radioSM),
               boxShadow: SistemaConstantes.sombraSuave,
             ),
 
@@ -67,7 +67,7 @@ class _BoletinInformativoState extends State<BoletinInformativo> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _info(),
-                      const SizedBox(height: SistemaConstantes.espacioLG),
+                      const SizedBox(height: SistemaConstantes.espacioSM),
                       _formulario(esMovil),
                     ],
                   )
