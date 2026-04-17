@@ -1,3 +1,4 @@
+// header.dart
 import 'package:flutter/material.dart';
 
 class HeaderTienda extends StatelessWidget {
@@ -5,10 +6,17 @@ class HeaderTienda extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    final bool esMovil = width < 900;
+    final bool esTablet = width >= 900 && width < 1300;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
       height: 80,
       color: Colors.white,
+      padding: EdgeInsets.symmetric(
+        horizontal: esMovil ? 12 : 30,
+      ),
       child: Row(
         children: [
           /// 🔥 MENU
@@ -19,49 +27,66 @@ class HeaderTienda extends StatelessWidget {
             },
           ),
 
-          const SizedBox(width: 15),
+          const SizedBox(width: 10),
 
           /// 🔥 LOGO
           Image.asset(
             'assets/imagenes/logo-accesoriosGonzales-fondoBlanco.png',
-            height: 150, // 🔥 ajustado
+            height: esMovil ? 55 : 70,
+            fit: BoxFit.contain,
           ),
 
-          const Spacer(),
+          const SizedBox(width: 15),
 
-          /// 🔥 BUSCADOR (LIMITADO)
-          Container(
-            width: 1000, // 🔥 CONTROL DEL TAMAÑO
-            height: 45,
-            decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFF1E478D)),
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Row(
-              children: [
-                const SizedBox(width: 15),
-                const Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Buscar producto',
-                      border: InputBorder.none,
+          /// 🔥 BUSCADOR RESPONSIVE
+          Expanded(
+            child: Container(
+              height: 45,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: const Color(0xFF1E478D),
+                ),
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Row(
+                children: [
+                  const SizedBox(width: 15),
+
+                  const Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Buscar producto',
+                        border: InputBorder.none,
+                        isDense: true,
+                      ),
                     ),
                   ),
-                ),
-                IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-              ],
+
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
             ),
           ),
 
-          const Spacer(),
+          const SizedBox(width: 15),
 
           /// ❤️ FAVORITOS
-          Icon(Icons.favorite_border, color: Colors.red),
+          if (!esMovil)
+            const Icon(
+              Icons.favorite_border,
+              color: Colors.red,
+            ),
 
-          const SizedBox(width: 20),
+          if (!esMovil) const SizedBox(width: 15),
 
           /// 🛒 CARRITO
-          Icon(Icons.shopping_cart_outlined, color: Colors.red),
+          const Icon(
+            Icons.shopping_cart_outlined,
+            color: Colors.red,
+          ),
         ],
       ),
     );

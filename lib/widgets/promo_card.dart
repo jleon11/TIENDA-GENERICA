@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tienda_motos/widgets/general_components/hover_button.dart';
 
 class PromoCard extends StatelessWidget {
   final String nombre;
@@ -20,91 +19,110 @@ class PromoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 260,
-      margin: const EdgeInsets.only(right: 20),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 22),
+      color: Colors.white,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          /// 🔴 BADGE
           Align(
             alignment: Alignment.topLeft,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               color: Colors.red,
               child: const Text(
                 'Promo del mes',
-                style: TextStyle(color: Colors.white, fontSize: 12),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
 
-          /// 🖼️ IMAGEN
-          Expanded(
+          SizedBox(
+            height: 170,
             child: Center(child: Image.asset(imagen, fit: BoxFit.contain)),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 18),
 
-          /// 🏷️ NOMBRE
-          Text(
-            nombre,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  nombre.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    height: 1.25,
+                    fontWeight: FontWeight.w800,
+                    fontStyle: FontStyle.italic,
+                    color: Color(0xFF1E1E1E),
+                  ),
+                ),
 
-          const SizedBox(height: 5),
+                const SizedBox(height: 10),
 
-          /// SKU
-          Text(
-            sku,
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-          ),
+                Text(
+                  sku,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                ),
 
-          const SizedBox(height: 8),
+                const SizedBox(height: 10),
 
-          /// 💰 PRECIO ANTERIOR
-          Text(
-            precioAnterior,
-            style: const TextStyle(
-              decoration: TextDecoration.lineThrough,
-              color: Colors.grey,
-              fontSize: 12,
+                Text(
+                  '$precioAnterior IVA Incluido',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                    decoration: TextDecoration.lineThrough,
+                  ),
+                ),
+
+                const SizedBox(height: 6),
+
+                Text(
+                  '$precioActual IVA Incluido',
+
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF1E478D),
+                  ),
+                ),
+              ],
             ),
           ),
 
-          const SizedBox(height: 5),
+          const SizedBox(height: 14),
 
-          /// 💵 PRECIO ACTUAL
-          Text(
-            precioActual,
-            style: const TextStyle(
-              color: Color(0xFF1E478D),
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+          SizedBox(
+            width: 175,
+            height: 42,
+            child: OutlinedButton(
+              onPressed: () {},
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.red),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+              ),
+              child: const Text(
+                'Añadir al carrito',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
-          ),
-
-          const SizedBox(height: 10),
-
-          HoverButton(
-            texto: 'Añadir al carrito',
-            onPressed: () {},
-            backgroundColor: Colors.transparent,
-            hoverColor: Colors.red,
-            textColor: Colors.red,
-            hoverTextColor: Colors.white,
-            borderColor: Colors.red,
-            icon: Icons.shopping_cart,
           ),
         ],
       ),

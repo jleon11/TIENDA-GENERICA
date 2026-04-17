@@ -1,7 +1,6 @@
-
 import 'package:tienda_motos/models/informacion_general_model.dart';
 
-class InfoAlarmaModel extends InformacionGeneralModel {
+class AlarmaModel extends InformacionGeneralModel {
   final String color;
   final String rangoMaximo;
   final String controles;
@@ -9,7 +8,7 @@ class InfoAlarmaModel extends InformacionGeneralModel {
   final String material;
   final String numeroParte;
 
-  InfoAlarmaModel({
+  AlarmaModel({
     required this.color,
     required this.rangoMaximo,
     required this.controles,

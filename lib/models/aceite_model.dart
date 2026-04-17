@@ -1,7 +1,6 @@
 import 'package:tienda_motos/models/informacion_general_model.dart';
 
-
-class InfoAceiteModel extends InformacionGeneralModel {
+class AceiteModel extends InformacionGeneralModel {
   final String cantidad;
   final String grado;
   final String tipoContenedor;
@@ -9,7 +8,7 @@ class InfoAceiteModel extends InformacionGeneralModel {
   final String tipoVehiculo;
   final String numeroParte;
 
-  InfoAceiteModel({
+  AceiteModel({
     required this.cantidad,
     required this.grado,
     required this.tipoContenedor,
