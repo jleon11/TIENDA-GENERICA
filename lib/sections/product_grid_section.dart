@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
-import 'package:tienda_motos/respaldos/generic_grid.dart';
+import 'package:tienda_motos/widgets/general_components/generic_grid.dart';
 import 'package:tienda_motos/widgets/general_components/contrato_card_producto.dart';
 import 'package:tienda_motos/widgets/product_card.dart';
 
@@ -53,7 +54,7 @@ class ProductGridSection<T extends ContratoCardProducto>
 
             alineacion: alineacion,
 
-            itemBuilder: (context, item) {
+            itemBuilder: (_, item) {
               return ProductCard(
                 nombre: item.nombre,
 
@@ -73,7 +74,10 @@ class ProductGridSection<T extends ContratoCardProducto>
 
                 inventarioLimitado: item.inventarioLimitado,
 
-                mostrarBoton: item.mostrarBotonCarrito,
+                mostrarBotonCarrito: item.mostrarBotonCarrito,
+                onTap: () {
+                  GoRouter.of(context).go('/producto', extra: item);
+                },
               );
             },
           ),

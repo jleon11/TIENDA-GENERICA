@@ -1,22 +1,24 @@
 import 'dart:ui';
 
-mixin ContratoCardProducto {
+abstract class ContratoCardProducto {
+  /// Datos mínimos para mostrar una card
   String get nombre;
   String get codigo;
   String get precioActual;
   String get cardImagen;
 
-  String? get precioAnterior => null;
+  /// Opcionales
+  String? get precioAnterior;
 
-  bool get mostrarDescuento => precioAnterior != null;
+  bool get mostrarDescuento;
 
-  bool get mostrarBotonCarrito => true;
+  bool get mostrarBotonCarrito;
 
-  bool get inventarioLimitado => false;
+  bool get inventarioLimitado;
 
-  bool get agotado => false;
+  bool get agotado;
 
-  String get cardEtiqueta => 'Exclusivo en línea';
+  String get cardEtiqueta;
 
-  Color get cardColorEtiqueta => const Color(0xFF1E478D);
+  Color get cardColorEtiqueta;
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
-import 'package:tienda_motos/data/demo_producto.dart';
+import 'package:tienda_motos/models/aceite_model.dart';
+import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/sections/boletin_informativo_section.dart';
 import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
@@ -64,85 +65,177 @@ class HomePage extends StatelessWidget {
     ];
 
     final masBuscados = [
-      DemoProducto(
+      ProductoModel(
+        id: '1',
         nombre: 'Camión LEGO Special Transport',
+        descripcion: 'Producto destacado del catálogo.',
+        precio: 24.99,
+        precioAnteriorValor: 34.99,
+        stock: 2,
+        imagenes: ['assets/imagenes/masbuscado1.jpg'],
+        categoria: 'Juguetes',
+        marca: 'LEGO',
         codigo: 'MB001',
-        precioActual: '24.99',
-        precioAnterior: '34.99',
-        cardImagen: 'assets/imagenes/masbuscado1.jpg',
-        inventarioLimitado: true,
-        cardEtiqueta: 'Más buscado',
-        cardColorEtiqueta: const Color(0xFFE53935),
+        destacado: true,
+        informacionGeneral: AceiteModel(
+          cantidad: '1',
+          grado: '5W-30',
+          tipoContenedor: 'Botella',
+          tipoAceiteMotor: 'Sintético',
+          tipoVehiculo: 'Automóvil',
+          numeroParte: 'ACE-001',
+        ),
       ),
-      DemoProducto(
+
+      ProductoModel(
+        id: '2',
         nombre: 'Consola Gamer X Pro + 2 Controles',
+        descripcion: 'Consola gamer edición especial.',
+        precio: 399.99,
+        precioAnteriorValor: 459.99,
+        stock: 2,
+        imagenes: ['assets/imagenes/masbuscado2.jpg'],
+        categoria: 'Gaming',
+        marca: 'X Pro',
         codigo: 'MB002',
-        precioActual: '399.99',
-        precioAnterior: '459.99',
-        cardImagen: 'assets/imagenes/masbuscado2.jpg',
-        inventarioLimitado: true,
-        cardEtiqueta: 'Oferta gamer',
-        cardColorEtiqueta: const Color(0xFF43A047),
+        destacado: true,
+        informacionGeneral: AceiteModel(
+          cantidad: '1',
+          grado: '5W-30',
+          tipoContenedor: 'Botella',
+          tipoAceiteMotor: 'Sintético',
+          tipoVehiculo: 'Automóvil',
+          numeroParte: 'ACE-001',
+        ),
       ),
-      DemoProducto(
+
+      ProductoModel(
+        id: '3',
         nombre: 'Tienda de Campaña McKinley 4 Personas',
+        descripcion: 'Ideal para camping familiar.',
+        precio: 89.99,
+        precioAnteriorValor: 119.99,
+        stock: 10,
+        imagenes: ['assets/imagenes/masbuscado3.jpg'],
+        categoria: 'Outdoor',
+        marca: 'McKinley',
         codigo: 'MB003',
-        precioActual: '89.99',
-        precioAnterior: '119.99',
-        cardImagen: 'assets/imagenes/masbuscado3.jpg',
-        inventarioLimitado: false,
-        cardEtiqueta: 'Outdoor',
-        cardColorEtiqueta: const Color(0xFF1E88E5),
+        informacionGeneral: AceiteModel(
+          cantidad: '1',
+          grado: '5W-30',
+          tipoContenedor: 'Botella',
+          tipoAceiteMotor: 'Sintético',
+          tipoVehiculo: 'Automóvil',
+          numeroParte: 'ACE-001',
+        ),
       ),
-      DemoProducto(
+
+      ProductoModel(
+        id: '4',
         nombre: 'Micrófonos Inalámbricos Profesionales',
+        descripcion: 'Sistema profesional inalámbrico.',
+        precio: 129.99,
+        precioAnteriorValor: 159.99,
+        stock: 2,
+        imagenes: ['assets/imagenes/masbuscado4.jpg'],
+        categoria: 'Audio',
+        marca: 'Audio Pro',
         codigo: 'MB004',
-        precioActual: '129.99',
-        precioAnterior: '159.99',
-        cardImagen: 'assets/imagenes/masbuscado4.jpg',
-        inventarioLimitado: true,
-        cardEtiqueta: 'Audio Pro',
-        cardColorEtiqueta: const Color(0xFF6D4C41),
+        destacado: true,
+        informacionGeneral: AceiteModel(
+          cantidad: '1',
+          grado: '5W-30',
+          tipoContenedor: 'Botella',
+          tipoAceiteMotor: 'Sintético',
+          tipoVehiculo: 'Automóvil',
+          numeroParte: 'ACE-001',
+        ),
       ),
-      DemoProducto(
+
+      ProductoModel(
+        id: '5',
         nombre: 'Adidas Urban White Edition',
+        descripcion: 'Calzado urbano moderno.',
+        precio: 74.99,
+        precioAnteriorValor: 99.99,
+        stock: 8,
+        imagenes: ['assets/imagenes/masbuscado5.jpg'],
+        categoria: 'Calzado',
+        marca: 'Adidas',
         codigo: 'MB005',
-        precioActual: '74.99',
-        precioAnterior: '99.99',
-        cardImagen: 'assets/imagenes/masbuscado5.jpg',
-        inventarioLimitado: false,
-        cardEtiqueta: 'Nuevo ingreso',
-        cardColorEtiqueta: const Color(0xFF3949AB),
+        informacionGeneral: AceiteModel(
+          cantidad: '1',
+          grado: '5W-30',
+          tipoContenedor: 'Botella',
+          tipoAceiteMotor: 'Sintético',
+          tipoVehiculo: 'Automóvil',
+          numeroParte: 'ACE-001',
+        ),
       ),
-      DemoProducto(
+
+      ProductoModel(
+        id: '6',
         nombre: 'Auto Clásico Mini Colección',
+        descripcion: 'Coleccionable edición clásica.',
+        precio: 14.99,
+        precioAnteriorValor: 19.99,
+        stock: 1,
+        imagenes: ['assets/imagenes/masbuscado6.jpg'],
+        categoria: 'Colección',
+        marca: 'Mini Cars',
         codigo: 'MB006',
-        precioActual: '14.99',
-        precioAnterior: '19.99',
-        cardImagen: 'assets/imagenes/masbuscado6.jpg',
-        inventarioLimitado: true,
-        cardEtiqueta: 'Coleccionable',
-        cardColorEtiqueta: const Color(0xFF00897B),
+        destacado: true,
+        informacionGeneral: AceiteModel(
+          cantidad: '1',
+          grado: '5W-30',
+          tipoContenedor: 'Botella',
+          tipoAceiteMotor: 'Sintético',
+          tipoVehiculo: 'Automóvil',
+          numeroParte: 'ACE-001',
+        ),
       ),
-      DemoProducto(
+
+      ProductoModel(
+        id: '7',
         nombre: 'Zapatos Formales Premium Black',
+        descripcion: 'Zapato formal premium.',
+        precio: 94.99,
+        precioAnteriorValor: 129.99,
+        stock: 9,
+        imagenes: ['assets/imagenes/masbuscado7.jpg'],
+        categoria: 'Formal',
+        marca: 'Premium',
         codigo: 'MB007',
-        precioActual: '94.99',
-        precioAnterior: '129.99',
-        cardImagen: 'assets/imagenes/masbuscado7.jpg',
-        inventarioLimitado: false,
-        cardEtiqueta: 'Elegancia',
-        cardColorEtiqueta: const Color(0xFF212121),
+        informacionGeneral: AceiteModel(
+          cantidad: '1',
+          grado: '5W-30',
+          tipoContenedor: 'Botella',
+          tipoAceiteMotor: 'Sintético',
+          tipoVehiculo: 'Automóvil',
+          numeroParte: 'ACE-001',
+        ),
       ),
-      DemoProducto(
+
+      ProductoModel(
+        id: '8',
         nombre: 'Nike Kids Flex Runner',
+        descripcion: 'Calzado infantil deportivo.',
+        precio: 49.99,
+        precioAnteriorValor: 59.99,
+        stock: 2,
+        imagenes: ['assets/imagenes/masbuscado8.jpg'],
+        categoria: 'Infantil',
+        marca: 'Nike',
         codigo: 'MB008',
-        precioActual: '49.99',
-        precioAnterior: '59.99',
-        cardImagen: 'assets/imagenes/masbuscado8.jpg',
-        inventarioLimitado: true,
-        cardEtiqueta: 'Infantil',
-        cardColorEtiqueta: const Color(0xFF000000),
+        destacado: true,
+        informacionGeneral: AceiteModel(
+          cantidad: '1',
+          grado: '5W-30',
+          tipoContenedor: 'Botella',
+          tipoAceiteMotor: 'Sintético',
+          tipoVehiculo: 'Automóvil',
+          numeroParte: 'ACE-001',
+        ),
       ),
     ];
 
@@ -189,7 +282,7 @@ class HomePage extends StatelessWidget {
 
                       const SizedBox(height: SistemaConstantes.espacioSeccion),
 
-                      ProductGridSection<DemoProducto>(
+                      ProductGridSection<ProductoModel>(
                         titulo: 'LOS MÁS BUSCADOS',
                         items: masBuscados,
                         filas: 2,

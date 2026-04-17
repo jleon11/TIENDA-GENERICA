@@ -27,6 +27,7 @@ class FooterSection extends StatelessWidget {
             ),
             child: Column(
               children: [
+                /// BLOQUE SUPERIOR
                 esMovil
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,24 +58,27 @@ class FooterSection extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
+                /// FOOTER INFERIOR
                 Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 16,
+                      runSpacing: 8,
                       children: const [
                         Text(
                           '© 2026 Todos los derechos reservados.',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white70,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-
-                        SizedBox(width: 20),
-
                         Text(
                           'Sitio desarrollado por Justin León Pérez.',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white70,
                             fontSize: 14,
@@ -84,18 +88,19 @@ class FooterSection extends StatelessWidget {
                       ],
                     ),
 
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 8,
+                      runSpacing: 8,
                       children: [
                         const Icon(
                           Icons.email_outlined,
                           color: Colors.white54,
                           size: 18,
                         ),
-
-                        const SizedBox(width: 8),
 
                         InkWell(
                           onTap: () async {
@@ -224,22 +229,15 @@ class FooterSection extends StatelessWidget {
         const SizedBox(height: 18),
 
         OutlinedButton.icon(
-          onPressed: () {
-            abrirMaps();
-          },
-
+          onPressed: abrirMaps,
           icon: const Icon(Icons.map_outlined, color: Colors.white, size: 18),
-
           label: const Text(
             'Abrir en Maps',
             style: TextStyle(color: Colors.white),
           ),
-
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: Colors.white24),
-
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
@@ -304,14 +302,14 @@ class FooterSection extends StatelessWidget {
             height: 220,
             width: double.infinity,
             child: HtmlWidget('''
-            <iframe
-              src="https://www.google.com/maps?q=9.9800031,-83.0785235&z=17&output=embed"
-              width="100%"
-              height="100%"
-              style="border:0;"
-              loading="lazy">
-            </iframe>
-            '''),
+<iframe
+src="https://www.google.com/maps?q=9.9800031,-83.0785235&z=17&output=embed"
+width="100%"
+height="100%"
+style="border:0;"
+loading="lazy">
+</iframe>
+'''),
           ),
         ),
       ],

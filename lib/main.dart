@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/pages/header.dart';
 import 'package:tienda_motos/pages/home_page.dart';
+import 'package:tienda_motos/routes/app_router.dart';
 import 'package:tienda_motos/widgets/drawer_tienda.dart';
 
 void main() {
@@ -13,9 +14,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Tienda Motos',
+
+      routerConfig: appRouter,
 
       theme: ThemeData(
         useMaterial3: true,
@@ -71,14 +74,14 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-
-      home: const LayoutPrincipal(),
     );
   }
 }
 
 class LayoutPrincipal extends StatefulWidget {
-  const LayoutPrincipal({super.key});
+  final Widget child;
+
+  const LayoutPrincipal({super.key, required this.child});
 
   @override
   State<LayoutPrincipal> createState() => _LayoutPrincipalState();
@@ -86,8 +89,6 @@ class LayoutPrincipal extends StatefulWidget {
 
 class _LayoutPrincipalState extends State<LayoutPrincipal> {
   int paginaSeleccionada = 0;
-
-  final List<Widget> paginas = const [HomePage(), HomePage(), HomePage()];
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +107,7 @@ class _LayoutPrincipalState extends State<LayoutPrincipal> {
         child: Builder(builder: (context) => const HeaderTienda()),
       ),
 
-      body: paginas[paginaSeleccionada],
+      body: widget.child,
     );
   }
 }
