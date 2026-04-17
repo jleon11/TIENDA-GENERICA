@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
 
         colorScheme: ColorScheme.fromSeed(
-          seedColor: SistemaConstantes.colorPrimario,
+          seedColor: SistemaConstantes.colorAzulPrimario,
         ),
 
         fontFamily: 'Arial',
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(
-              color: SistemaConstantes.colorPrimario,
+              color: SistemaConstantes.colorAzulPrimario,
               width: 1.5,
             ),
           ),
@@ -107,7 +107,7 @@ class _LayoutPrincipalState extends State<LayoutPrincipal> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
-              color: SistemaConstantes.colorPrimario,
+              color: SistemaConstantes.colorAzulPrimario,
               child: const Text(
                 'Menú',
                 style: TextStyle(
@@ -135,14 +135,14 @@ class _LayoutPrincipalState extends State<LayoutPrincipal> {
     return ListTile(
       leading: Icon(
         icono,
-        color: activo ? SistemaConstantes.colorPrimario : Colors.black87,
+        color: activo ? SistemaConstantes.colorAzulPrimario : Colors.black87,
       ),
 
       title: Text(
         texto,
         style: TextStyle(
           fontWeight: activo ? FontWeight.bold : FontWeight.normal,
-          color: activo ? SistemaConstantes.colorPrimario : Colors.black87,
+          color: activo ? SistemaConstantes.colorAzulPrimario : Colors.black87,
         ),
       ),
 

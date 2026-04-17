@@ -157,7 +157,7 @@ class _PromoSectionState extends State<PromoSection> {
                   height: 10,
                   decoration: BoxDecoration(
                     color: activo
-                        ? SistemaConstantes.colorPrimario
+                        ? SistemaConstantes.colorAzulPrimario
                         : Colors.grey.shade300,
                     borderRadius: BorderRadius.circular(50),
                   ),

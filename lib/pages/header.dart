@@ -56,7 +56,7 @@ class HeaderTienda extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(
-                        color: SistemaConstantes.colorPrimario,
+                        color: SistemaConstantes.colorAzulPrimario,
                       ),
                       borderRadius: BorderRadius.circular(28),
                     ),
@@ -84,7 +84,7 @@ class HeaderTienda extends StatelessWidget {
                           width: esMovil ? 44 : 54,
 
                           decoration: const BoxDecoration(
-                            color: SistemaConstantes.colorPrimario,
+                            color: SistemaConstantes.colorAzulPrimario,
                             borderRadius: BorderRadius.only(
                               topRight: Radius.circular(28),
                               bottomRight: Radius.circular(28),

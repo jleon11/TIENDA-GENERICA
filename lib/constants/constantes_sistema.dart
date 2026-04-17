@@ -7,7 +7,7 @@ class SistemaConstantes {
   // COLORES PRINCIPALES
   // ==================================
 
-  static const Color colorPrimario = Color(0xFF1E478D);
+  static const Color colorAzulPrimario = Color(0xFF1E478D);
 
   static const Color colorSecundario = Color(0xFFE53935);
 
@@ -108,7 +108,7 @@ class SistemaConstantes {
     fontSize: 22,
     fontWeight: FontWeight.w800,
     fontStyle: FontStyle.italic,
-    color: colorPrimario,
+    color: colorAzulPrimario,
   );
 
   static const TextStyle textoBoton = TextStyle(
@@ -117,7 +117,7 @@ class SistemaConstantes {
   );
 
   static const TextStyle precio = TextStyle(
-    color: colorPrimario,
+    color: colorAzulPrimario,
     fontWeight: FontWeight.bold,
     fontSize: 18,
   );

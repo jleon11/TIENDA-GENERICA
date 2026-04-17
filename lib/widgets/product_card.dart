@@ -26,7 +26,7 @@ class ProductCard extends StatelessWidget {
     required this.imagen,
     this.precioAnterior,
     this.badgeTexto = 'Exclusivo en línea',
-    this.badgeColor = SistemaConstantes.colorPrimario,
+    this.badgeColor = SistemaConstantes.colorAzulPrimario,
     this.inventarioLimitado = false,
     this.mostrarBoton = true,
     this.onPressed,
