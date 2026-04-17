@@ -5,7 +5,6 @@ import 'package:tienda_motos/widgets/product_card.dart';
 class PromoSection extends StatefulWidget {
   final String titulo;
   final List<Map<String, dynamic>> items;
-
   final String badgeTexto;
   final Color badgeColor;
 
@@ -22,98 +21,66 @@ class PromoSection extends StatefulWidget {
 }
 
 class _PromoSectionState extends State<PromoSection> {
-  final ScrollController _scrollController = ScrollController();
+  late final PageController _pageController;
 
-  int _currentDot = 0;
+  int paginaActual = 0;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_escucharScroll);
+    _pageController = PageController();
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_escucharScroll);
-    _scrollController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
-  void _escucharScroll() {
-    if (!_scrollController.hasClients) return;
-
-    final max = _scrollController.position.maxScrollExtent;
-
-    if (max <= 0) return;
-
-    final porcentaje = _scrollController.offset / max;
-
-    final paginas = _cantidadDots;
-
-    int nuevo = (porcentaje * paginas).floor();
-
-    if (nuevo >= paginas) {
-      nuevo = paginas - 1;
-    }
-
-    if (_currentDot != nuevo) {
-      setState(() {
-        _currentDot = nuevo;
-      });
-    }
+  int calcularItemsPorVista(double width) {
+    if (width < 700) return 1;
+    if (width < 1100) return 3;
+    return 4;
   }
 
-  int get _cantidadDots {
-    if (_itemsPorVista <= 0) return 1;
-
-    return (widget.items.length / _itemsPorVista).ceil();
-  }
-
-  int _itemsPorVista = 4;
-
-  void _irAPagina(int pagina) {
-    if (!_scrollController.hasClients) return;
-
-    final max = _scrollController.position.maxScrollExtent;
-
-    final paginas = _cantidadDots;
-
-    if (paginas <= 1) {
-      _scrollController.jumpTo(0);
-      return;
+  double calcularAnchoCard(double width) {
+    if (width < 700) {
+      return width * 0.88;
     }
 
-    final destino = (pagina / (paginas - 1)) * max;
+    if (width < 1100) {
+      return SistemaConstantes.cardNormalAncho;
+    }
 
-    _scrollController.animateTo(
-      destino,
-      duration: const Duration(milliseconds: 450),
-      curve: Curves.easeInOut,
-    );
+    return SistemaConstantes.cardNormalAncho;
+  }
+
+  List<List<Map<String, dynamic>>> dividirPaginas(
+    List<Map<String, dynamic>> items,
+    int cantidad,
+  ) {
+    final paginas = <List<Map<String, dynamic>>>[];
+
+    for (int i = 0; i < items.length; i += cantidad) {
+      final fin = (i + cantidad > items.length) ? items.length : i + cantidad;
+
+      paginas.add(items.sublist(i, fin));
+    }
+
+    return paginas;
   }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    const espacio = SistemaConstantes.espacioSM;
+    final itemsVista = calcularItemsPorVista(width);
 
-    double alto = SistemaConstantes.cardNormalAlto;
+    final cardWidth = calcularAnchoCard(width);
 
-    double cardWidth = SistemaConstantes.cardNormalAncho;
+    final alto = SistemaConstantes.cardNormalAlto;
 
-    if (width < 700) {
-      _itemsPorVista = 1;
-      alto = SistemaConstantes.cardNormalAlto;
-      cardWidth = width * 0.85;
-    } else if (width < 1100) {
-      _itemsPorVista = 3;
-      alto = SistemaConstantes.cardNormalAlto;
-      cardWidth = SistemaConstantes.cardNormalAncho;
-    } else {
-      _itemsPorVista = 4;
-      cardWidth = SistemaConstantes.cardNormalAncho;
-    }
+    final paginas = dividirPaginas(widget.items, itemsVista);
 
     return SizedBox(
       width: double.infinity,
@@ -128,53 +95,65 @@ class _PromoSectionState extends State<PromoSection> {
           /// SLIDER
           SizedBox(
             height: alto,
-            child: Scrollbar(
-              controller: _scrollController,
-              thumbVisibility: false,
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(widget.items.length, (index) {
-                    final item = widget.items[index];
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: paginas.length,
+              onPageChanged: (index) {
+                setState(() {
+                  paginaActual = index;
+                });
+              },
+              itemBuilder: (context, paginaIndex) {
+                final pagina = paginas[paginaIndex];
 
-                    return Container(
-                      width: cardWidth,
-                      height: alto,
-                      margin: EdgeInsets.only(
-                        right: index == widget.items.length - 1 ? 0 : espacio,
-                      ),
-                      child: ProductCard(
-                        nombre: item['nombre'],
-                        sku: item['sku'],
-                        precioActual: item['precioActual'],
-                        precioAnterior: item['precioAnterior'],
-                        imagen: item['imagen'],
-                        badgeTexto: widget.badgeTexto,
-                        badgeColor: widget.badgeColor,
-                        inventarioLimitado: item['inventarioLimitado'] ?? false,
-                      ),
-                    );
-                  }),
-                ),
-              ),
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 0,
+                    children: pagina.map((item) {
+                      return SizedBox(
+                        width: cardWidth,
+                        height: alto,
+                        child: ProductCard(
+                          nombre: item['nombre'],
+                          sku: item['sku'],
+                          precioActual: item['precioActual'],
+                          precioAnterior: item['precioAnterior'],
+                          imagen: item['imagen'],
+                          badgeTexto: widget.badgeTexto,
+                          badgeColor: widget.badgeColor,
+                          inventarioLimitado:
+                              item['inventarioLimitado'] ?? false,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                );
+              },
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
 
           /// DOTS
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(_cantidadDots, (index) {
-              final activo = _currentDot == index;
+            children: List.generate(paginas.length, (index) {
+              final activo = paginaActual == index;
 
               return GestureDetector(
-                onTap: () => _irAPagina(index),
+                onTap: () {
+                  _pageController.animateToPage(
+                    index,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
+                },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  width: activo ? 16 : 10,
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: activo ? 18 : 10,
                   height: 10,
                   decoration: BoxDecoration(
                     color: activo
