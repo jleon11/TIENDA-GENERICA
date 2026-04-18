@@ -24,15 +24,6 @@ class PanelCompraProductoWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Código: ${producto.codigo}',
-          style: const TextStyle(
-            fontSize: 15,
-            color: Color(0xFF6B7280),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-
         const SizedBox(height: 12),
 
         Text(
@@ -42,6 +33,15 @@ class PanelCompraProductoWidget extends StatelessWidget {
             height: 1.15,
             fontWeight: FontWeight.w800,
             color: Color(0xFF1E478D),
+          ),
+        ),
+
+        Text(
+          'Código: ${producto.codigo}',
+          style: const TextStyle(
+            fontSize: 15,
+            color: Color(0xFF6B7280),
+            fontWeight: FontWeight.w500,
           ),
         ),
 
@@ -131,26 +131,22 @@ class PanelCompraProductoWidget extends StatelessWidget {
         Row(
           children: [
             if (producto.mostrarBotonCarrito)
-              Expanded(
-                child: SizedBox(
-                  height: 58,
-                  child: ElevatedButton(
-                    onPressed: producto.agotado ? null : () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFE51F2B),
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+              SizedBox(
+                width: 250,
+                height: 58,
+                child: ElevatedButton(
+                  onPressed: producto.agotado ? null : () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFE51F2B),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                    child: const Text(
-                      'Añadir al carrito',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
+                  ),
+                  child: const Text(
+                    'Añadir al carrito',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
                   ),
                 ),
               ),

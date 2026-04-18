@@ -3,6 +3,7 @@ import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/widgets/galeria_producto.dart';
 import 'package:tienda_motos/widgets/producto_detalle/info_general_producto.dart';
 import 'package:tienda_motos/widgets/producto_detalle/panel_compra_producto.dart';
+import 'package:tienda_motos/widgets/producto_detalle/tabs_infoProducto_widget.dart';
 
 class ProductoDetallePage extends StatefulWidget {
   final ProductoModel producto;
@@ -25,7 +26,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
     final bool esMovil = width < 900;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Colors.white,
 
       body: SafeArea(
         child: SingleChildScrollView(
@@ -75,7 +76,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              flex: 6,
+                              flex: 7,
                               child: GaleriaProductoWidget(
                                 imagenes: producto.imagenes,
                                 imagenSeleccionada: imagenSeleccionada,
@@ -90,7 +91,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                             const SizedBox(width: 48),
 
                             Expanded(
-                              flex: 5,
+                              flex: 4,
                               child: PanelCompraProductoWidget(
                                 producto: producto,
                                 cantidad: cantidad,
@@ -103,8 +104,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
 
                   const SizedBox(height: 40),
 
-                  /// INFO GENERAL
-                  InfoGeneralProductoWidget(
+                  TabsInfoProductoWidget(
                     descripcion: producto.descripcion,
                     infoGeneral: producto.informacionGeneral.toMap(),
                   ),

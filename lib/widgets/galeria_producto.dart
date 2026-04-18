@@ -28,7 +28,7 @@ class GaleriaProductoWidget extends StatelessWidget {
           height: 560,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: const Color(0xFFF8F8F8),
+            color: const Color(0xFFFFFFFF),
             borderRadius: BorderRadius.circular(24),
           ),
           child: Stack(

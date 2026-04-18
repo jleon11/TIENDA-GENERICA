@@ -15,11 +15,11 @@ class SelectorCantidadWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 165,
-      height: 74,
+      width: 110,
+      height: 60,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(40),
+        borderRadius: BorderRadius.circular(30),
         color: Colors.white,
       ),
       child: Row(
@@ -33,7 +33,7 @@ class SelectorCantidadWidget extends StatelessWidget {
           Text(
             '$cantidad',
             style: const TextStyle(
-              fontSize: 28,
+              fontSize: 19,
               color: Color(0xFF1E478D),
               fontWeight: FontWeight.w500,
             ),
