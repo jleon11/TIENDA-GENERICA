@@ -21,6 +21,10 @@ class PanelCompraProductoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool mostrarEtiqueta = producto.cardEtiqueta.trim().isNotEmpty;
 
+    final double ancho = MediaQuery.of(context).size.width;
+
+    final bool pantallaPequena = ancho < 1100;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -47,6 +51,7 @@ class PanelCompraProductoWidget extends StatelessWidget {
 
         if (mostrarEtiqueta) ...[
           const SizedBox(height: 18),
+
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
             decoration: BoxDecoration(
@@ -77,7 +82,9 @@ class PanelCompraProductoWidget extends StatelessWidget {
               color: producto.agotado ? Colors.red : const Color(0xFF1E478D),
               size: 34,
             ),
+
             const SizedBox(width: 12),
+
             Expanded(
               child: Text(
                 producto.agotado
@@ -119,6 +126,7 @@ class PanelCompraProductoWidget extends StatelessWidget {
 
         if (producto.mostrarBotonCarrito) ...[
           const SizedBox(height: 28),
+
           SelectorCantidadWidget(
             cantidad: cantidad,
             onSumar: onSumar,
@@ -128,11 +136,15 @@ class PanelCompraProductoWidget extends StatelessWidget {
 
         const SizedBox(height: 30),
 
-        Row(
+        /// 🔥 CORREGIDO
+        Wrap(
+          spacing: 18,
+          runSpacing: 14,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             if (producto.mostrarBotonCarrito)
               SizedBox(
-                width: 250,
+                width: pantallaPequena ? double.infinity : 250,
                 height: 58,
                 child: ElevatedButton(
                   onPressed: producto.agotado ? null : () {},
@@ -150,8 +162,6 @@ class PanelCompraProductoWidget extends StatelessWidget {
                   ),
                 ),
               ),
-
-            if (producto.mostrarBotonCarrito) const SizedBox(width: 18),
 
             InkWell(
               borderRadius: BorderRadius.circular(30),
