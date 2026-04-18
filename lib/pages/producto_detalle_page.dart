@@ -1,240 +1,164 @@
 import 'package:flutter/material.dart';
-import '../models/producto_model.dart';
+import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/widgets/galeria_producto.dart';
+import 'package:tienda_motos/widgets/producto_detalle/info_general_producto.dart';
+import 'package:tienda_motos/widgets/producto_detalle/panel_compra_producto.dart';
 
-class ProductoDetallePage extends StatelessWidget {
+class ProductoDetallePage extends StatefulWidget {
   final ProductoModel producto;
 
-  const ProductoDetallePage({
-    super.key,
-    required this.producto,
-  });
+  const ProductoDetallePage({super.key, required this.producto});
+
+  @override
+  State<ProductoDetallePage> createState() => _ProductoDetallePageState();
+}
+
+class _ProductoDetallePageState extends State<ProductoDetallePage> {
+  int cantidad = 1;
+  int imagenSeleccionada = 0;
 
   @override
   Widget build(BuildContext context) {
-    final info =
-        producto.informacionGeneral.toMap();
+    final producto = widget.producto;
+
+    final width = MediaQuery.of(context).size.width;
+    final bool esMovil = width < 900;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(producto.nombre),
-      ),
+      backgroundColor: const Color(0xFFF5F5F5),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal: esMovil ? 16 : 32,
+            vertical: 20,
+          ),
 
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 1100,
-            ),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1280),
 
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-              children: [
-                /// ==========================
-                /// BLOQUE PRINCIPAL
-                /// ==========================
-                Row(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
-                  children: [
-                    /// IMAGEN
-                    Expanded(
-                      flex: 5,
-                      child: Container(
-                        height: 420,
-                        padding:
-                            const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              BorderRadius.circular(
-                                14,
-                              ),
-                          border: Border.all(
-                            color: Colors.grey.shade300,
-                          ),
-                        ),
-                        child: Image.asset(
-                          producto.cardImagen,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
 
-                    const SizedBox(width: 32),
+                children: [
+                  _buildBreadcrumb(producto),
 
-                    /// INFO DERECHA
-                    Expanded(
-                      flex: 4,
-                      child: Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            producto.nombre,
-                            style:
-                                const TextStyle(
-                                  fontSize: 28,
-                                  fontWeight:
-                                      FontWeight.bold,
-                                ),
-                          ),
+                  const SizedBox(height: 24),
 
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          Text(
-                            'Código: ${producto.codigo}',
-                            style:
-                                TextStyle(
-                                  color: Colors
-                                      .grey
-                                      .shade700,
-                                ),
-                          ),
-
-                          const SizedBox(
-                            height: 20,
-                          ),
-
-                          if (producto
-                              .mostrarDescuento)
-                            Text(
-                              '\$${producto.precioAnterior}',
-                              style:
-                                  const TextStyle(
-                                    fontSize: 18,
-                                    decoration:
-                                        TextDecoration
-                                            .lineThrough,
-                                    color: Colors.grey,
-                                  ),
+                  /// CONTENIDO PRINCIPAL
+                  esMovil
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GaleriaProductoWidget(
+                              imagenes: producto.imagenes,
+                              imagenSeleccionada: imagenSeleccionada,
+                              onImagenSeleccionada: (index) {
+                                setState(() {
+                                  imagenSeleccionada = index;
+                                });
+                              },
                             ),
 
-                          Text(
-                            '\$${producto.precioActual}',
-                            style:
-                                const TextStyle(
-                                  fontSize: 34,
-                                  fontWeight:
-                                      FontWeight.bold,
-                                  color:
-                                      Colors.green,
-                                ),
-                          ),
+                            const SizedBox(height: 28),
 
-                          const SizedBox(
-                            height: 16,
-                          ),
-
-                          Text(
-                            producto.descripcion,
-                            style:
-                                const TextStyle(
-                                  fontSize: 16,
-                                  height: 1.5,
-                                ),
-                          ),
-
-                          const SizedBox(
-                            height: 24,
-                          ),
-
-                          SizedBox(
-                            width:
-                                double.infinity,
-                            height: 52,
-                            child:
-                                ElevatedButton.icon(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons
-                                        .shopping_cart,
-                                  ),
-                                  label: const Text(
-                                    'Agregar al carrito',
-                                  ),
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 40),
-
-                /// ==========================
-                /// INFORMACIÓN GENERAL
-                /// ==========================
-                const Text(
-                  'Información general',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight:
-                        FontWeight.bold,
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                Container(
-                  width: double.infinity,
-                  padding:
-                      const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius:
-                        BorderRadius.circular(14),
-                    border: Border.all(
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-
-                  child: Column(
-                    children: info.entries.map((
-                      item,
-                    ) {
-                      return Padding(
-                        padding:
-                            const EdgeInsets.symmetric(
-                              vertical: 10,
+                            PanelCompraProductoWidget(
+                              producto: producto,
+                              cantidad: cantidad,
+                              onSumar: _sumarCantidad,
+                              onRestar: _restarCantidad,
                             ),
-                        child: Row(
+                          ],
+                        )
+                      : Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              flex: 3,
-                              child: Text(
-                                item.key,
-                                style:
-                                    const TextStyle(
-                                      fontWeight:
-                                          FontWeight
-                                              .bold,
-                                    ),
+                              flex: 6,
+                              child: GaleriaProductoWidget(
+                                imagenes: producto.imagenes,
+                                imagenSeleccionada: imagenSeleccionada,
+                                onImagenSeleccionada: (index) {
+                                  setState(() {
+                                    imagenSeleccionada = index;
+                                  });
+                                },
                               ),
                             ),
+
+                            const SizedBox(width: 48),
 
                             Expanded(
                               flex: 5,
-                              child: Text(
-                                item.value,
+                              child: PanelCompraProductoWidget(
+                                producto: producto,
+                                cantidad: cantidad,
+                                onSumar: _sumarCantidad,
+                                onRestar: _restarCantidad,
                               ),
                             ),
                           ],
                         ),
-                      );
-                    }).toList(),
+
+                  const SizedBox(height: 40),
+
+                  /// INFO GENERAL
+                  InfoGeneralProductoWidget(
+                    descripcion: producto.descripcion,
+                    infoGeneral: producto.informacionGeneral.toMap(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  /// BREADCRUMB
+  Widget _buildBreadcrumb(ProductoModel producto) {
+    return Wrap(
+      spacing: 8,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        const Text(
+          'Inicio',
+          style: TextStyle(
+            fontSize: 16,
+            color: Color(0xFF1E478D),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+
+        const Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+
+        Text(
+          producto.categoria,
+          style: const TextStyle(
+            fontSize: 16,
+            color: Color(0xFF1E478D),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _sumarCantidad() {
+    if (cantidad < widget.producto.stock) {
+      setState(() {
+        cantidad++;
+      });
+    }
+  }
+
+  void _restarCantidad() {
+    if (cantidad > 1) {
+      setState(() {
+        cantidad--;
+      });
+    }
   }
 }

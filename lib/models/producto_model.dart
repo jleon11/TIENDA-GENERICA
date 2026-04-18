@@ -94,7 +94,7 @@ class ProductoModel<T extends InformacionGeneralModel>
   bool get inventarioLimitado => stock <= 3 && stock > 0;
 
   @override
-  String get cardEtiqueta => destacado ? 'Destacado' : 'Producto';
+  String get cardEtiqueta => destacado ? 'Destacado' : '';
 
   @override
   Color get cardColorEtiqueta =>
