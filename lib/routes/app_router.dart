@@ -1,8 +1,10 @@
 import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/main.dart';
+import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/pages/home_page.dart';
 import 'package:tienda_motos/pages/producto_detalle_page.dart';
+import 'package:tienda_motos/pages/productos_por_categoria_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -20,6 +22,17 @@ final GoRouter appRouter = GoRouter(
         final producto = state.extra as ProductoModel;
 
         return LayoutPrincipal(child: ProductoDetallePage(producto: producto));
+      },
+    ),
+
+    GoRoute(
+      path: '/categoria/:ruta',
+      builder: (context, state) {
+        final categoria = state.extra as CategoriaModel;
+
+        return LayoutPrincipal(
+          child: ProductosPorCategoriaPage(categoria: categoria),
+        );
       },
     ),
   ],

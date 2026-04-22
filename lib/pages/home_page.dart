@@ -1,8 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/aceite_model.dart';
+import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/pages/productos_por_categoria_page.dart';
 import 'package:tienda_motos/sections/boletin_informativo_section.dart';
 import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
@@ -16,15 +19,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-
-    final categorias = [
-      {'nombre': 'Hogar', 'icono': Icons.home, 'activa': true},
-      {'nombre': 'Accesorios', 'icono': Icons.extension},
-      {'nombre': 'Electrónica', 'icono': Icons.memory},
-      {'nombre': 'Herramientas', 'icono': Icons.build},
-      {'nombre': 'Mantenimiento', 'icono': Icons.oil_barrel},
-      {'nombre': 'Seguridad', 'icono': Icons.security},
-    ];
 
     final promociones = [
       {
@@ -239,6 +233,62 @@ class HomePage extends StatelessWidget {
       ),
     ];
 
+    final categorias = [
+      CategoriaModel(
+        id: '1',
+        nombre: 'Hogar',
+        ruta: 'hogar',
+        icono: Icons.home,
+        subcategorias: ['Sala', 'Cocina', 'Dormitorio', 'Decoración'],
+        productos: masBuscados,
+      ),
+
+      CategoriaModel(
+        id: '2',
+        nombre: 'Accesorios',
+        ruta: 'accesorios',
+        icono: Icons.extension,
+        subcategorias: ['Fundas', 'Soportes', 'Cargadores', 'Organizadores'],
+        productos: masBuscados,
+      ),
+
+      CategoriaModel(
+        id: '3',
+        nombre: 'Electrónica',
+        ruta: 'electronica',
+        icono: Icons.memory,
+        subcategorias: ['Pantallas', 'Radios', 'Parlantes', 'Audífonos'],
+        productos: masBuscados,
+      ),
+
+      CategoriaModel(
+        id: '4',
+        nombre: 'Herramientas',
+        ruta: 'herramientas',
+        icono: Icons.build,
+        subcategorias: ['Llaves', 'Taladros', 'Destornilladores', 'Kits'],
+        productos: masBuscados,
+      ),
+
+      CategoriaModel(
+        id: '5',
+        nombre: 'Mantenimiento',
+        ruta: 'mantenimiento',
+        icono: Icons.oil_barrel,
+        subcategorias: ['Aceites', 'Lubricantes', 'Filtros', 'Limpieza'],
+        productos: masBuscados,
+      ),
+
+      CategoriaModel(
+        id: '6',
+        nombre: 'Seguridad',
+        ruta: 'seguridad',
+        icono: Icons.security,
+        subcategorias: ['Alarmas', 'Candados', 'Cascos', 'Luces LED'],
+        productos: masBuscados,
+      ),
+    ];
+
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(
         dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
@@ -261,6 +311,8 @@ class HomePage extends StatelessWidget {
                     children: [
                       const SizedBox(height: 20),
 
+                      /*
+                      
                       CategoriaSection(
                         titulo: 'NUESTRAS CATEGORÍAS',
                         items: categorias,
@@ -268,6 +320,22 @@ class HomePage extends StatelessWidget {
                           nombre: c['nombre'] as String,
                           icono: c['icono'] as IconData,
                           activa: (c['activa'] as bool?) ?? false,
+                        ),
+                      ),
+
+                      */
+                      CategoriaSection<CategoriaModel>(
+                        titulo: 'NUESTRAS CATEGORÍAS',
+                        items: categorias,
+
+                        itemBuilder: (c) => CategoriaItem(
+                          nombre: c.nombre,
+                          icono: c.icono ?? Icons.category,
+                          activa: false,
+
+                          onTap: () {
+                            context.push('/categoria/${c.ruta}', extra: c);
+                          },
                         ),
                       ),
 

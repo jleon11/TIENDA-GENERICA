@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tienda_motos/constants/constantes_sistema.dart';
+import 'package:tienda_motos/models/aceite_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/sections/boletin_informativo_section.dart';
+import 'package:tienda_motos/sections/footer_section.dart';
+import 'package:tienda_motos/sections/product_grid_section.dart';
 import 'package:tienda_motos/widgets/galeria_producto.dart';
 import 'package:tienda_motos/widgets/producto_detalle/info_general_producto.dart';
 import 'package:tienda_motos/widgets/producto_detalle/panel_compra_producto.dart';
@@ -18,107 +23,343 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
   int cantidad = 1;
   int imagenSeleccionada = 0;
 
-  @override
-  Widget build(BuildContext context) {
-    final producto = widget.producto;
+  final masBuscados = [
+    ProductoModel(
+      id: '1',
+      nombre: 'Camión LEGO Special Transport',
+      descripcion: 'Producto destacado del catálogo.',
+      precio: 24.99,
+      precioAnteriorValor: 34.99,
+      stock: 2,
+      imagenes: ['assets/imagenes/masbuscado1.jpg'],
+      categoria: 'Juguetes',
+      marca: 'LEGO',
+      codigo: 'MB001',
+      destacado: true,
+      informacionGeneral: AceiteModel(
+        cantidad: '1',
+        grado: '5W-30',
+        tipoContenedor: 'Botella',
+        tipoAceiteMotor: 'Sintético',
+        tipoVehiculo: 'Automóvil',
+        numeroParte: 'ACE-001',
+      ),
+    ),
 
-    final width = MediaQuery.of(context).size.width;
-    final bool esMovil = width < 900;
+    ProductoModel(
+      id: '2',
+      nombre: 'Consola Gamer X Pro + 2 Controles',
+      descripcion: 'Consola gamer edición especial.',
+      precio: 399.99,
+      precioAnteriorValor: 459.99,
+      stock: 2,
+      imagenes: ['assets/imagenes/masbuscado2.jpg'],
+      categoria: 'Gaming',
+      marca: 'X Pro',
+      codigo: 'MB002',
+      destacado: true,
+      informacionGeneral: AceiteModel(
+        cantidad: '1',
+        grado: '5W-30',
+        tipoContenedor: 'Botella',
+        tipoAceiteMotor: 'Sintético',
+        tipoVehiculo: 'Automóvil',
+        numeroParte: 'ACE-001',
+      ),
+    ),
 
-    return Scaffold(
-      backgroundColor: Colors.white,
+    ProductoModel(
+      id: '3',
+      nombre: 'Tienda de Campaña McKinley 4 Personas',
+      descripcion: 'Ideal para camping familiar.',
+      precio: 89.99,
+      precioAnteriorValor: 119.99,
+      stock: 10,
+      imagenes: ['assets/imagenes/masbuscado3.jpg'],
+      categoria: 'Outdoor',
+      marca: 'McKinley',
+      codigo: 'MB003',
+      informacionGeneral: AceiteModel(
+        cantidad: '1',
+        grado: '5W-30',
+        tipoContenedor: 'Botella',
+        tipoAceiteMotor: 'Sintético',
+        tipoVehiculo: 'Automóvil',
+        numeroParte: 'ACE-001',
+      ),
+    ),
 
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: esMovil ? 16 : 32,
-            vertical: 20,
-          ),
+    ProductoModel(
+      id: '4',
+      nombre: 'Micrófonos Inalámbricos Profesionales',
+      descripcion: 'Sistema profesional inalámbrico.',
+      precio: 129.99,
+      precioAnteriorValor: 159.99,
+      stock: 2,
+      imagenes: ['assets/imagenes/masbuscado4.jpg'],
+      categoria: 'Audio',
+      marca: 'Audio Pro',
+      codigo: 'MB004',
+      destacado: true,
+      informacionGeneral: AceiteModel(
+        cantidad: '1',
+        grado: '5W-30',
+        tipoContenedor: 'Botella',
+        tipoAceiteMotor: 'Sintético',
+        tipoVehiculo: 'Automóvil',
+        numeroParte: 'ACE-001',
+      ),
+    ),
 
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1280),
+    ProductoModel(
+      id: '5',
+      nombre: 'Adidas Urban White Edition',
+      descripcion: 'Calzado urbano moderno.',
+      precio: 74.99,
+      precioAnteriorValor: 99.99,
+      stock: 8,
+      imagenes: ['assets/imagenes/masbuscado5.jpg'],
+      categoria: 'Calzado',
+      marca: 'Adidas',
+      codigo: 'MB005',
+      informacionGeneral: AceiteModel(
+        cantidad: '1',
+        grado: '5W-30',
+        tipoContenedor: 'Botella',
+        tipoAceiteMotor: 'Sintético',
+        tipoVehiculo: 'Automóvil',
+        numeroParte: 'ACE-001',
+      ),
+    ),
 
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    ProductoModel(
+      id: '6',
+      nombre: 'Auto Clásico Mini Colección',
+      descripcion: 'Coleccionable edición clásica.',
+      precio: 14.99,
+      precioAnteriorValor: 19.99,
+      stock: 1,
+      imagenes: ['assets/imagenes/masbuscado6.jpg'],
+      categoria: 'Colección',
+      marca: 'Mini Cars',
+      codigo: 'MB006',
+      destacado: true,
+      informacionGeneral: AceiteModel(
+        cantidad: '1',
+        grado: '5W-30',
+        tipoContenedor: 'Botella',
+        tipoAceiteMotor: 'Sintético',
+        tipoVehiculo: 'Automóvil',
+        numeroParte: 'ACE-001',
+      ),
+    ),
 
-                children: [
-                  _buildBreadcrumb(producto),
+    ProductoModel(
+      id: '7',
+      nombre: 'Zapatos Formales Premium Black',
+      descripcion: 'Zapato formal premium.',
+      precio: 94.99,
+      precioAnteriorValor: 129.99,
+      stock: 9,
+      imagenes: ['assets/imagenes/masbuscado7.jpg'],
+      categoria: 'Formal',
+      marca: 'Premium',
+      codigo: 'MB007',
+      informacionGeneral: AceiteModel(
+        cantidad: '1',
+        grado: '5W-30',
+        tipoContenedor: 'Botella',
+        tipoAceiteMotor: 'Sintético',
+        tipoVehiculo: 'Automóvil',
+        numeroParte: 'ACE-001',
+      ),
+    ),
 
-                  const SizedBox(height: 24),
+    ProductoModel(
+      id: '8',
+      nombre: 'Nike Kids Flex Runner',
+      descripcion: 'Calzado infantil deportivo.',
+      precio: 49.99,
+      precioAnteriorValor: 59.99,
+      stock: 2,
+      imagenes: ['assets/imagenes/masbuscado8.jpg'],
+      categoria: 'Infantil',
+      marca: 'Nike',
+      codigo: 'MB008',
+      destacado: true,
+      informacionGeneral: AceiteModel(
+        cantidad: '1',
+        grado: '5W-30',
+        tipoContenedor: 'Botella',
+        tipoAceiteMotor: 'Sintético',
+        tipoVehiculo: 'Automóvil',
+        numeroParte: 'ACE-001',
+      ),
+    ),
+  ];
 
-                  /// CONTENIDO PRINCIPAL
-                  esMovil
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            GaleriaProductoWidget(
-                              imagenes: producto.imagenes,
-                              imagenSeleccionada: imagenSeleccionada,
-                              onImagenSeleccionada: (index) {
-                                setState(() {
-                                  imagenSeleccionada = index;
-                                });
-                              },
-                            ),
+ @override
+Widget build(BuildContext context) {
+  final producto = widget.producto;
 
-                            const SizedBox(height: 28),
+  final width = MediaQuery.of(context).size.width;
+  final bool esMovil = width < 900;
 
-                            PanelCompraProductoWidget(
-                              producto: producto,
-                              cantidad: cantidad,
-                              onSumar: _sumarCantidad,
-                              onRestar: _restarCantidad,
-                            ),
-                          ],
-                        )
-                      : Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 7,
-                              child: GaleriaProductoWidget(
-                                imagenes: producto.imagenes,
-                                imagenSeleccionada: imagenSeleccionada,
-                                onImagenSeleccionada: (index) {
-                                  setState(() {
-                                    imagenSeleccionada = index;
-                                  });
-                                },
-                              ),
-                            ),
+  return Scaffold(
+    backgroundColor: Colors.white,
 
-                            const SizedBox(width: 48),
+    body: SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            /// CONTENIDO PRINCIPAL CENTRADO
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: esMovil ? 16 : 32,
+                vertical: 20,
+              ),
 
-                            Expanded(
-                              flex: 4,
-                              child: PanelCompraProductoWidget(
-                                producto: producto,
-                                cantidad: cantidad,
-                                onSumar: _sumarCantidad,
-                                onRestar: _restarCantidad,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                  const SizedBox(height: 40),
-
-                  TabsInfoProductoWidget(
-                    descripcion: producto.descripcion,
-                    infoGeneral: producto.informacionGeneral.toMap(),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: 1280,
                   ),
-                ],
+
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+
+                    children: [
+                      migajaDePan(producto),
+
+                      const SizedBox(height: 24),
+
+                      /// DETALLE PRODUCTO
+                      esMovil
+                          ? Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+                              children: [
+                                GaleriaProductoWidget(
+                                  imagenes:
+                                      producto.imagenes,
+                                  imagenSeleccionada:
+                                      imagenSeleccionada,
+                                  onImagenSeleccionada:
+                                      (index) {
+                                    setState(() {
+                                      imagenSeleccionada =
+                                          index;
+                                    });
+                                  },
+                                ),
+
+                                const SizedBox(
+                                  height: 28,
+                                ),
+
+                                PanelCompraProductoWidget(
+                                  producto: producto,
+                                  cantidad: cantidad,
+                                  onSumar:
+                                      _sumarCantidad,
+                                  onRestar:
+                                      _restarCantidad,
+                                ),
+                              ],
+                            )
+                          : Row(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+                              children: [
+                                Expanded(
+                                  flex: 7,
+                                  child:
+                                      GaleriaProductoWidget(
+                                    imagenes:
+                                        producto.imagenes,
+                                    imagenSeleccionada:
+                                        imagenSeleccionada,
+                                    onImagenSeleccionada:
+                                        (index) {
+                                      setState(() {
+                                        imagenSeleccionada =
+                                            index;
+                                      });
+                                    },
+                                  ),
+                                ),
+
+                                const SizedBox(
+                                  width: 48,
+                                ),
+
+                                Expanded(
+                                  flex: 4,
+                                  child:
+                                      PanelCompraProductoWidget(
+                                    producto:
+                                        producto,
+                                    cantidad:
+                                        cantidad,
+                                    onSumar:
+                                        _sumarCantidad,
+                                    onRestar:
+                                        _restarCantidad,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                      const SizedBox(height: 40),
+
+                      /// TABS INFO
+                      TabsInfoProductoWidget(
+                        descripcion:
+                            producto.descripcion,
+                        infoGeneral: producto
+                            .informacionGeneral
+                            .toMap(),
+                      ),
+
+                      const SizedBox(height: 45),
+
+                      /// MÁS PRODUCTOS
+                      ProductGridSection<
+                          ProductoModel>(
+                        titulo:
+                            'MÁS PRODUCTOS PARA EXPLORAR',
+                        items: masBuscados,
+                        filas: 2,
+                        anchoItem: 260,
+                        alturaItem: 430,
+                        espaciado: 8,
+                      ),
+
+                      const SizedBox(height: 50),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
+
+            /// FULL WIDTH
+            const BoletinInformativo(),
+
+            const SizedBox(height: 5),
+
+            const FooterSection(),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   /// BREADCRUMB
-  Widget _buildBreadcrumb(ProductoModel producto) {
+  Widget migajaDePan(ProductoModel producto) {
     return Wrap(
       spacing: 8,
       crossAxisAlignment: WrapCrossAlignment.center,
