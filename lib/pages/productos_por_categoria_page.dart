@@ -31,7 +31,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
 
     return Scaffold(
       backgroundColor: SistemaConstantes.colorFondo,
-      endDrawer: esMovil ? _drawerFiltros() : null,
+      endDrawer: esMovil ? _drawerSectionFiltrosMobile() : null,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -74,7 +74,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _bannerMovil(productos.length),
+        _encabezadoPaginaMovil(productos.length),
 
         const SizedBox(height: 14),
 
@@ -100,7 +100,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
 
         const SizedBox(height: 14),
 
-        _chipsSubcategorias(),
+        _opcionesSubcategorias(),
 
         const SizedBox(height: 18),
 
@@ -120,7 +120,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _bannerDesktop(productos.length),
+        _encabezadoPaginaDesktop(productos.length),
 
         const SizedBox(height: 26),
 
@@ -135,7 +135,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _chipsSubcategorias(),
+                  _opcionesSubcategorias(),
 
                   const SizedBox(height: 24),
 
@@ -156,7 +156,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
   /// ===============================
   /// BANNERS
   /// ===============================
-  Widget _bannerMovil(int total) {
+  Widget _encabezadoPaginaMovil(int total) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -190,7 +190,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     );
   }
 
-  Widget _bannerDesktop(int total) {
+  Widget _encabezadoPaginaDesktop(int total) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(30),
@@ -227,7 +227,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
   /// ===============================
   /// CHIPS
   /// ===============================
-  Widget _chipsSubcategorias() {
+  Widget _opcionesSubcategorias() {
     if (widget.categoria.subcategorias.isEmpty) {
       return const SizedBox();
     }
@@ -271,7 +271,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
   /// ===============================
   /// DRAWER MOBILE
   /// ===============================
-  Widget _drawerFiltros() {
+  Widget _drawerSectionFiltrosMobile() {
     return Drawer(
       child: SafeArea(
         child: Padding(
@@ -337,9 +337,6 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     );
   }
 
-  /// ===============================
-  /// FILTRO
-  /// ===============================
   List<ProductoModel> _obtenerProductosFiltrados() {
     List<ProductoModel> lista = List.from(widget.categoria.productos);
 
