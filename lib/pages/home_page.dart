@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/aceite_model.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
+import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/sections/boletin_informativo_section.dart';
 import 'package:tienda_motos/sections/footer_section.dart';
@@ -2870,7 +2871,6 @@ class HomePage extends StatelessWidget {
         subcategorias: ['Alarmas', 'Candados', 'Cascos', 'Luces LED'],
         productos: masBuscados,
       ),
-      
     ];
 
     return ScrollConfiguration(
@@ -2918,7 +2918,13 @@ class HomePage extends StatelessWidget {
                           activa: false,
 
                           onTap: () {
-                            context.push('/categoria/${c.ruta}', extra: c);
+                            context.push(
+                              '/categoria/${c.ruta}',
+                              extra: CategoriaNavegacionModel(
+                                categoriaActiva: c,
+                                categorias: categorias,
+                              ),
+                            );
                           },
                         ),
                       ),
