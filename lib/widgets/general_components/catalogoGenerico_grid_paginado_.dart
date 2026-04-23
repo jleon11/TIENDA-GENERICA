@@ -3,12 +3,12 @@ import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/widgets/product_card.dart';
 
-class CatalogoGridPaginadoWidget extends StatefulWidget {
+class CatalogoGridWidget extends StatefulWidget {
   final List<ProductoModel> productos;
   final List<int> opcionesCantidad;
   final int cantidadInicial;
 
-  const CatalogoGridPaginadoWidget({
+  const CatalogoGridWidget({
     super.key,
     required this.productos,
     required this.opcionesCantidad,
@@ -16,12 +16,10 @@ class CatalogoGridPaginadoWidget extends StatefulWidget {
   });
 
   @override
-  State<CatalogoGridPaginadoWidget> createState() =>
-      _CatalogoGridPaginadoWidgetState();
+  State<CatalogoGridWidget> createState() => _CatalogoGridWidgetState();
 }
 
-class _CatalogoGridPaginadoWidgetState
-    extends State<CatalogoGridPaginadoWidget> {
+class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
   int paginaActual = 1;
   late int productosPorPagina;
 
@@ -74,11 +72,9 @@ class _CatalogoGridPaginadoWidgetState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// TOP BAR
-        Wrap(
-          spacing: 14,
-          runSpacing: 14,
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Wrap(
               spacing: 14,
@@ -90,12 +86,7 @@ class _CatalogoGridPaginadoWidgetState
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 _dropdownOrden(),
-                Text(
-                  totalProductos == 0
-                      ? 'Productos: 0 de 0'
-                      : 'Productos: ${inicio + 1} - $fin de $totalProductos',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
+
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -108,6 +99,13 @@ class _CatalogoGridPaginadoWidgetState
                   ],
                 ),
               ],
+            ),
+
+            Text(
+              totalProductos == 0
+                  ? 'Productos: 0 de 0'
+                  : 'Productos: ${inicio + 1} - $fin de $totalProductos',
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ],
         ),

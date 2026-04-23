@@ -82,7 +82,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _breadcrumbs(),
+        mijagaDePan(),
 
         const SizedBox(height: 10),
 
@@ -133,7 +133,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
 
         const SizedBox(height: 18),
 
-        CatalogoGridPaginadoWidget(
+        CatalogoGridWidget(
           productos: productos,
           opcionesCantidad: opcionesCantidad,
           cantidadInicial: 15,
@@ -149,7 +149,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _breadcrumbs(),
+        mijagaDePan(),
 
         const SizedBox(height: 12),
 
@@ -165,7 +165,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
             const SizedBox(width: 28),
 
             Expanded(
-              child: CatalogoGridPaginadoWidget(
+              child: CatalogoGridWidget(
                 productos: productos,
                 opcionesCantidad: opcionesCantidad,
                 cantidadInicial: 15,
@@ -180,7 +180,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
   /// =====================================================
   /// BREADCRUMB
   /// =====================================================
-  Widget _breadcrumbs() {
+  Widget mijagaDePan() {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       spacing: 6,
@@ -289,9 +289,9 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
 
               // Stats a la derecha (solo desktop)
               if (!esMovil) ...[
-                _bannerStat('$total', 'Productos'),
+                _bannerEstadistico('$total', 'Productos'),
                 _dividerVertical(),
-                _bannerStat('6', 'Marcas'),
+                _bannerEstadistico('6', 'Marcas'),
               ],
             ],
           ),
@@ -309,7 +309,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     );
   }
 
-  Widget _bannerStat(String valor, String label) {
+  Widget _bannerEstadistico(String valor, String label) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
