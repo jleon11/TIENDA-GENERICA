@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/informacion_general_model.dart';
 import 'package:tienda_motos/widgets/general_components/contrato_card_producto.dart';
 
@@ -26,7 +27,7 @@ class ProductoModel<T extends InformacionGeneralModel>
   /// Imágenes del producto
   final List<String> imagenes;
 
-  final String categoria;
+  final CategoriaModel categoria;
 
   final String marca;
 
