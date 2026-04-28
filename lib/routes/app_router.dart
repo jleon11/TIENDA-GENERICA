@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/main.dart';
-import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/pages/home_page.dart';
@@ -9,6 +9,13 @@ import 'package:tienda_motos/pages/productos_por_categoria_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
+
+  errorBuilder: (context, state) {
+    debugPrint('Ruta no encontrada: ${state.uri}');
+    debugPrint('Error detectado: ${state.error}');
+    return const LayoutPrincipal(child: HomePage());
+  },
+
   routes: [
     GoRoute(
       path: '/',
@@ -28,13 +35,17 @@ final GoRouter appRouter = GoRouter(
 
     GoRoute(
       path: '/categoria/:ruta',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final data = state.extra as CategoriaNavegacionModel;
 
-        return LayoutPrincipal(
-          child: ProductosPorCategoriaPage(
-            categoriaActiva: data.categoriaActiva,
-            categorias: data.categorias,
+        return MaterialPage(
+          key: ValueKey(state.uri.toString()),
+          child: LayoutPrincipal(
+            child: ProductosPorCategoriaPage(
+              categoriaActiva: data.categoriaActiva,
+              categorias: data.categorias,
+              productos: data.productos,
+            ),
           ),
         );
       },

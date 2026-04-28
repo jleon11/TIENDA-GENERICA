@@ -3,7 +3,7 @@ import 'package:tienda_motos/models/producto_model.dart';
 class CategoriaModel {
   final String id;
   final String nombre;
-  final String ruta;
+  final String seoUrl;
   final String? banner;
   //final IconData? icono;
   final String? icono;
@@ -14,7 +14,7 @@ class CategoriaModel {
   const CategoriaModel({
     required this.id,
     required this.nombre,
-    required this.ruta,
+    required this.seoUrl,
     this.banner,
     this.icono,
     this.subcategorias = const [],
@@ -26,7 +26,7 @@ class CategoriaModel {
     return CategoriaModel(
       id: item['id'].toString(),
       nombre: item['nombre'] ?? '',
-      ruta: item['ruta'] ?? '',
+      seoUrl: item['seoUrl'] ?? '',
       banner: item['banner'],
       icono: item['icono'],
       orden: item['orden'],
@@ -47,7 +47,7 @@ class CategoriaModel {
     return {
       'id': id,
       'nombre': nombre,
-      'ruta': ruta,
+      'seoUrl': seoUrl,
       'banner': banner,
       'icono': icono,
       'orden': orden,

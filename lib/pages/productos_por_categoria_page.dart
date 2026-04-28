@@ -13,11 +13,13 @@ import 'package:tienda_motos/widgets/general_components/catalogoGenerico_grid_pa
 class ProductosPorCategoriaPage extends StatefulWidget {
   final CategoriaModel categoriaActiva;
   final List<CategoriaModel> categorias;
+  final List<ProductoModel> productos;
 
   const ProductosPorCategoriaPage({
     super.key,
     required this.categoriaActiva,
     required this.categorias,
+    required this.productos,
   });
 
   @override
@@ -30,10 +32,12 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
 
   @override
   Widget build(BuildContext context) {
+    final productosFiltrados = widget.productos.where((p) {
+      return p.categoria?.id == widget.categoriaActiva.id;
+    }).toList();
+
     final width = MediaQuery.of(context).size.width;
     final esMovil = width < 980;
-
-    final productos = widget.categoriaActiva.productos;
 
     return Scaffold(
       backgroundColor: SistemaConstantes.colorFondo,
@@ -55,8 +59,8 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
                       maxWidth: SistemaConstantes.anchoMaximoContenido,
                     ),
                     child: esMovil
-                        ? _layoutMovil(productos)
-                        : _layoutDesktop(productos),
+                        ? _layoutMovil(productosFiltrados)
+                        : _layoutDesktop(productosFiltrados),
                   ),
                 ),
               ),
@@ -95,7 +99,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: widget.categorias.map((c) {
-              final activa = c.ruta == widget.categoriaActiva.ruta;
+              final activa = c.seoUrl == widget.categoriaActiva.seoUrl;
 
               return Padding(
                 padding: const EdgeInsets.only(right: 10),
@@ -375,7 +379,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
           const SizedBox(height: 6),
 
           ...widget.categorias.map((c) {
-            final activa = c.ruta == widget.categoriaActiva.ruta;
+            final activa = c.seoUrl == widget.categoriaActiva.seoUrl;
 
             return InkWell(
               onTap: () => _irCategoria(c),
@@ -449,8 +453,8 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
                       return RadioListTile<String>(
                         dense: true,
                         contentPadding: EdgeInsets.zero,
-                        value: c.ruta,
-                        groupValue: widget.categoriaActiva.ruta,
+                        value: c.seoUrl,
+                        groupValue: widget.categoriaActiva.seoUrl,
                         title: Text(c.nombre),
                         activeColor: SistemaConstantes.colorAzulPrimario,
                         onChanged: (_) {
@@ -474,15 +478,16 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
   /// NAV
   /// =====================================================
   void _irCategoria(CategoriaModel c) {
-    if (c.ruta == widget.categoriaActiva.ruta) {
+    if (c.seoUrl == widget.categoriaActiva.seoUrl) {
       return;
     }
 
     context.go(
-      '/categoria/${c.ruta}',
+      '/categoria/${c.seoUrl}',
       extra: CategoriaNavegacionModel(
         categoriaActiva: c,
         categorias: widget.categorias,
+        productos: widget.productos,
       ),
     );
   }

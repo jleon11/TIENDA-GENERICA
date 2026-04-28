@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tienda_motos/models/aceite_model.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/sections/boletin_informativo_section.dart';
@@ -34,7 +33,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       categoria: CategoriaModel(
         id: 'cat1',
         nombre: 'Juguetes',
-        ruta: 'juguetes',
+        seoUrl: 'juguetes',
       ),
       marca: 'LEGO',
       codigo: 'MB001',
@@ -53,7 +52,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       categoria: CategoriaModel(
         id: 'cat1',
         nombre: 'Juguetes',
-        ruta: 'juguetes',
+        seoUrl: 'juguetes',
       ),
       marca: 'X Pro',
       codigo: 'MB002',
@@ -72,7 +71,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       categoria: CategoriaModel(
         id: 'cat1',
         nombre: 'Juguetes',
-        ruta: 'juguetes',
+        seoUrl: 'juguetes',
       ),
       marca: 'McKinley',
       codigo: 'MB003',
@@ -90,7 +89,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       categoria: CategoriaModel(
         id: 'cat1',
         nombre: 'Juguetes',
-        ruta: 'juguetes',
+        seoUrl: 'juguetes',
       ),
       marca: 'Audio Pro',
       codigo: 'MB004',
@@ -109,7 +108,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       categoria: CategoriaModel(
         id: 'cat1',
         nombre: 'Juguetes',
-        ruta: 'juguetes',
+        seoUrl: 'juguetes',
       ),
       marca: 'Adidas',
       codigo: 'MB005',
@@ -127,7 +126,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       categoria: CategoriaModel(
         id: 'cat1',
         nombre: 'Juguetes',
-        ruta: 'juguetes',
+        seoUrl: 'juguetes',
       ),
       marca: 'Mini Cars',
       codigo: 'MB006',
@@ -146,11 +145,11 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       categoria: CategoriaModel(
         id: 'cat1',
         nombre: 'Juguetes',
-        ruta: 'juguetes',
+        seoUrl: 'juguetes',
       ),
       marca: 'Premium',
       codigo: 'MB007',
-      informacionGeneral: ''
+      informacionGeneral: '',
     ),
 
     ProductoModel(
@@ -164,12 +163,12 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       categoria: CategoriaModel(
         id: 'cat1',
         nombre: 'Juguetes',
-        ruta: 'juguetes',
+        seoUrl: 'juguetes',
       ),
       marca: 'Nike',
       codigo: 'MB008',
       destacado: true,
-      informacionGeneral: ''
+      informacionGeneral: '',
     ),
   ];
 
@@ -264,7 +263,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                         const SizedBox(height: 40),
 
                         /// TABS INFO
-                        TabsInfoProductoWidget (
+                        TabsInfoProductoWidget(
                           descripcion: producto.descripcion,
                           infoGeneral: producto.informacionGeneral,
                         ),

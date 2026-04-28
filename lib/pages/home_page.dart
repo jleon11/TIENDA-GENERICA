@@ -146,11 +146,12 @@ class _HomePageState extends State<HomePage> {
                           activa: false,
 
                           onTap: () {
-                            context.push(
-                              '/categoria/${c.ruta}',
+                            context.go(
+                              '/categoria/${c.seoUrl}',
                               extra: CategoriaNavegacionModel(
                                 categoriaActiva: c,
-                                categorias: listaCategoriasHome,
+                                categorias: listaCategorias,
+                                productos: listaProductos,
                               ),
                             );
                           },

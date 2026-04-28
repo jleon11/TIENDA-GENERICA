@@ -116,7 +116,7 @@ class PanelCompraProductoWidget extends StatelessWidget {
         const SizedBox(height: 8),
 
         Text(
-          'Categoría: ${producto.categoria}',
+          'Categoría: ${producto.categoria?.nombre}',
           style: const TextStyle(
             fontSize: 15,
             color: Color(0xFF1F2937),

@@ -10,21 +10,35 @@ class ProductoService {
   /// Obtener todos los productos
   /// ==========================================
   Future<List<ProductoModel>> obtenerProductos() async {
+    final List<ProductoModel> todos = [];
+    int page = 1;
+    bool hayMas = true;
+
     try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/productos?populate=*&sort=createdAt:desc'),
-        headers: {'Content-Type': 'application/json'},
-      );
+      while (hayMas) {
+        final response = await http.get(
+          Uri.parse(
+            '$_baseUrl/productos?populate=*&sort=createdAt:desc&pagination[page]=$page&pagination[pageSize]=25',
+          ),
+          headers: {'Content-Type': 'application/json'},
+        );
 
-      if (response.statusCode == 200) {
+        if (response.statusCode != 200) {
+          throw Exception('Error al cargar productos (${response.statusCode})');
+        }
+
         final Map<String, dynamic> data = jsonDecode(response.body);
+        final List<dynamic> lista = data['data'] as List<dynamic>? ?? [];
+        final pagination = data['meta']?['pagination'];
 
-        final lista = data['data'] as List<dynamic>? ?? [];
+        todos.addAll(lista.map((item) => ProductoModel.fromJson(item)));
 
-        return lista.map((item) => ProductoModel.fromJson(item)).toList();
+        final int pageCount = pagination?['pageCount'] ?? page;
+        hayMas = page < pageCount;
+        page++;
       }
 
-      throw Exception('Error al cargar productos (${response.statusCode})');
+      return todos;
     } catch (e) {
       throw Exception('Error productos: $e');
     }

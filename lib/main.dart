@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/sections/header_section.dart';
 import 'package:tienda_motos/routes/app_router.dart';
 import 'package:tienda_motos/widgets/drawer_tienda.dart';
 
 void main() {
+  usePathUrlStrategy(); // 🔥 quita el #
   runApp(const MyApp());
 }
 
