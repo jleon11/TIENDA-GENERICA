@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
+import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/sections/header_section.dart';
 import 'package:tienda_motos/routes/app_router.dart';
+import 'package:tienda_motos/services/categoria_services.dart';
 import 'package:tienda_motos/widgets/drawer_tienda.dart';
 
 void main() {
-  usePathUrlStrategy(); // 🔥 quita el #
+  //usePathUrlStrategy(); // 🔥 quita el #
   runApp(const MyApp());
 }
 
@@ -80,35 +81,53 @@ class MyApp extends StatelessWidget {
 }
 
 class LayoutPrincipal extends StatefulWidget {
-  final Widget child;
+  final Widget Function(List<CategoriaModel>) childBuilder;
 
-  const LayoutPrincipal({super.key, required this.child});
+  const LayoutPrincipal({super.key, required this.childBuilder});
 
   @override
   State<LayoutPrincipal> createState() => _LayoutPrincipalState();
 }
 
 class _LayoutPrincipalState extends State<LayoutPrincipal> {
-  int paginaSeleccionada = 0;
+  List<CategoriaModel> categorias = [];
+
+  bool cargandoCategorias = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    cargarCategorias();
+  }
+
+  Future<void> cargarCategorias() async {
+    try {
+      categorias = await CategoriaService().obtenerCategorias();
+    } catch (e) {
+      debugPrint('Error categorías: $e');
+    }
+
+    if (mounted) {
+      setState(() {
+        cargandoCategorias = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: DrawerTienda(
-        paginaSeleccionada: paginaSeleccionada,
-        onCambiarPagina: (index) {
-          setState(() {
-            paginaSeleccionada = index;
-          });
-        },
-      ),
+      drawer: DrawerTienda(categorias: categorias),
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
         child: Builder(builder: (context) => const HeaderTienda()),
       ),
 
-      body: widget.child,
+      body: cargandoCategorias
+          ? const Center(child: CircularProgressIndicator())
+          : widget.childBuilder(categorias),
     );
   }
 }

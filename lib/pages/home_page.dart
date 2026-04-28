@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/helpers/icono_categoria_helper.dart';
+import 'package:tienda_motos/main.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
@@ -11,96 +12,76 @@ import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
 import 'package:tienda_motos/sections/categoria_section.dart';
 import 'package:tienda_motos/sections/promo_section.dart';
-import 'package:tienda_motos/services/categoria_services.dart';
 import 'package:tienda_motos/services/producto_services.dart';
 import 'package:tienda_motos/widgets/categoria_item.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final List<CategoriaModel> categoriasGlobales;
+  const HomePage({super.key, required this.categoriasGlobales});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final CategoriaService categoriaService = CategoriaService();
   final ProductoService productoService = ProductoService();
 
   List<CategoriaModel> listaCategorias = [];
+
   List<CategoriaModel> listaCategoriasHome = [];
 
   List<ProductoModel> listaProductos = [];
 
   List<ProductoModel> listaProductosPromoDelMesHome = [];
+
   List<ProductoModel> listaProductosMasBuscadosHome = [];
+
   List<ProductoModel> listaProductosMasVendidosHome = [];
 
-  List<ProductoModel> listaProductosPromoDelMes = [];
-  List<ProductoModel> listaProductosMasBuscados = [];
-  List<ProductoModel> listaProductosMasVendidos = [];
-
-  bool cargandoCategorias = true;
   bool cargandoProductos = true;
 
   @override
   void initState() {
     super.initState();
-    cargarDatosCategorias();
+
+    cargarCategoriasGlobales();
     cargarDatosProductos();
   }
 
-  Future<void> cargarDatosCategorias() async {
-    try {
-      listaCategorias = await categoriaService.obtenerCategorias();
+  void cargarCategoriasGlobales() {
+    listaCategorias = widget.categoriasGlobales;
 
-      listaCategorias.sort(
-        (a, b) => (a.orden ?? 9999).compareTo(b.orden ?? 9999),
-      );
+    listaCategorias.sort(
+      (a, b) => (a.orden ?? 9999).compareTo(b.orden ?? 9999),
+    );
 
-      listaCategoriasHome = listaCategorias.where((c) {
-        final orden = c.orden ?? 9999;
-        return orden >= 1 && orden <= 5;
-      }).toList();
-    } catch (e) {
-      debugPrint('error categorías: $e');
-    }
+    listaCategoriasHome = listaCategorias.where((c) {
+      final orden = c.orden ?? 9999;
 
-    if (mounted) {
-      setState(() {
-        cargandoCategorias = false;
-      });
-    }
+      return orden >= 1 && orden <= 5;
+    }).toList();
   }
 
   Future<void> cargarDatosProductos() async {
     try {
       listaProductos = await productoService.obtenerProductos();
 
-      listaProductosPromoDelMes = listaProductos
+      listaProductosPromoDelMesHome = listaProductos
           .where((p) => p.mostrarEnlaSeccion == 'PROMO-DEL-MES')
-          .toList();
-
-      listaProductosMasBuscados = listaProductos
-          .where((p) => p.mostrarEnlaSeccion == 'LOS-MAS-BUSCADOS')
-          .toList();
-
-      listaProductosMasVendidos = listaProductos
-          .where((p) => p.mostrarEnlaSeccion == 'LOS-MAS-VENDIDOS')
-          .toList();
-
-      listaProductosPromoDelMesHome = listaProductosPromoDelMes
           .take(16)
           .toList();
 
-      listaProductosMasBuscadosHome = listaProductosMasBuscados
+      listaProductosMasBuscadosHome = listaProductos
+          .where((p) => p.mostrarEnlaSeccion == 'LOS-MAS-BUSCADOS')
           .take(12)
           .toList();
 
-      listaProductosMasVendidosHome = listaProductosMasVendidos
+      listaProductosMasVendidosHome = listaProductos
+          .where((p) => p.mostrarEnlaSeccion == 'LOS-MAS-VENDIDOS')
           .take(8)
           .toList();
     } catch (e) {
-      debugPrint('error productos: $e');
+      debugPrint('Error productos: $e');
     }
 
     if (mounted) {
@@ -118,19 +99,21 @@ class _HomePageState extends State<HomePage> {
       behavior: ScrollConfiguration.of(context).copyWith(
         dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
       ),
+
       child: SingleChildScrollView(
         child: Column(
           children: [
-            /// CONTENIDO NORMAL CENTRADO
             Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(
                   maxWidth: SistemaConstantes.anchoMaximoContenido,
                 ),
+
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: SistemaConstantes.paddingHorizontal(width),
                   ),
+
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -138,11 +121,14 @@ class _HomePageState extends State<HomePage> {
 
                       CategoriaSection<CategoriaModel>(
                         titulo: 'NUESTRAS CATEGORÍAS',
+
                         items: listaCategoriasHome,
 
                         itemBuilder: (c) => CategoriaItem(
                           nombre: c.nombre,
+
                           icono: IconosCategoriaHelper.obtenerIcono(c.icono),
+
                           activa: false,
 
                           onTap: () {
@@ -151,7 +137,6 @@ class _HomePageState extends State<HomePage> {
                               extra: CategoriaNavegacionModel(
                                 categoriaActiva: c,
                                 categorias: listaCategorias,
-                                productos: listaProductos,
                               ),
                             );
                           },
@@ -185,8 +170,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            /// BOLETÍN ANCHO COMPLETO
             const BoletinInformativo(),
+
             const SizedBox(height: 5),
 
             const FooterSection(),

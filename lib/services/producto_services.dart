@@ -45,6 +45,37 @@ class ProductoService {
   }
 
   /// ==========================================
+  /// Productos por categoría
+  /// ==========================================
+  Future<List<ProductoModel>> productosPorCategoria(String seoUrl) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '$_baseUrl/productos'
+          '?filters[categoria][seoUrl][\$eq]=$seoUrl'
+          '&populate=*',
+        ),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+
+        final lista = data['data'] as List<dynamic>? ?? [];
+
+        return lista.map((item) => ProductoModel.fromJson(item)).toList();
+      }
+
+      throw Exception(
+        'Error categoría '
+        '(${response.statusCode})',
+      );
+    } catch (e) {
+      throw Exception('Error categoría: $e');
+    }
+  }
+
+  /// ==========================================
   /// Obtener producto por ID
   /// ==========================================
   Future<ProductoModel?> obtenerProductoPorId(String id) async {
@@ -115,32 +146,6 @@ class ProductoService {
       throw Exception('Error búsqueda (${response.statusCode})');
     } catch (e) {
       throw Exception('Error búsqueda: $e');
-    }
-  }
-
-  /// ==========================================
-  /// Productos por categoría
-  /// ==========================================
-  Future<List<ProductoModel>> productosPorCategoria(String categoriaId) async {
-    try {
-      final response = await http.get(
-        Uri.parse(
-          '$_baseUrl/productos?filters[categorias][id][\$eq]=$categoriaId&populate=*',
-        ),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-
-        final lista = data['data'] as List<dynamic>? ?? [];
-
-        return lista.map((item) => ProductoModel.fromJson(item)).toList();
-      }
-
-      throw Exception('Error categoría (${response.statusCode})');
-    } catch (e) {
-      throw Exception('Error categoría: $e');
     }
   }
 }

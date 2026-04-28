@@ -8,18 +8,17 @@ import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/sections/boletin_informativo_section.dart';
 import 'package:tienda_motos/sections/footer_section.dart';
+import 'package:tienda_motos/services/producto_services.dart';
 import 'package:tienda_motos/widgets/general_components/catalogoGenerico_grid_paginado_.dart';
 
 class ProductosPorCategoriaPage extends StatefulWidget {
   final CategoriaModel categoriaActiva;
   final List<CategoriaModel> categorias;
-  final List<ProductoModel> productos;
 
   const ProductosPorCategoriaPage({
     super.key,
     required this.categoriaActiva,
     required this.categorias,
-    required this.productos,
   });
 
   @override
@@ -29,13 +28,38 @@ class ProductosPorCategoriaPage extends StatefulWidget {
 
 class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
   final List<int> opcionesCantidad = const [15, 25, 50];
+  List<ProductoModel> listaProductosPorCategoria = [];
+  bool cargandoProductos = true;
+
+  @override
+  void initState() {
+    super.initState();
+    cargarProductos();
+  }
+
+  Future<void> cargarProductos() async {
+    try {
+      listaProductosPorCategoria = await ProductoService()
+          .productosPorCategoria(widget.categoriaActiva.seoUrl);
+
+      print(
+        'Productos cargados para categoría ${widget.categoriaActiva.nombre}: ${listaProductosPorCategoria.length}',
+      );
+    } catch (e) {
+      debugPrint(
+        'error en productos por categoria , metodo cargarProductos: $e',
+      );
+    }
+
+    if (mounted) {
+      setState(() {
+        cargandoProductos = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final productosFiltrados = widget.productos.where((p) {
-      return p.categoria?.id == widget.categoriaActiva.id;
-    }).toList();
-
     final width = MediaQuery.of(context).size.width;
     final esMovil = width < 980;
 
@@ -59,8 +83,8 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
                       maxWidth: SistemaConstantes.anchoMaximoContenido,
                     ),
                     child: esMovil
-                        ? _layoutMovil(productosFiltrados)
-                        : _layoutDesktop(productosFiltrados),
+                        ? _layoutMovil(listaProductosPorCategoria)
+                        : _layoutDesktop(listaProductosPorCategoria),
                   ),
                 ),
               ),
@@ -487,7 +511,6 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
       extra: CategoriaNavegacionModel(
         categoriaActiva: c,
         categorias: widget.categorias,
-        productos: widget.productos,
       ),
     );
   }

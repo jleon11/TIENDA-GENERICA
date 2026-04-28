@@ -11,40 +11,51 @@ final GoRouter appRouter = GoRouter(
   initialLocation: '/',
 
   errorBuilder: (context, state) {
-    debugPrint('Ruta no encontrada: ${state.uri}');
-    debugPrint('Error detectado: ${state.error}');
-    return const LayoutPrincipal(child: HomePage());
+    return LayoutPrincipal(
+      childBuilder: (categorias) => HomePage(categoriasGlobales: categorias),
+    );
   },
 
   routes: [
     GoRoute(
       path: '/',
+
       builder: (context, state) {
-        return const LayoutPrincipal(child: HomePage());
+        return LayoutPrincipal(
+          childBuilder: (categorias) =>
+              HomePage(categoriasGlobales: categorias),
+        );
       },
     ),
 
     GoRoute(
       path: '/producto',
+
       builder: (context, state) {
         final producto = state.extra as ProductoModel;
 
-        return LayoutPrincipal(child: ProductoDetallePage(producto: producto));
+        return LayoutPrincipal(
+          childBuilder: (categorias) => ProductoDetallePage(
+            producto: producto,
+            categoriasGlobales: categorias,
+          ),
+        );
       },
     ),
 
     GoRoute(
       path: '/categoria/:ruta',
+
       pageBuilder: (context, state) {
         final data = state.extra as CategoriaNavegacionModel;
 
         return MaterialPage(
           key: ValueKey(state.uri.toString()),
+
           child: LayoutPrincipal(
-            child: ProductosPorCategoriaPage(
+            childBuilder: (categorias) => ProductosPorCategoriaPage(
               categoriaActiva: data.categoriaActiva,
-              categorias: data.categorias,
-              productos: data.productos,
+              categorias: categorias,
             ),
           ),
         );

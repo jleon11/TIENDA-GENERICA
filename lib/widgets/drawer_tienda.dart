@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
+import 'package:tienda_motos/helpers/icono_categoria_helper.dart';
+import 'package:tienda_motos/models/categoria_model.dart';
+import 'package:tienda_motos/models/categoria_navegacion_model.dart';
+import 'package:tienda_motos/models/producto_model.dart';
 
 class DrawerTienda extends StatelessWidget {
-  final int paginaSeleccionada;
-  final Function(int) onCambiarPagina;
+  final List<CategoriaModel> categorias;
 
-  const DrawerTienda({
-    super.key,
-    required this.paginaSeleccionada,
-    required this.onCambiarPagina,
-  });
+  const DrawerTienda({super.key, required this.categorias});
 
   @override
   Widget build(BuildContext context) {
+    final categoriasOrdenadas = [...categorias]
+      ..sort((a, b) => (a.orden ?? 9999).compareTo(b.orden ?? 9999));
+
     return Drawer(
       child: SafeArea(
         child: Container(
@@ -38,17 +41,10 @@ class DrawerTienda extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                _item(context, Icons.home, 'Inicio', pagina: 0),
+                _itemInicio(context),
 
-                _item(context, Icons.extension, 'Accesorios', pagina: 1),
-
-                _item(context, Icons.headphones, 'Audio y Video'),
-
-                _item(context, Icons.build, 'Herramientas'),
-
-                _item(context, Icons.tire_repair, 'Llantas y Baterías'),
-
-                _item(context, Icons.oil_barrel, 'Mantenimiento'),
+                /// DINÁMICO
+                ...categoriasOrdenadas.map((c) => _itemCategoria(context, c)),
 
                 const SizedBox(height: 25),
                 const Divider(),
@@ -76,13 +72,13 @@ class DrawerTienda extends StatelessWidget {
                 _contactFA(
                   FontAwesomeIcons.squareFacebook,
                   '@accesoriosgonzales',
-                  iconColor: Color(0xFF1877F2),
+                  iconColor: const Color(0xFF1877F2),
                 ),
 
                 _contactFA(
                   FontAwesomeIcons.squareInstagram,
                   '@accesoriosgonzales',
-                  iconColor: Color(0xFFE1306C),
+                  iconColor: const Color(0xFFE1306C),
                 ),
 
                 _contactFA(
@@ -104,36 +100,27 @@ class DrawerTienda extends StatelessWidget {
     );
   }
 
-  Widget _item(
-    BuildContext context,
-    IconData icon,
-    String texto, {
-    int? pagina,
-  }) {
-    final bool activo = pagina != null && pagina == paginaSeleccionada;
-
+  Widget _itemInicio(BuildContext context) {
     return InkWell(
-      onTap: pagina == null
-          ? null
-          : () {
-              onCambiarPagina(pagina);
-              Navigator.pop(context);
-            },
+      onTap: () {
+        Navigator.pop(context);
+        context.go('/');
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           children: [
-            Icon(icon, color: SistemaConstantes.colorAzulPrimario, size: 22),
+            Icon(
+              Icons.grid_view_rounded,
+              color: SistemaConstantes.colorAzulPrimario,
+              size: 22,
+            ),
 
             const SizedBox(width: 18),
 
-            Text(
-              texto,
-              style: TextStyle(
-                fontSize: 18,
-                color: activo ? Colors.red : Colors.black87,
-                fontWeight: activo ? FontWeight.w600 : FontWeight.w400,
-              ),
+            const Text(
+              'Inicio',
+              style: TextStyle(fontSize: 18, color: Colors.black87),
             ),
           ],
         ),
@@ -141,22 +128,43 @@ class DrawerTienda extends StatelessWidget {
     );
   }
 
-  Widget _contact(IconData icon, String texto) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        children: [
-          Icon(icon, color: const Color(0xFF1E478D), size: 22),
+  Widget _itemCategoria(BuildContext context, CategoriaModel c) {
+    final ruta = c.seoUrl.trim();
 
-          const SizedBox(width: 18),
+    return InkWell(
+      onTap: ruta.isEmpty
+          ? null
+          : () {
+              Navigator.pop(context);
 
-          Expanded(
-            child: Text(
-              texto,
-              style: const TextStyle(fontSize: 17, color: Colors.black87),
+              context.go(
+                '/categoria/$ruta',
+                extra: CategoriaNavegacionModel(
+                  categoriaActiva: c,
+                  categorias: categorias,
+                ),
+              );
+            },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            Icon(
+              IconosCategoriaHelper.obtenerIcono(c.icono),
+              color: SistemaConstantes.colorAzulPrimario,
+              size: 22,
             ),
-          ),
-        ],
+
+            const SizedBox(width: 18),
+
+            Expanded(
+              child: Text(
+                c.nombre,
+                style: const TextStyle(fontSize: 18, color: Colors.black87),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -10,8 +10,13 @@ import 'package:tienda_motos/widgets/producto_detalle/tabs_infoProducto_widget.d
 
 class ProductoDetallePage extends StatefulWidget {
   final ProductoModel producto;
+  final List<CategoriaModel> categoriasGlobales;
 
-  const ProductoDetallePage({super.key, required this.producto});
+  const ProductoDetallePage({
+    super.key,
+    required this.producto,
+    required this.categoriasGlobales,
+  });
 
   @override
   State<ProductoDetallePage> createState() => _ProductoDetallePageState();
