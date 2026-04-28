@@ -147,7 +147,28 @@ class _ProductCardState extends State<ProductCard> {
 
                   child: Padding(
                     padding: const EdgeInsets.all(10),
-                    child: Image.asset(widget.imagen, fit: BoxFit.contain),
+                    child: Image.network(
+                      widget.imagen,
+                      fit: BoxFit.contain,
+                      /*
+                      loadingBuilder: (_, child, progress) {
+                        if (progress == null) return child;
+
+                        return const Center(
+                          child: SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        );
+                      },
+                      */
+                      errorBuilder: (_, __, ___) => const Icon(
+                        Icons.image_not_supported,
+                        size: 60,
+                        color: Colors.grey,
+                      ),
+                    ),
                   ),
                 ),
               ),

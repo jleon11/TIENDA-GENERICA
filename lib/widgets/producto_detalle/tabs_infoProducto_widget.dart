@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tienda_motos/widgets/general_components/rich_text_strapi_widget.dart';
 
 class TabsInfoProductoWidget extends StatefulWidget {
-  final String descripcion;
-  final Map<String, String> infoGeneral;
+  final dynamic descripcion;
+  final dynamic infoGeneral;
   final String instalaciones;
 
   const TabsInfoProductoWidget({
@@ -35,11 +36,9 @@ class _TabsInfoProductoWidgetState extends State<TabsInfoProductoWidget> {
           ),
         ],
       ),
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Tabs Header
           Wrap(
             spacing: 28,
             runSpacing: 12,
@@ -73,7 +72,6 @@ class _TabsInfoProductoWidgetState extends State<TabsInfoProductoWidget> {
           tabActual = index;
         });
       },
-
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,17 +101,14 @@ class _TabsInfoProductoWidgetState extends State<TabsInfoProductoWidget> {
     );
   }
 
-  /// ===============================
-  /// TAB INFORMACIÓN
-  /// ===============================
   Widget _buildInformacion() {
     return Column(
       key: const ValueKey(0),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.infoGeneral.isNotEmpty)
+        if (widget.infoGeneral != null) ...[
           const Text(
-            'Especificaciones',
+            'Información General',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
@@ -121,42 +116,12 @@ class _TabsInfoProductoWidgetState extends State<TabsInfoProductoWidget> {
             ),
           ),
 
-        if (widget.infoGeneral.isNotEmpty) const SizedBox(height: 18),
+          const SizedBox(height: 18),
 
-        ...widget.infoGeneral.entries.map(
-          (item) => Padding(
-            padding: const EdgeInsets.only(bottom: 14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 170,
-                  child: Text(
-                    item.key,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
+          RichTextStrapiWidget(contenido: widget.infoGeneral),
 
-                Expanded(
-                  child: Text(
-                    item.value,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black87,
-                      height: 1.6,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 26),
+          const SizedBox(height: 26),
+        ],
 
         const Text(
           'Descripción',
@@ -169,21 +134,11 @@ class _TabsInfoProductoWidgetState extends State<TabsInfoProductoWidget> {
 
         const SizedBox(height: 16),
 
-        Text(
-          widget.descripcion,
-          style: const TextStyle(
-            fontSize: 15,
-            height: 1.8,
-            color: Colors.black87,
-          ),
-        ),
+        RichTextStrapiWidget(contenido: widget.descripcion),
       ],
     );
   }
 
-  /// ===============================
-  /// TAB INSTALACIONES
-  /// ===============================
   Widget _buildInstalaciones() {
     final texto = widget.instalaciones.trim().isEmpty
         ? '''

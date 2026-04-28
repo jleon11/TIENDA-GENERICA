@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
-import 'package:tienda_motos/models/informacion_general_model.dart';
 import 'package:tienda_motos/widgets/general_components/contrato_card_producto.dart';
 
-class ProductoModel<T extends InformacionGeneralModel>
-    implements ContratoCardProducto {
+class ProductoModel implements ContratoCardProducto {
   /// ==========================================
   /// DATOS GENERALES DEL PRODUCTO
   /// ==========================================
@@ -27,7 +25,7 @@ class ProductoModel<T extends InformacionGeneralModel>
   /// Imágenes del producto
   final List<String> imagenes;
 
-  final CategoriaModel categoria;
+  final CategoriaModel? categoria;
 
   final String marca;
 
@@ -40,7 +38,10 @@ class ProductoModel<T extends InformacionGeneralModel>
   final bool activo;
 
   /// Información específica según tipo de producto
-  final T informacionGeneral;
+
+  final String informacionGeneral;
+
+  final String mostrarEnlaSeccion;
 
   ProductoModel({
     required this.id,
@@ -56,6 +57,7 @@ class ProductoModel<T extends InformacionGeneralModel>
     required this.informacionGeneral,
     this.destacado = false,
     this.activo = true,
+    this.mostrarEnlaSeccion = '',
   });
 
   /// ==========================================
@@ -105,12 +107,47 @@ class ProductoModel<T extends InformacionGeneralModel>
   bool get agotado => stock <= 0;
 
   @override
-  bool get mostrarBotonCarrito => stock > 0;
+  bool get mostrarBotonCarrito => true; // Siempre mostrar botón de carrito, incluso sin stock (puede ser para notificar disponibilidad)
 
   @override
   bool get mostrarDescuento => enOferta;
 
-  Map<String, dynamic> toMap() {
+  factory ProductoModel.fromJson(Map<String, dynamic> item) {
+    final imagenesRaw = item['imagenes'] as List<dynamic>? ?? [];
+
+    return ProductoModel(
+      id: item['id'].toString(),
+      nombre: item['nombre'] ?? '',
+      descripcion: item['descripcion'] ?? '',
+      precio: (item['precio'] ?? 0).toDouble(),
+
+      precioAnteriorValor: item['precioAnteriorValor'] != null
+          ? (item['precioAnteriorValor']).toDouble()
+          : null,
+
+      stock: item['stock'] ?? 0,
+
+      imagenes: imagenesRaw.map<String>((img) {
+        if (img is String) return img;
+        return img['url'] ?? '';
+      }).toList(),
+
+      categoria: item['categorias'] != null
+          ? CategoriaModel.fromJson(item['categorias'])
+          : item['categoria'] != null
+          ? CategoriaModel.fromJson(item['categoria'])
+          : null,
+
+      marca: item['marca'] ?? '',
+      codigo: item['codigo'] ?? '',
+      destacado: item['destacado'] ?? false,
+      activo: item['activo'] ?? true,
+      informacionGeneral: item['informacionGeneral'] ?? '',
+
+      mostrarEnlaSeccion: item['mostrarEnlaSeccion'] ?? '',
+    );
+  }
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'nombre': nombre,
@@ -119,12 +156,13 @@ class ProductoModel<T extends InformacionGeneralModel>
       'precioAnteriorValor': precioAnteriorValor,
       'stock': stock,
       'imagenes': imagenes,
-      'categoria': categoria,
+      'categoria': categoria?.toJson(),
       'marca': marca,
       'codigo': codigo,
       'destacado': destacado,
       'activo': activo,
-      'informacionGeneral': informacionGeneral.toMap(),
+      'informacionGeneral': informacionGeneral,
+      'mostrarEnlaSeccion': mostrarEnlaSeccion,
     };
   }
 }

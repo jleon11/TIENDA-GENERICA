@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
+import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/widgets/product_card.dart';
 
 class PromoSection extends StatefulWidget {
   final String titulo;
-  final List<Map<String, dynamic>> items;
+  final List<ProductoModel> items;
   final String badgeTexto;
   final Color badgeColor;
 
@@ -44,22 +45,16 @@ class _PromoSectionState extends State<PromoSection> {
   }
 
   double calcularAnchoCard(double width) {
-    if (width < 700) {
-      return width * 0.88;
-    }
-
-    if (width < 1100) {
-      return SistemaConstantes.cardNormalAncho;
-    }
+    if (width < 700) return width * 0.88;
 
     return SistemaConstantes.cardNormalAncho;
   }
 
-  List<List<Map<String, dynamic>>> dividirPaginas(
-    List<Map<String, dynamic>> items,
+  List<List<ProductoModel>> dividirPaginas(
+    List<ProductoModel> items,
     int cantidad,
   ) {
-    final paginas = <List<Map<String, dynamic>>>[];
+    final paginas = <List<ProductoModel>>[];
 
     for (int i = 0; i < items.length; i += cantidad) {
       final fin = (i + cantidad > items.length) ? items.length : i + cantidad;
@@ -72,12 +67,14 @@ class _PromoSectionState extends State<PromoSection> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.items.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     final width = MediaQuery.of(context).size.width;
 
     final itemsVista = calcularItemsPorVista(width);
-
     final cardWidth = calcularAnchoCard(width);
-
     final alto = SistemaConstantes.cardNormalAlto;
 
     final paginas = dividirPaginas(widget.items, itemsVista);
@@ -110,21 +107,22 @@ class _PromoSectionState extends State<PromoSection> {
                   alignment: Alignment.centerLeft,
                   child: Wrap(
                     spacing: 8,
-                    runSpacing: 0,
-                    children: pagina.map((item) {
+                    children: pagina.map((producto) {
                       return SizedBox(
                         width: cardWidth,
                         height: alto,
                         child: ProductCard(
-                          nombre: item['nombre'],
-                          sku: item['sku'],
-                          precioActual: item['precioActual'],
-                          precioAnterior: item['precioAnterior'],
-                          imagen: item['imagen'],
+                          nombre: producto.nombre,
+                          sku: producto.codigo,
+                          precioActual: producto.precio.toString(),
+                          precioAnterior: producto.precioAnteriorValor
+                              ?.toString(),
+                          imagen: producto.imagenes.isNotEmpty
+                              ? producto.imagenes.first
+                              : '',
                           badgeTexto: widget.badgeTexto,
                           badgeColor: widget.badgeColor,
-                          inventarioLimitado:
-                              item['inventarioLimitado'] ?? false,
+                          inventarioLimitado: producto.stock <= 3,
                         ),
                       );
                     }).toList(),

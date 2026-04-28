@@ -39,14 +39,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       marca: 'LEGO',
       codigo: 'MB001',
       destacado: true,
-      informacionGeneral: AceiteModel(
-        cantidad: '1',
-        grado: '5W-30',
-        tipoContenedor: 'Botella',
-        tipoAceiteMotor: 'Sintético',
-        tipoVehiculo: 'Automóvil',
-        numeroParte: 'ACE-001',
-      ),
+      informacionGeneral: '',
     ),
 
     ProductoModel(
@@ -65,14 +58,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       marca: 'X Pro',
       codigo: 'MB002',
       destacado: true,
-      informacionGeneral: AceiteModel(
-        cantidad: '1',
-        grado: '5W-30',
-        tipoContenedor: 'Botella',
-        tipoAceiteMotor: 'Sintético',
-        tipoVehiculo: 'Automóvil',
-        numeroParte: 'ACE-001',
-      ),
+      informacionGeneral: '',
     ),
 
     ProductoModel(
@@ -90,14 +76,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       ),
       marca: 'McKinley',
       codigo: 'MB003',
-      informacionGeneral: AceiteModel(
-        cantidad: '1',
-        grado: '5W-30',
-        tipoContenedor: 'Botella',
-        tipoAceiteMotor: 'Sintético',
-        tipoVehiculo: 'Automóvil',
-        numeroParte: 'ACE-001',
-      ),
+      informacionGeneral: '',
     ),
 
     ProductoModel(
@@ -116,14 +95,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       marca: 'Audio Pro',
       codigo: 'MB004',
       destacado: true,
-      informacionGeneral: AceiteModel(
-        cantidad: '1',
-        grado: '5W-30',
-        tipoContenedor: 'Botella',
-        tipoAceiteMotor: 'Sintético',
-        tipoVehiculo: 'Automóvil',
-        numeroParte: 'ACE-001',
-      ),
+      informacionGeneral: '',
     ),
 
     ProductoModel(
@@ -141,14 +113,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       ),
       marca: 'Adidas',
       codigo: 'MB005',
-      informacionGeneral: AceiteModel(
-        cantidad: '1',
-        grado: '5W-30',
-        tipoContenedor: 'Botella',
-        tipoAceiteMotor: 'Sintético',
-        tipoVehiculo: 'Automóvil',
-        numeroParte: 'ACE-001',
-      ),
+      informacionGeneral: '',
     ),
 
     ProductoModel(
@@ -167,14 +132,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       marca: 'Mini Cars',
       codigo: 'MB006',
       destacado: true,
-      informacionGeneral: AceiteModel(
-        cantidad: '1',
-        grado: '5W-30',
-        tipoContenedor: 'Botella',
-        tipoAceiteMotor: 'Sintético',
-        tipoVehiculo: 'Automóvil',
-        numeroParte: 'ACE-001',
-      ),
+      informacionGeneral: '',
     ),
 
     ProductoModel(
@@ -192,14 +150,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       ),
       marca: 'Premium',
       codigo: 'MB007',
-      informacionGeneral: AceiteModel(
-        cantidad: '1',
-        grado: '5W-30',
-        tipoContenedor: 'Botella',
-        tipoAceiteMotor: 'Sintético',
-        tipoVehiculo: 'Automóvil',
-        numeroParte: 'ACE-001',
-      ),
+      informacionGeneral: ''
     ),
 
     ProductoModel(
@@ -218,14 +169,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       marca: 'Nike',
       codigo: 'MB008',
       destacado: true,
-      informacionGeneral: AceiteModel(
-        cantidad: '1',
-        grado: '5W-30',
-        tipoContenedor: 'Botella',
-        tipoAceiteMotor: 'Sintético',
-        tipoVehiculo: 'Automóvil',
-        numeroParte: 'ACE-001',
-      ),
+      informacionGeneral: ''
     ),
   ];
 
@@ -320,9 +264,9 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                         const SizedBox(height: 40),
 
                         /// TABS INFO
-                        TabsInfoProductoWidget(
+                        TabsInfoProductoWidget (
                           descripcion: producto.descripcion,
-                          infoGeneral: producto.informacionGeneral.toMap(),
+                          infoGeneral: producto.informacionGeneral,
                         ),
 
                         const SizedBox(height: 45),
@@ -375,7 +319,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
         const Icon(Icons.chevron_right, size: 18, color: Colors.grey),
 
         Text(
-          producto.categoria.nombre,
+          producto.categoria?.nombre ?? 'Sin categoría',
           style: const TextStyle(
             fontSize: 16,
             color: Color(0xFF1E478D),

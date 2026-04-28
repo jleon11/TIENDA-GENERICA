@@ -36,13 +36,15 @@ class GaleriaProductoWidget extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(32),
-                child: imagenActual.isNotEmpty
-                    ? Image.asset(imagenActual, fit: BoxFit.contain)
-                    : const Icon(
-                        Icons.image_not_supported_outlined,
-                        size: 90,
-                        color: Colors.grey,
-                      ),
+                child: Image.network(
+                  imagenActual,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const Icon(
+                    Icons.broken_image,
+                    size: 90,
+                    color: Colors.grey,
+                  ),
+                ),
               ),
 
               if (tieneMultiplesImagenes)
@@ -99,7 +101,14 @@ class GaleriaProductoWidget extends StatelessWidget {
                       width: seleccionada ? 2 : 1,
                     ),
                   ),
-                  child: Image.asset(imagenes[index], fit: BoxFit.contain),
+                  child: Image.network(
+                    imagenes[index],
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.image_not_supported,
+                      color: Colors.grey,
+                    ),
+                  ),
                 ),
               );
             }),

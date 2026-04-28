@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
-import 'package:tienda_motos/models/aceite_model.dart';
+import 'package:tienda_motos/helpers/icono_categoria_helper.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
@@ -11,1292 +11,108 @@ import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
 import 'package:tienda_motos/sections/categoria_section.dart';
 import 'package:tienda_motos/sections/promo_section.dart';
+import 'package:tienda_motos/services/categoria_services.dart';
+import 'package:tienda_motos/services/producto_services.dart';
 import 'package:tienda_motos/widgets/categoria_item.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final CategoriaService categoriaService = CategoriaService();
+  final ProductoService productoService = ProductoService();
+
+  List<CategoriaModel> listaCategorias = [];
+  List<CategoriaModel> listaCategoriasHome = [];
+
+  List<ProductoModel> listaProductos = [];
+
+  List<ProductoModel> listaProductosPromoDelMesHome = [];
+  List<ProductoModel> listaProductosMasBuscadosHome = [];
+  List<ProductoModel> listaProductosMasVendidosHome = [];
+
+  List<ProductoModel> listaProductosPromoDelMes = [];
+  List<ProductoModel> listaProductosMasBuscados = [];
+  List<ProductoModel> listaProductosMasVendidos = [];
+
+  bool cargandoCategorias = true;
+  bool cargandoProductos = true;
+
+  @override
+  void initState() {
+    super.initState();
+    cargarDatosCategorias();
+    cargarDatosProductos();
+  }
+
+  Future<void> cargarDatosCategorias() async {
+    try {
+      listaCategorias = await categoriaService.obtenerCategorias();
+
+      listaCategorias.sort(
+        (a, b) => (a.orden ?? 9999).compareTo(b.orden ?? 9999),
+      );
+
+      listaCategoriasHome = listaCategorias.where((c) {
+        final orden = c.orden ?? 9999;
+        return orden >= 1 && orden <= 5;
+      }).toList();
+    } catch (e) {
+      debugPrint('error categorías: $e');
+    }
+
+    if (mounted) {
+      setState(() {
+        cargandoCategorias = false;
+      });
+    }
+  }
+
+  Future<void> cargarDatosProductos() async {
+    try {
+      listaProductos = await productoService.obtenerProductos();
+
+      listaProductosPromoDelMes = listaProductos
+          .where((p) => p.mostrarEnlaSeccion == 'PROMO-DEL-MES')
+          .toList();
+
+      listaProductosMasBuscados = listaProductos
+          .where((p) => p.mostrarEnlaSeccion == 'LOS-MAS-BUSCADOS')
+          .toList();
+
+      listaProductosMasVendidos = listaProductos
+          .where((p) => p.mostrarEnlaSeccion == 'LOS-MAS-VENDIDOS')
+          .toList();
+
+      listaProductosPromoDelMesHome = listaProductosPromoDelMes
+          .take(16)
+          .toList();
+
+      listaProductosMasBuscadosHome = listaProductosMasBuscados
+          .take(12)
+          .toList();
+
+      listaProductosMasVendidosHome = listaProductosMasVendidos
+          .take(8)
+          .toList();
+    } catch (e) {
+      debugPrint('error productos: $e');
+    }
+
+    if (mounted) {
+      setState(() {
+        cargandoProductos = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-
-    final promociones = [
-      {
-        'nombre': 'Smartwatch Black Edition',
-        'sku': 'SW-001',
-        'precioAnterior': '120000',
-        'precioActual': '89900',
-        'imagen': 'assets/imagenes/promo1.jpg',
-      },
-      {
-        'nombre': 'Lentes de Sol Clásicos',
-        'sku': 'GL-002',
-        'precioAnterior': '45000',
-        'precioActual': '29900',
-        'imagen': 'assets/imagenes/promo2.jpg',
-      },
-      {
-        'nombre': 'Mochila Outdoor Vinta',
-        'sku': 'BP-003',
-        'precioAnterior': '60000',
-        'precioActual': '42900',
-        'imagen': 'assets/imagenes/promo3.jpg',
-      },
-      {
-        'nombre': 'Audífonos Inalámbricos Pro',
-        'sku': 'HP-004',
-        'precioAnterior': '85000',
-        'precioActual': '64900',
-        'imagen': 'assets/imagenes/promo4.jpg',
-      },
-      {
-        'nombre': 'Mouse Inalámbrico Ergonómico',
-        'sku': 'MS-005',
-        'precioAnterior': '18000',
-        'precioActual': '12900',
-        'imagen': 'assets/imagenes/promo5.jpg',
-      },
-    ];
-
-    final masBuscados = [
-      ProductoModel(
-        id: '1',
-        nombre: 'Camión LEGO Special Transport',
-        descripcion: 'Producto destacado del catálogo.',
-        precio: 34.99,
-        precioAnteriorValor: 34.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado1.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat1',
-          nombre: 'Juguetes',
-          ruta: 'juguetes',
-        ),
-        marca: 'LEGO',
-        codigo: 'MB001',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '2',
-        nombre: 'Consola Gamer X Pro + 2 Controles',
-        descripcion: 'Consola gamer edición especial.',
-        precio: 399.99,
-        precioAnteriorValor: 459.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado2.jpg'],
-        categoria: CategoriaModel(id: 'cat2', nombre: 'Gaming', ruta: 'gaming'),
-        marca: 'X Pro',
-        codigo: 'MB002',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '3',
-        nombre: 'Tienda de Campaña McKinley 4 Personas',
-        descripcion: 'Ideal para camping familiar.',
-        precio: 89.99,
-        precioAnteriorValor: 119.99,
-        stock: 10,
-        imagenes: ['assets/imagenes/masbuscado3.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat3',
-          nombre: 'Outdoor',
-          ruta: 'outdoor',
-        ),
-        marca: 'McKinley',
-        codigo: 'MB003',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '4',
-        nombre: 'Micrófonos Inalámbricos Profesionales',
-        descripcion: 'Sistema profesional inalámbrico.',
-        precio: 129.99,
-        precioAnteriorValor: 159.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado4.jpg'],
-        categoria: CategoriaModel(id: 'cat4', nombre: 'Audio', ruta: 'audio'),
-        marca: 'Audio Pro',
-        codigo: 'MB004',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '5',
-        nombre: 'Adidas Urban White Edition',
-        descripcion: 'Calzado urbano moderno.',
-        precio: 74.99,
-        precioAnteriorValor: 99.99,
-        stock: 8,
-        imagenes: ['assets/imagenes/masbuscado5.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat5',
-          nombre: 'Calzado',
-          ruta: 'calzado',
-        ),
-        marca: 'Adidas',
-        codigo: 'MB005',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '6',
-        nombre: 'Auto Clásico Mini Colección',
-        descripcion: 'Coleccionable edición clásica.',
-        precio: 14.99,
-        precioAnteriorValor: 19.99,
-        stock: 1,
-        imagenes: ['assets/imagenes/masbuscado6.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat6',
-          nombre: 'Colección',
-          ruta: 'coleccion',
-        ),
-        marca: 'Mini Cars',
-        codigo: 'MB006',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '7',
-        nombre: 'Zapatos Formales Premium Black',
-        descripcion: 'Zapato formal premium.',
-        precio: 94.99,
-        precioAnteriorValor: 129.99,
-        stock: 9,
-        imagenes: ['assets/imagenes/masbuscado7.jpg'],
-        categoria: CategoriaModel(id: 'cat7', nombre: 'Formal', ruta: 'formal'),
-        marca: 'Premium',
-        codigo: 'MB007',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '8',
-        nombre: 'Nike Kids Flex Runner',
-        descripcion: 'Calzado infantil deportivo.',
-        precio: 49.99,
-        precioAnteriorValor: 59.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado8.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat8',
-          nombre: 'Infantil',
-          ruta: 'infantil',
-        ),
-        marca: 'Nike',
-        codigo: 'MB008',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '1',
-        nombre: 'Camión LEGO Special Transport',
-        descripcion: 'Producto destacado del catálogo.',
-        precio: 34.99,
-        precioAnteriorValor: 34.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado1.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat1',
-          nombre: 'Juguetes',
-          ruta: 'juguetes',
-        ),
-        marca: 'LEGO',
-        codigo: 'MB001',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '2',
-        nombre: 'Consola Gamer X Pro + 2 Controles',
-        descripcion: 'Consola gamer edición especial.',
-        precio: 399.99,
-        precioAnteriorValor: 459.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado2.jpg'],
-        categoria: CategoriaModel(id: 'cat2', nombre: 'Gaming', ruta: 'gaming'),
-        marca: 'X Pro',
-        codigo: 'MB002',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '3',
-        nombre: 'Tienda de Campaña McKinley 4 Personas',
-        descripcion: 'Ideal para camping familiar.',
-        precio: 89.99,
-        precioAnteriorValor: 119.99,
-        stock: 10,
-        imagenes: ['assets/imagenes/masbuscado3.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat3',
-          nombre: 'Outdoor',
-          ruta: 'outdoor',
-        ),
-        marca: 'McKinley',
-        codigo: 'MB003',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '4',
-        nombre: 'Micrófonos Inalámbricos Profesionales',
-        descripcion: 'Sistema profesional inalámbrico.',
-        precio: 129.99,
-        precioAnteriorValor: 159.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado4.jpg'],
-        categoria: CategoriaModel(id: 'cat4', nombre: 'Audio', ruta: 'audio'),
-        marca: 'Audio Pro',
-        codigo: 'MB004',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '5',
-        nombre: 'Adidas Urban White Edition',
-        descripcion: 'Calzado urbano moderno.',
-        precio: 74.99,
-        precioAnteriorValor: 99.99,
-        stock: 8,
-        imagenes: ['assets/imagenes/masbuscado5.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat5',
-          nombre: 'Calzado',
-          ruta: 'calzado',
-        ),
-        marca: 'Adidas',
-        codigo: 'MB005',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '6',
-        nombre: 'Auto Clásico Mini Colección',
-        descripcion: 'Coleccionable edición clásica.',
-        precio: 14.99,
-        precioAnteriorValor: 19.99,
-        stock: 1,
-        imagenes: ['assets/imagenes/masbuscado6.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat6',
-          nombre: 'Colección',
-          ruta: 'coleccion',
-        ),
-        marca: 'Mini Cars',
-        codigo: 'MB006',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '7',
-        nombre: 'Zapatos Formales Premium Black',
-        descripcion: 'Zapato formal premium.',
-        precio: 94.99,
-        precioAnteriorValor: 129.99,
-        stock: 9,
-        imagenes: ['assets/imagenes/masbuscado7.jpg'],
-        categoria: CategoriaModel(id: 'cat7', nombre: 'Formal', ruta: 'formal'),
-        marca: 'Premium',
-        codigo: 'MB007',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '8',
-        nombre: 'Nike Kids Flex Runner',
-        descripcion: 'Calzado infantil deportivo.',
-        precio: 49.99,
-        precioAnteriorValor: 59.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado8.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat8',
-          nombre: 'Infantil',
-          ruta: 'infantil',
-        ),
-        marca: 'Nike',
-        codigo: 'MB008',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '1',
-        nombre: 'Camión LEGO Special Transport',
-        descripcion: 'Producto destacado del catálogo.',
-        precio: 34.99,
-        precioAnteriorValor: 34.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado1.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat1',
-          nombre: 'Juguetes',
-          ruta: 'juguetes',
-        ),
-        marca: 'LEGO',
-        codigo: 'MB001',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '2',
-        nombre: 'Consola Gamer X Pro + 2 Controles',
-        descripcion: 'Consola gamer edición especial.',
-        precio: 399.99,
-        precioAnteriorValor: 459.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado2.jpg'],
-        categoria: CategoriaModel(id: 'cat2', nombre: 'Gaming', ruta: 'gaming'),
-        marca: 'X Pro',
-        codigo: 'MB002',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '3',
-        nombre: 'Tienda de Campaña McKinley 4 Personas',
-        descripcion: 'Ideal para camping familiar.',
-        precio: 89.99,
-        precioAnteriorValor: 119.99,
-        stock: 10,
-        imagenes: ['assets/imagenes/masbuscado3.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat3',
-          nombre: 'Outdoor',
-          ruta: 'outdoor',
-        ),
-        marca: 'McKinley',
-        codigo: 'MB003',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '4',
-        nombre: 'Micrófonos Inalámbricos Profesionales',
-        descripcion: 'Sistema profesional inalámbrico.',
-        precio: 129.99,
-        precioAnteriorValor: 159.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado4.jpg'],
-        categoria: CategoriaModel(id: 'cat4', nombre: 'Audio', ruta: 'audio'),
-        marca: 'Audio Pro',
-        codigo: 'MB004',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '5',
-        nombre: 'Adidas Urban White Edition',
-        descripcion: 'Calzado urbano moderno.',
-        precio: 74.99,
-        precioAnteriorValor: 99.99,
-        stock: 8,
-        imagenes: ['assets/imagenes/masbuscado5.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat5',
-          nombre: 'Calzado',
-          ruta: 'calzado',
-        ),
-        marca: 'Adidas',
-        codigo: 'MB005',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '6',
-        nombre: 'Auto Clásico Mini Colección',
-        descripcion: 'Coleccionable edición clásica.',
-        precio: 14.99,
-        precioAnteriorValor: 19.99,
-        stock: 1,
-        imagenes: ['assets/imagenes/masbuscado6.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat6',
-          nombre: 'Colección',
-          ruta: 'coleccion',
-        ),
-        marca: 'Mini Cars',
-        codigo: 'MB006',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '7',
-        nombre: 'Zapatos Formales Premium Black',
-        descripcion: 'Zapato formal premium.',
-        precio: 94.99,
-        precioAnteriorValor: 129.99,
-        stock: 9,
-        imagenes: ['assets/imagenes/masbuscado7.jpg'],
-        categoria: CategoriaModel(id: 'cat7', nombre: 'Formal', ruta: 'formal'),
-        marca: 'Premium',
-        codigo: 'MB007',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '8',
-        nombre: 'Nike Kids Flex Runner',
-        descripcion: 'Calzado infantil deportivo.',
-        precio: 49.99,
-        precioAnteriorValor: 59.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado8.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat8',
-          nombre: 'Infantil',
-          ruta: 'infantil',
-        ),
-        marca: 'Nike',
-        codigo: 'MB008',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '1',
-        nombre: 'Camión LEGO Special Transport',
-        descripcion: 'Producto destacado del catálogo.',
-        precio: 34.99,
-        precioAnteriorValor: 34.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado1.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat1',
-          nombre: 'Juguetes',
-          ruta: 'juguetes',
-        ),
-        marca: 'LEGO',
-        codigo: 'MB001',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '2',
-        nombre: 'Consola Gamer X Pro + 2 Controles',
-        descripcion: 'Consola gamer edición especial.',
-        precio: 399.99,
-        precioAnteriorValor: 459.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado2.jpg'],
-        categoria: CategoriaModel(id: 'cat2', nombre: 'Gaming', ruta: 'gaming'),
-        marca: 'X Pro',
-        codigo: 'MB002',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '3',
-        nombre: 'Tienda de Campaña McKinley 4 Personas',
-        descripcion: 'Ideal para camping familiar.',
-        precio: 89.99,
-        precioAnteriorValor: 119.99,
-        stock: 10,
-        imagenes: ['assets/imagenes/masbuscado3.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat3',
-          nombre: 'Outdoor',
-          ruta: 'outdoor',
-        ),
-        marca: 'McKinley',
-        codigo: 'MB003',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '4',
-        nombre: 'Micrófonos Inalámbricos Profesionales',
-        descripcion: 'Sistema profesional inalámbrico.',
-        precio: 129.99,
-        precioAnteriorValor: 159.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado4.jpg'],
-        categoria: CategoriaModel(id: 'cat4', nombre: 'Audio', ruta: 'audio'),
-        marca: 'Audio Pro',
-        codigo: 'MB004',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '5',
-        nombre: 'Adidas Urban White Edition',
-        descripcion: 'Calzado urbano moderno.',
-        precio: 74.99,
-        precioAnteriorValor: 99.99,
-        stock: 8,
-        imagenes: ['assets/imagenes/masbuscado5.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat5',
-          nombre: 'Calzado',
-          ruta: 'calzado',
-        ),
-        marca: 'Adidas',
-        codigo: 'MB005',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '6',
-        nombre: 'Auto Clásico Mini Colección',
-        descripcion: 'Coleccionable edición clásica.',
-        precio: 14.99,
-        precioAnteriorValor: 19.99,
-        stock: 1,
-        imagenes: ['assets/imagenes/masbuscado6.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat6',
-          nombre: 'Colección',
-          ruta: 'coleccion',
-        ),
-        marca: 'Mini Cars',
-        codigo: 'MB006',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '7',
-        nombre: 'Zapatos Formales Premium Black',
-        descripcion: 'Zapato formal premium.',
-        precio: 94.99,
-        precioAnteriorValor: 129.99,
-        stock: 9,
-        imagenes: ['assets/imagenes/masbuscado7.jpg'],
-        categoria: CategoriaModel(id: 'cat7', nombre: 'Formal', ruta: 'formal'),
-        marca: 'Premium',
-        codigo: 'MB007',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '8',
-        nombre: 'Nike Kids Flex Runner',
-        descripcion: 'Calzado infantil deportivo.',
-        precio: 49.99,
-        precioAnteriorValor: 59.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado8.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat8',
-          nombre: 'Infantil',
-          ruta: 'infantil',
-        ),
-        marca: 'Nike',
-        codigo: 'MB008',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '1',
-        nombre: 'Camión LEGO Special Transport',
-        descripcion: 'Producto destacado del catálogo.',
-        precio: 34.99,
-        precioAnteriorValor: 34.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado1.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat1',
-          nombre: 'Juguetes',
-          ruta: 'juguetes',
-        ),
-        marca: 'LEGO',
-        codigo: 'MB001',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '2',
-        nombre: 'Consola Gamer X Pro + 2 Controles',
-        descripcion: 'Consola gamer edición especial.',
-        precio: 399.99,
-        precioAnteriorValor: 459.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado2.jpg'],
-        categoria: CategoriaModel(id: 'cat2', nombre: 'Gaming', ruta: 'gaming'),
-        marca: 'X Pro',
-        codigo: 'MB002',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '3',
-        nombre: 'Tienda de Campaña McKinley 4 Personas',
-        descripcion: 'Ideal para camping familiar.',
-        precio: 89.99,
-        precioAnteriorValor: 119.99,
-        stock: 10,
-        imagenes: ['assets/imagenes/masbuscado3.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat3',
-          nombre: 'Outdoor',
-          ruta: 'outdoor',
-        ),
-        marca: 'McKinley',
-        codigo: 'MB003',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '4',
-        nombre: 'Micrófonos Inalámbricos Profesionales',
-        descripcion: 'Sistema profesional inalámbrico.',
-        precio: 129.99,
-        precioAnteriorValor: 159.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado4.jpg'],
-        categoria: CategoriaModel(id: 'cat4', nombre: 'Audio', ruta: 'audio'),
-        marca: 'Audio Pro',
-        codigo: 'MB004',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '5',
-        nombre: 'Adidas Urban White Edition',
-        descripcion: 'Calzado urbano moderno.',
-        precio: 74.99,
-        precioAnteriorValor: 99.99,
-        stock: 8,
-        imagenes: ['assets/imagenes/masbuscado5.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat5',
-          nombre: 'Calzado',
-          ruta: 'calzado',
-        ),
-        marca: 'Adidas',
-        codigo: 'MB005',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '6',
-        nombre: 'Auto Clásico Mini Colección',
-        descripcion: 'Coleccionable edición clásica.',
-        precio: 14.99,
-        precioAnteriorValor: 19.99,
-        stock: 1,
-        imagenes: ['assets/imagenes/masbuscado6.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat6',
-          nombre: 'Colección',
-          ruta: 'coleccion',
-        ),
-        marca: 'Mini Cars',
-        codigo: 'MB006',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '7',
-        nombre: 'Zapatos Formales Premium Black',
-        descripcion: 'Zapato formal premium.',
-        precio: 94.99,
-        precioAnteriorValor: 129.99,
-        stock: 9,
-        imagenes: ['assets/imagenes/masbuscado7.jpg'],
-        categoria: CategoriaModel(id: 'cat7', nombre: 'Formal', ruta: 'formal'),
-        marca: 'Premium',
-        codigo: 'MB007',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '8',
-        nombre: 'Nike Kids Flex Runner',
-        descripcion: 'Calzado infantil deportivo.',
-        precio: 49.99,
-        precioAnteriorValor: 59.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado8.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat8',
-          nombre: 'Infantil',
-          ruta: 'infantil',
-        ),
-        marca: 'Nike',
-        codigo: 'MB008',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-      ProductoModel(
-        id: '1',
-        nombre: 'Camión LEGO Special Transport',
-        descripcion: 'Producto destacado del catálogo.',
-        precio: 34.99,
-        precioAnteriorValor: 34.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado1.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat1',
-          nombre: 'Juguetes',
-          ruta: 'juguetes',
-        ),
-        marca: 'LEGO',
-        codigo: 'MB001',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '2',
-        nombre: 'Consola Gamer X Pro + 2 Controles',
-        descripcion: 'Consola gamer edición especial.',
-        precio: 399.99,
-        precioAnteriorValor: 459.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado2.jpg'],
-        categoria: CategoriaModel(id: 'cat2', nombre: 'Gaming', ruta: 'gaming'),
-        marca: 'X Pro',
-        codigo: 'MB002',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '3',
-        nombre: 'Tienda de Campaña McKinley 4 Personas',
-        descripcion: 'Ideal para camping familiar.',
-        precio: 89.99,
-        precioAnteriorValor: 119.99,
-        stock: 10,
-        imagenes: ['assets/imagenes/masbuscado3.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat3',
-          nombre: 'Outdoor',
-          ruta: 'outdoor',
-        ),
-        marca: 'McKinley',
-        codigo: 'MB003',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '4',
-        nombre: 'Micrófonos Inalámbricos Profesionales',
-        descripcion: 'Sistema profesional inalámbrico.',
-        precio: 129.99,
-        precioAnteriorValor: 159.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado4.jpg'],
-        categoria: CategoriaModel(id: 'cat4', nombre: 'Audio', ruta: 'audio'),
-        marca: 'Audio Pro',
-        codigo: 'MB004',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '5',
-        nombre: 'Adidas Urban White Edition',
-        descripcion: 'Calzado urbano moderno.',
-        precio: 74.99,
-        precioAnteriorValor: 99.99,
-        stock: 8,
-        imagenes: ['assets/imagenes/masbuscado5.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat5',
-          nombre: 'Calzado',
-          ruta: 'calzado',
-        ),
-        marca: 'Adidas',
-        codigo: 'MB005',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '6',
-        nombre: 'Auto Clásico Mini Colección',
-        descripcion: 'Coleccionable edición clásica.',
-        precio: 14.99,
-        precioAnteriorValor: 19.99,
-        stock: 1,
-        imagenes: ['assets/imagenes/masbuscado6.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat6',
-          nombre: 'Colección',
-          ruta: 'coleccion',
-        ),
-        marca: 'Mini Cars',
-        codigo: 'MB006',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '7',
-        nombre: 'Zapatos Formales Premium Black',
-        descripcion: 'Zapato formal premium.',
-        precio: 94.99,
-        precioAnteriorValor: 129.99,
-        stock: 9,
-        imagenes: ['assets/imagenes/masbuscado7.jpg'],
-        categoria: CategoriaModel(id: 'cat7', nombre: 'Formal', ruta: 'formal'),
-        marca: 'Premium',
-        codigo: 'MB007',
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-
-      ProductoModel(
-        id: '8',
-        nombre: 'Nike Kids Flex Runner',
-        descripcion: 'Calzado infantil deportivo.',
-        precio: 49.99,
-        precioAnteriorValor: 59.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado8.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat8',
-          nombre: 'Infantil',
-          ruta: 'infantil',
-        ),
-        marca: 'Nike',
-        codigo: 'MB008',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-      ProductoModel(
-        id: '1',
-        nombre: 'Camión LEGO Special Transport',
-        descripcion: 'Producto destacado del catálogo.',
-        precio: 34.99,
-        precioAnteriorValor: 34.99,
-        stock: 2,
-        imagenes: ['assets/imagenes/masbuscado1.jpg'],
-        categoria: CategoriaModel(
-          id: 'cat1',
-          nombre: 'Juguetes',
-          ruta: 'juguetes',
-        ),
-        marca: 'LEGO',
-        codigo: 'MB001',
-        destacado: true,
-        informacionGeneral: AceiteModel(
-          cantidad: '1',
-          grado: '5W-30',
-          tipoContenedor: 'Botella',
-          tipoAceiteMotor: 'Sintético',
-          tipoVehiculo: 'Automóvil',
-          numeroParte: 'ACE-001',
-        ),
-      ),
-    ];
-
-    final categorias = [
-      CategoriaModel(
-        id: '1',
-        nombre: 'Hogar',
-        ruta: 'hogar',
-        icono: Icons.home,
-        subcategorias: ['Sala', 'Cocina', 'Dormitorio', 'Decoración'],
-        productos: masBuscados,
-      ),
-
-      CategoriaModel(
-        id: '2',
-        nombre: 'Accesorios',
-        ruta: 'accesorios',
-        icono: Icons.extension,
-        subcategorias: ['Fundas', 'Soportes', 'Cargadores', 'Organizadores'],
-        productos: masBuscados,
-      ),
-
-      CategoriaModel(
-        id: '3',
-        nombre: 'Electrónica',
-        ruta: 'electronica',
-        icono: Icons.memory,
-        subcategorias: ['Pantallas', 'Radios', 'Parlantes', 'Audífonos'],
-        productos: masBuscados,
-      ),
-
-      CategoriaModel(
-        id: '4',
-        nombre: 'Herramientas',
-        ruta: 'herramientas',
-        icono: Icons.build,
-        subcategorias: ['Llaves', 'Taladros', 'Destornilladores', 'Kits'],
-        productos: masBuscados,
-      ),
-
-      CategoriaModel(
-        id: '5',
-        nombre: 'Mantenimiento',
-        ruta: 'mantenimiento',
-        icono: Icons.oil_barrel,
-        subcategorias: ['Aceites', 'Lubricantes', 'Filtros', 'Limpieza'],
-        productos: masBuscados,
-      ),
-
-      CategoriaModel(
-        id: '6',
-        nombre: 'Seguridad',
-        ruta: 'seguridad',
-        icono: Icons.security,
-        subcategorias: ['Alarmas', 'Candados', 'Cascos', 'Luces LED'],
-        productos: masBuscados,
-      ),
-    ];
 
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(
@@ -1320,26 +136,13 @@ class HomePage extends StatelessWidget {
                     children: [
                       const SizedBox(height: 20),
 
-                      /*
-                      
-                      CategoriaSection(
-                        titulo: 'NUESTRAS CATEGORÍAS',
-                        items: categorias,
-                        itemBuilder: (c) => CategoriaItem(
-                          nombre: c['nombre'] as String,
-                          icono: c['icono'] as IconData,
-                          activa: (c['activa'] as bool?) ?? false,
-                        ),
-                      ),
-
-                      */
                       CategoriaSection<CategoriaModel>(
                         titulo: 'NUESTRAS CATEGORÍAS',
-                        items: categorias,
+                        items: listaCategoriasHome,
 
                         itemBuilder: (c) => CategoriaItem(
                           nombre: c.nombre,
-                          icono: c.icono ?? Icons.category,
+                          icono: IconosCategoriaHelper.obtenerIcono(c.icono),
                           activa: false,
 
                           onTap: () {
@@ -1347,7 +150,7 @@ class HomePage extends StatelessWidget {
                               '/categoria/${c.ruta}',
                               extra: CategoriaNavegacionModel(
                                 categoriaActiva: c,
-                                categorias: categorias,
+                                categorias: listaCategoriasHome,
                               ),
                             );
                           },
@@ -1358,7 +161,7 @@ class HomePage extends StatelessWidget {
 
                       PromoSection(
                         titulo: 'PROMO DEL MES',
-                        items: promociones,
+                        items: listaProductosPromoDelMesHome,
                         badgeTexto: 'Promo del mes',
                         badgeColor: Colors.red,
                       ),
@@ -1367,7 +170,7 @@ class HomePage extends StatelessWidget {
 
                       ProductGridSection<ProductoModel>(
                         titulo: 'LOS MÁS BUSCADOS',
-                        items: masBuscados,
+                        items: listaProductosMasBuscadosHome,
                         filas: 2,
                         anchoItem: 260,
                         alturaItem: 430,
