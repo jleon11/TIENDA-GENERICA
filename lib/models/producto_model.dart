@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tienda_motos/models/categoria_model.dart';
+import 'package:tienda_motos/models/subcategoria_model.dart';
 import 'package:tienda_motos/widgets/general_components/contrato_card_producto.dart';
 
 class ProductoModel implements ContratoCardProducto {
@@ -25,7 +25,8 @@ class ProductoModel implements ContratoCardProducto {
   /// Imágenes del producto
   final List<String> imagenes;
 
-  final CategoriaModel? categoria;
+  /// Nueva relación real
+  final SubCategoriaModel? subcategoria;
 
   final String marca;
 
@@ -38,12 +39,11 @@ class ProductoModel implements ContratoCardProducto {
   final bool activo;
 
   /// Información específica según tipo de producto
-
   final String informacionGeneral;
 
   final String mostrarEnlaSeccion;
 
-  ProductoModel({
+  const ProductoModel({
     required this.id,
     required this.nombre,
     required this.descripcion,
@@ -51,7 +51,7 @@ class ProductoModel implements ContratoCardProducto {
     this.precioAnteriorValor,
     required this.stock,
     required this.imagenes,
-    required this.categoria,
+    this.subcategoria,
     required this.marca,
     required this.codigo,
     required this.informacionGeneral,
@@ -78,10 +78,14 @@ class ProductoModel implements ContratoCardProducto {
   double get ahorro =>
       precioAnteriorValor != null ? precioAnteriorValor! - precio : 0;
 
+  /// Categoría principal heredada
+  String get nombreCategoria => subcategoria?.categoria?.nombre ?? '';
+
+  /// Nombre subcategoría
+  String get nombreSubcategoria => subcategoria?.nombre ?? '';
+
   /// ==========================================
   /// IMPLEMENTACIÓN DE ContratoCardProducto
-  /// Requisitos mínimos para mostrarse en cards,
-  /// grids, sliders, catálogo, etc.
   /// ==========================================
 
   @override
@@ -107,46 +111,59 @@ class ProductoModel implements ContratoCardProducto {
   bool get agotado => stock <= 0;
 
   @override
-  bool get mostrarBotonCarrito => true; // Siempre mostrar botón de carrito, incluso sin stock (puede ser para notificar disponibilidad)
+  bool get mostrarBotonCarrito => true;
 
   @override
   bool get mostrarDescuento => enOferta;
+
+  /// ==========================================
+  /// JSON
+  /// ==========================================
 
   factory ProductoModel.fromJson(Map<String, dynamic> item) {
     final imagenesRaw = item['imagenes'] as List<dynamic>? ?? [];
 
     return ProductoModel(
       id: item['id'].toString(),
+
       nombre: item['nombre'] ?? '',
+
       descripcion: item['descripcion'] ?? '',
+
       precio: (item['precio'] ?? 0).toDouble(),
 
       precioAnteriorValor: item['precioAnteriorValor'] != null
           ? (item['precioAnteriorValor']).toDouble()
           : null,
 
-      stock: item['stock'] ?? 0,
+      stock: item['stock'] ?? item['existencias'] ?? 0,
 
       imagenes: imagenesRaw.map<String>((img) {
-        if (img is String) return img;
+        if (img is String) {
+          return img;
+        }
+
         return img['url'] ?? '';
       }).toList(),
 
-      categoria: item['categorias'] != null
-          ? CategoriaModel.fromJson(item['categorias'])
-          : item['categoria'] != null
-          ? CategoriaModel.fromJson(item['categoria'])
+      subcategoria: item['sub_categoria'] != null
+          ? SubCategoriaModel.fromJson(item['sub_categoria'])
           : null,
 
       marca: item['marca'] ?? '',
+
       codigo: item['codigo'] ?? '',
+
       destacado: item['destacado'] ?? false,
+
       activo: item['activo'] ?? true,
+
       informacionGeneral: item['informacionGeneral'] ?? '',
 
       mostrarEnlaSeccion: item['mostrarEnlaSeccion'] ?? '',
     );
   }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -156,7 +173,7 @@ class ProductoModel implements ContratoCardProducto {
       'precioAnteriorValor': precioAnteriorValor,
       'stock': stock,
       'imagenes': imagenes,
-      'categoria': categoria?.toJson(),
+      'subcategoria': subcategoria?.toJson(),
       'marca': marca,
       'codigo': codigo,
       'destacado': destacado,

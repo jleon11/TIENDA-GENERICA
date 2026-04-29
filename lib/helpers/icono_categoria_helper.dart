@@ -23,6 +23,8 @@ class IconosCategoriaHelper {
     'business_center': Icons.business_center,
     'security': Icons.security,
     'devices': Icons.devices,
+    'videocam': Icons.videocam,
+    'notifications_active': Icons.notifications_active,
   };
 
   static IconData obtenerIcono(String? nombre) {

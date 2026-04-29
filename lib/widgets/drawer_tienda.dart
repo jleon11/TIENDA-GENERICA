@@ -100,6 +100,19 @@ class DrawerTienda extends StatelessWidget {
     );
   }
 
+  /*
+Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  color: const Color(0xFFF7F7F7),
+                  child: const Text(
+                    '©️ Tienda Motos',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
+                ),
+  */
+
   Widget _itemInicio(BuildContext context) {
     return InkWell(
       onTap: () {

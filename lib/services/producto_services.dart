@@ -47,19 +47,27 @@ class ProductoService {
   /// ==========================================
   /// Productos por categoría
   /// ==========================================
+
+  /// ==========================================
+  /// Productos por categoría padre (seoUrl)
+  /// Ejemplo: hogar, automotriz, tecnologia
+  /// ==========================================
   Future<List<ProductoModel>> productosPorCategoria(String seoUrl) async {
     try {
       final response = await http.get(
         Uri.parse(
           '$_baseUrl/productos'
-          '?filters[categoria][seoUrl][\$eq]=$seoUrl'
-          '&populate=*',
+          '?filters[sub_categoria][categoria][seoUrl][\$eq]=$seoUrl'
+          '&populate[imagenes]=true'
+          '&populate[sub_categoria][populate][categoria]=true'
+          '&pagination[page]=1'
+          '&pagination[pageSize]=3000',
         ),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Accept': 'application/json'},
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
+        final data = jsonDecode(response.body);
 
         final lista = data['data'] as List<dynamic>? ?? [];
 
@@ -67,85 +75,10 @@ class ProductoService {
       }
 
       throw Exception(
-        'Error categoría '
-        '(${response.statusCode})',
+        'Error al obtener productos por categoría (${response.statusCode})',
       );
     } catch (e) {
-      throw Exception('Error categoría: $e');
-    }
-  }
-
-  /// ==========================================
-  /// Obtener producto por ID
-  /// ==========================================
-  Future<ProductoModel?> obtenerProductoPorId(String id) async {
-    try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/productos/$id?populate=*'),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-
-        return ProductoModel.fromJson(data['data']);
-      }
-
-      return null;
-    } catch (e) {
-      throw Exception('Error producto: $e');
-    }
-  }
-
-  /// ==========================================
-  /// Productos destacados
-  /// ==========================================
-  Future<List<ProductoModel>> obtenerDestacados() async {
-    try {
-      final response = await http.get(
-        Uri.parse(
-          '$_baseUrl/productos?filters[destacado][\$eq]=true&populate=*',
-        ),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-
-        final lista = data['data'] as List<dynamic>? ?? [];
-
-        return lista.map((item) => ProductoModel.fromJson(item)).toList();
-      }
-
-      throw Exception('Error destacados (${response.statusCode})');
-    } catch (e) {
-      throw Exception('Error destacados: $e');
-    }
-  }
-
-  /// ==========================================
-  /// Buscar productos por nombre
-  /// ==========================================
-  Future<List<ProductoModel>> buscarProductos(String texto) async {
-    try {
-      final response = await http.get(
-        Uri.parse(
-          '$_baseUrl/productos?filters[nombre][\$containsi]=$texto&populate=*',
-        ),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-
-        final lista = data['data'] as List<dynamic>? ?? [];
-
-        return lista.map((item) => ProductoModel.fromJson(item)).toList();
-      }
-
-      throw Exception('Error búsqueda (${response.statusCode})');
-    } catch (e) {
-      throw Exception('Error búsqueda: $e');
+      throw Exception('Error productosPorCategoria: $e');
     }
   }
 }

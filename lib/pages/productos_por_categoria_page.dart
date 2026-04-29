@@ -6,6 +6,7 @@ import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/models/subcategoria_model.dart';
 import 'package:tienda_motos/sections/boletin_informativo_section.dart';
 import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/services/producto_services.dart';
@@ -29,25 +30,37 @@ class ProductosPorCategoriaPage extends StatefulWidget {
 class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
   final List<int> opcionesCantidad = const [15, 25, 50];
   List<ProductoModel> listaProductosPorCategoria = [];
+  List<SubCategoriaModel> subCategorias = [];
+
   bool cargandoProductos = true;
 
   @override
   void initState() {
     super.initState();
-    cargarProductos();
+    cargarProductosPorCategoria();
   }
 
-  Future<void> cargarProductos() async {
+  Future<void> cargarProductosPorCategoria() async {
     try {
-      listaProductosPorCategoria = await ProductoService()
-          .productosPorCategoria(widget.categoriaActiva.seoUrl);
+      listaProductosPorCategoria = await ProductoService().productosPorCategoria(widget.categoriaActiva.seoUrl);
 
-      print(
-        'Productos cargados para categoría ${widget.categoriaActiva.nombre}: ${listaProductosPorCategoria.length}',
+      /// sacar subcategorías únicas
+      final mapa = <String, SubCategoriaModel>{};
+
+      for (final p in listaProductosPorCategoria) {
+        if (p.subcategoria != null) {
+          mapa[p.subcategoria!.id] = p.subcategoria!;
+        }
+      }
+
+      subCategorias = mapa.values.toList();
+
+      debugPrint(
+        'Productos categoría ${widget.categoriaActiva.nombre}: ${listaProductosPorCategoria.length}',
       );
     } catch (e) {
       debugPrint(
-        'error en productos por categoria , metodo cargarProductos: $e',
+        'Error: obteniendo las subcategorías , en la clase productos_por_categoria: $e',
       );
     }
 

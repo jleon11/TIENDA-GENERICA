@@ -1,14 +1,9 @@
-import 'package:tienda_motos/models/producto_model.dart';
-
 class CategoriaModel {
   final String id;
   final String nombre;
   final String seoUrl;
   final String? banner;
-  //final IconData? icono;
   final String? icono;
-  final List<String> subcategorias;
-  final List<ProductoModel> productos;
   final int? orden;
 
   const CategoriaModel({
@@ -17,8 +12,6 @@ class CategoriaModel {
     required this.seoUrl,
     this.banner,
     this.icono,
-    this.subcategorias = const [],
-    this.productos = const [],
     this.orden,
   });
 
@@ -30,16 +23,6 @@ class CategoriaModel {
       banner: item['banner'],
       icono: item['icono'],
       orden: item['orden'],
-
-      subcategorias: item['subcategorias'] != null
-          ? List<String>.from(item['subcategorias'])
-          : [],
-
-      productos: item['productos'] != null
-          ? (item['productos'] as List)
-                .map((x) => ProductoModel.fromJson(x))
-                .toList()
-          : [],
     );
   }
 
@@ -51,8 +34,6 @@ class CategoriaModel {
       'banner': banner,
       'icono': icono,
       'orden': orden,
-      'subcategorias': subcategorias,
-      'productos': productos.map((x) => x.toJson()).toList(),
     };
   }
 }

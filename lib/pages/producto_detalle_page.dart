@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/models/subcategoria_model.dart';
 import 'package:tienda_motos/sections/boletin_informativo_section.dart';
 import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
@@ -35,7 +36,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precioAnteriorValor: 34.99,
       stock: 2,
       imagenes: ['assets/imagenes/masbuscado1.jpg'],
-      categoria: CategoriaModel(
+      subcategoria: SubCategoriaModel(
         id: 'cat1',
         nombre: 'Juguetes',
         seoUrl: 'juguetes',
@@ -54,10 +55,10 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precioAnteriorValor: 459.99,
       stock: 2,
       imagenes: ['assets/imagenes/masbuscado2.jpg'],
-      categoria: CategoriaModel(
-        id: 'cat1',
-        nombre: 'Juguetes',
-        seoUrl: 'juguetes',
+      subcategoria: SubCategoriaModel(
+        id: 'subcat1',
+        nombre: 'Consolas',
+        seoUrl: 'consolas',
       ),
       marca: 'X Pro',
       codigo: 'MB002',
@@ -73,10 +74,10 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precioAnteriorValor: 119.99,
       stock: 10,
       imagenes: ['assets/imagenes/masbuscado3.jpg'],
-      categoria: CategoriaModel(
-        id: 'cat1',
-        nombre: 'Juguetes',
-        seoUrl: 'juguetes',
+      subcategoria: SubCategoriaModel(
+        id: 'subcat1',
+        nombre: 'Tiendas',
+        seoUrl: 'tiendas',
       ),
       marca: 'McKinley',
       codigo: 'MB003',
@@ -91,10 +92,10 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precioAnteriorValor: 159.99,
       stock: 2,
       imagenes: ['assets/imagenes/masbuscado4.jpg'],
-      categoria: CategoriaModel(
-        id: 'cat1',
-        nombre: 'Juguetes',
-        seoUrl: 'juguetes',
+      subcategoria: SubCategoriaModel(
+        id: 'subcat1',
+        nombre: 'Audio',
+        seoUrl: 'audio',
       ),
       marca: 'Audio Pro',
       codigo: 'MB004',
@@ -110,8 +111,8 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precioAnteriorValor: 99.99,
       stock: 8,
       imagenes: ['assets/imagenes/masbuscado5.jpg'],
-      categoria: CategoriaModel(
-        id: 'cat1',
+      subcategoria: SubCategoriaModel(
+        id: 'subcat1',
         nombre: 'Juguetes',
         seoUrl: 'juguetes',
       ),
@@ -128,8 +129,8 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precioAnteriorValor: 19.99,
       stock: 1,
       imagenes: ['assets/imagenes/masbuscado6.jpg'],
-      categoria: CategoriaModel(
-        id: 'cat1',
+      subcategoria: SubCategoriaModel(
+        id: 'subcat1',
         nombre: 'Juguetes',
         seoUrl: 'juguetes',
       ),
@@ -147,10 +148,10 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precioAnteriorValor: 129.99,
       stock: 9,
       imagenes: ['assets/imagenes/masbuscado7.jpg'],
-      categoria: CategoriaModel(
-        id: 'cat1',
-        nombre: 'Juguetes',
-        seoUrl: 'juguetes',
+      subcategoria: SubCategoriaModel(
+        id: 'subcat1',
+        nombre: 'Zapatos',
+        seoUrl: 'zapatos',
       ),
       marca: 'Premium',
       codigo: 'MB007',
@@ -165,10 +166,10 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precioAnteriorValor: 59.99,
       stock: 2,
       imagenes: ['assets/imagenes/masbuscado8.jpg'],
-      categoria: CategoriaModel(
-        id: 'cat1',
-        nombre: 'Juguetes',
-        seoUrl: 'juguetes',
+      subcategoria: SubCategoriaModel(
+        id: 'subcat1',
+        nombre: 'Zapatos',
+        seoUrl: 'zapatos',
       ),
       marca: 'Nike',
       codigo: 'MB008',
@@ -323,7 +324,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
         const Icon(Icons.chevron_right, size: 18, color: Colors.grey),
 
         Text(
-          producto.categoria?.nombre ?? 'Sin categoría',
+          producto.subcategoria?.nombre ?? 'Sin Subcategoría',
           style: const TextStyle(
             fontSize: 16,
             color: Color(0xFF1E478D),
