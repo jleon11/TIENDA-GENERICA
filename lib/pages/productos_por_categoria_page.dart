@@ -16,11 +16,13 @@ import 'package:tienda_motos/widgets/general_components/catalogoGenerico_grid_pa
 class ProductosPorCategoriaPage extends StatefulWidget {
   final CategoriaModel categoriaActiva;
   final List<CategoriaModel> categorias;
+  final String? subcategoriaPreFiltrado;
 
   const ProductosPorCategoriaPage({
     super.key,
     required this.categoriaActiva,
     required this.categorias,
+    this.subcategoriaPreFiltrado,
   });
 
   @override
@@ -56,6 +58,17 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
         }
       }
       subCategorias = mapa.values.toList();
+
+      //preseleccionar si viene de la migaja de pan
+      if (widget.subcategoriaPreFiltrado != null) {
+        try {
+          subCategoriaSeleccionada = subCategorias.firstWhere(
+            (s) => s.seoUrl == widget.subcategoriaPreFiltrado,
+          );
+        } catch (_) {
+          subCategoriaSeleccionada = null;
+        }
+      }
     } catch (e) {
       debugPrint('Error cargando productos: $e');
     }
@@ -63,8 +76,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     if (mounted) setState(() => cargandoProductos = false);
   }
 
-  // ✅ NUEVO: productos filtrados según subcategoría activa
-  List<ProductoModel> get productosFiltrados {
+  List<ProductoModel> get productosFiltradosCategoriaActiva {
     if (subCategoriaSeleccionada == null) return listaProductosPorCategoria;
     return listaProductosPorCategoria
         .where((p) => p.subcategoria?.id == subCategoriaSeleccionada!.id)
@@ -94,8 +106,8 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
                       maxWidth: SistemaConstantes.anchoMaximoContenido,
                     ),
                     child: esMovil
-                        ? _layoutMovil(productosFiltrados)
-                        : _layoutDesktop(productosFiltrados),
+                        ? _layoutMovil(productosFiltradosCategoriaActiva)
+                        : _layoutDesktop(productosFiltradosCategoriaActiva),
                   ),
                 ),
               ),
@@ -350,7 +362,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
                   ), // ✅ aquí, alineado con el grid
                   const SizedBox(height: 20),
                   CatalogoGridWidget(
-                    productos: productosFiltrados,
+                    productos: productosFiltradosCategoriaActiva,
                     opcionesCantidad: opcionesCantidad,
                     cantidadInicial: 15,
                   ).animate().fadeIn(),

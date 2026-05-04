@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/widgets/product_card.dart';
@@ -123,6 +124,11 @@ class _PromoSectionState extends State<PromoSection> {
                           badgeTexto: widget.badgeTexto,
                           badgeColor: widget.badgeColor,
                           inventarioLimitado: producto.stock <= 3,
+                          onTap: () => {
+                            GoRouter.of(
+                              context,
+                            ).go('/producto', extra: producto),
+                          },
                         ),
                       );
                     }).toList(),

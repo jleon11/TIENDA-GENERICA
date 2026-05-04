@@ -43,6 +43,51 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
+    /// CATEGORÍA PADRE → /categoria/tecnologia
+    GoRoute(
+      path: '/categoria/:cat',
+      pageBuilder: (context, state) {
+        final catSeo = state.pathParameters['cat']!;
+
+        return MaterialPage(
+          key: ValueKey(state.uri.toString()),
+          child: LayoutPrincipal(
+            childBuilder: (categorias) => ProductosPorCategoriaPage(
+              categoriaActiva: categorias.firstWhere(
+                (c) => c.seoUrl == catSeo,
+                orElse: () => categorias.first,
+              ),
+              categorias: categorias,
+              subcategoriaPreFiltrado: null,
+            ),
+          ),
+        );
+      },
+    ),
+
+    /// SUBCATEGORÍA → /categoria/tecnologia/celulares
+    GoRoute(
+      path: '/categoria/:cat/:subcat',
+      pageBuilder: (context, state) {
+        final catSeo = state.pathParameters['cat']!;
+        final subcatSeo = state.pathParameters['subcat']!;
+
+        return MaterialPage(
+          key: ValueKey(state.uri.toString()),
+          child: LayoutPrincipal(
+            childBuilder: (categorias) => ProductosPorCategoriaPage(
+              categoriaActiva: categorias.firstWhere(
+                (c) => c.seoUrl == catSeo,
+                orElse: () => categorias.first,
+              ),
+              categorias: categorias,
+              subcategoriaPreFiltrado: subcatSeo,
+            ),
+          ),
+        );
+      },
+    ),
+    /*
     GoRoute(
       path: '/categoria/:ruta',
 
@@ -61,5 +106,7 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
+
+    */
   ],
 );

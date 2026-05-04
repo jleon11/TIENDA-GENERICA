@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/models/subcategoria_model.dart';
@@ -6,6 +7,7 @@ import 'package:tienda_motos/sections/boletin_informativo_section.dart';
 import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
 import 'package:tienda_motos/widgets/galeria_producto.dart';
+import 'package:tienda_motos/widgets/general_components/migaja_de_pan.dart';
 import 'package:tienda_motos/widgets/producto_detalle/panel_compra_producto.dart';
 import 'package:tienda_motos/widgets/producto_detalle/tabs_infoProducto_widget.dart';
 
@@ -215,7 +217,26 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
 
                       children: [
-                        migajaDePan(producto),
+                        MigaDePan(
+                          items: [
+                            const MigaDePanItem(label: 'Inicio', ruta: '/'),
+                            if (producto.subcategoria?.categoria != null)
+                              MigaDePanItem(
+                                label: producto.subcategoria!.categoria!.nombre,
+                                ruta:
+                                    '/categoria/${producto.subcategoria!.categoria!.seoUrl}',
+                              ),
+                            if (producto.subcategoria != null)
+                              MigaDePanItem(
+                                label: producto.subcategoria!.nombre,
+                                ruta:
+                                    '/categoria/${producto.subcategoria?.categoria?.seoUrl}/${producto.subcategoria!.seoUrl}',
+                              ),
+                            MigaDePanItem(
+                              label: producto.nombre,
+                            ), // último, sin ruta
+                          ],
+                        ),
 
                         const SizedBox(height: 24),
 
@@ -312,35 +333,6 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
           ),
         ),
       ),
-    );
-  }
-
-  /// BREADCRUMB
-  Widget migajaDePan(ProductoModel producto) {
-    return Wrap(
-      spacing: 8,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        const Text(
-          'Inicio',
-          style: TextStyle(
-            fontSize: 16,
-            color: Color(0xFF1E478D),
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-
-        const Icon(Icons.chevron_right, size: 18, color: Colors.grey),
-
-        Text(
-          producto.subcategoria?.nombre ?? 'Sin Subcategoría',
-          style: const TextStyle(
-            fontSize: 16,
-            color: Color(0xFF1E478D),
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
     );
   }
 

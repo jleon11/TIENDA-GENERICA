@@ -18,7 +18,12 @@ class ProductoService {
       while (hayMas) {
         final response = await http.get(
           Uri.parse(
-            '$_baseUrl/productos?populate=*&sort=createdAt:desc&pagination[page]=$page&pagination[pageSize]=25',
+            '$_baseUrl/productos'
+            '?populate[imagenes]=true'
+            '&populate[sub_categoria][populate][categoria]=true' // 👈 anidado
+            '&sort=createdAt:desc'
+            '&pagination[page]=$page'
+            '&pagination[pageSize]=25',
           ),
           headers: {'Content-Type': 'application/json'},
         );
