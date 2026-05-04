@@ -26,6 +26,13 @@ class ProductoDetallePage extends StatefulWidget {
 class _ProductoDetallePageState extends State<ProductoDetallePage> {
   int cantidad = 1;
   int imagenSeleccionada = 0;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   final masBuscados = [
     ProductoModel(
@@ -190,6 +197,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
 
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scrollController,
           child: Column(
             children: [
               /// CONTENIDO PRINCIPAL CENTRADO
@@ -284,6 +292,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                           anchoItem: 260,
                           alturaItem: 430,
                           espaciado: 8,
+                          scrollController: _scrollController,
                         ),
 
                         const SizedBox(height: 50),

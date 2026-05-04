@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:tienda_motos/constants/constantes_sistema.dart';
+import 'package:tienda_motos/helpers/icono_categoria_helper.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
@@ -32,6 +33,9 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
   List<ProductoModel> listaProductosPorCategoria = [];
   List<SubCategoriaModel> subCategorias = [];
 
+  // ✅ NUEVO: subcategoría seleccionada (null = "Todas")
+  SubCategoriaModel? subCategoriaSeleccionada;
+
   bool cargandoProductos = true;
 
   @override
@@ -42,33 +46,29 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
 
   Future<void> cargarProductosPorCategoria() async {
     try {
-      listaProductosPorCategoria = await ProductoService().productosPorCategoria(widget.categoriaActiva.seoUrl);
+      listaProductosPorCategoria = await ProductoService()
+          .productosPorCategoria(widget.categoriaActiva.seoUrl);
 
-      /// sacar subcategorías únicas
       final mapa = <String, SubCategoriaModel>{};
-
       for (final p in listaProductosPorCategoria) {
         if (p.subcategoria != null) {
           mapa[p.subcategoria!.id] = p.subcategoria!;
         }
       }
-
       subCategorias = mapa.values.toList();
-
-      debugPrint(
-        'Productos categoría ${widget.categoriaActiva.nombre}: ${listaProductosPorCategoria.length}',
-      );
     } catch (e) {
-      debugPrint(
-        'Error: obteniendo las subcategorías , en la clase productos_por_categoria: $e',
-      );
+      debugPrint('Error cargando productos: $e');
     }
 
-    if (mounted) {
-      setState(() {
-        cargandoProductos = false;
-      });
-    }
+    if (mounted) setState(() => cargandoProductos = false);
+  }
+
+  // ✅ NUEVO: productos filtrados según subcategoría activa
+  List<ProductoModel> get productosFiltrados {
+    if (subCategoriaSeleccionada == null) return listaProductosPorCategoria;
+    return listaProductosPorCategoria
+        .where((p) => p.subcategoria?.id == subCategoriaSeleccionada!.id)
+        .toList();
   }
 
   @override
@@ -78,9 +78,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
 
     return Scaffold(
       backgroundColor: SistemaConstantes.colorFondo,
-
       endDrawer: esMovil ? _drawerCategorias() : null,
-
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -96,18 +94,14 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
                       maxWidth: SistemaConstantes.anchoMaximoContenido,
                     ),
                     child: esMovil
-                        ? _layoutMovil(listaProductosPorCategoria)
-                        : _layoutDesktop(listaProductosPorCategoria),
+                        ? _layoutMovil(productosFiltrados)
+                        : _layoutDesktop(productosFiltrados),
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
               const BoletinInformativo(),
-
               const SizedBox(height: 8),
-
               const FooterSection(),
             ],
           ),
@@ -116,28 +110,163 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     );
   }
 
-  /// =====================================================
-  /// MOBILE
-  /// =====================================================
+  // =====================================================
+  // ✅ NUEVO: Sección de subcategorías con iconos circulares
+  // =====================================================
+
+  Widget _seccionSubcategorias({required bool esMovil}) {
+    if (subCategorias.isEmpty) return const SizedBox.shrink();
+
+    final double iconSize = esMovil ? 52 : 64;
+    final double fontSize = esMovil ? 11 : 12;
+
+    final items = <Widget>[
+      /*
+      _chipSubcategoria(
+        icono: Icons.grid_view_rounded,
+        nombre: 'Todas',
+        activa: subCategoriaSeleccionada == null,
+        iconSize: iconSize,
+        fontSize: fontSize,
+        onTap: () => setState(() => subCategoriaSeleccionada = null),
+      ),
+
+*/
+      ...subCategorias.map(
+        (sub) => _chipSubcategoria(
+          icono: IconosCategoriaHelper.obtenerIcono(
+            sub.icono,
+          ), // ✅ usa tu helper
+          nombre: sub.nombre,
+          activa: subCategoriaSeleccionada?.id == sub.id,
+          iconSize: iconSize,
+          fontSize: fontSize,
+          onTap: () => setState(() => subCategoriaSeleccionada = sub),
+        ),
+      ),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Subcategorías',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: SistemaConstantes.colorTextoSuave,
+            letterSpacing: 1.2,
+          ),
+        ),
+        const SizedBox(height: 14),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: items
+                .map(
+                  (w) => Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: w,
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Divider(color: Colors.grey.shade200, height: 1),
+      ],
+    );
+  }
+
+  Widget _chipSubcategoria({
+    required IconData icono,
+    required String nombre,
+    required bool activa,
+    required double iconSize,
+    required double fontSize,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        width: 80,
+        child: Column(
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: iconSize,
+              height: iconSize,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: activa
+                    ? SistemaConstantes.colorAzulPrimario
+                    : Colors.white,
+                border: Border.all(
+                  color: activa
+                      ? SistemaConstantes.colorAzulPrimario
+                      : Colors.grey.shade300,
+                  width: activa ? 2 : 1.5,
+                ),
+                boxShadow: activa
+                    ? [
+                        BoxShadow(
+                          color: SistemaConstantes.colorAzulPrimario
+                              .withOpacity(0.25),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : [],
+              ),
+              child: Icon(
+                icono,
+                size: iconSize * 0.45,
+                color: activa
+                    ? Colors.white
+                    : SistemaConstantes.colorAzulPrimario,
+              ),
+            ),
+            const SizedBox(height: 7),
+            Text(
+              nombre,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: activa ? FontWeight.w700 : FontWeight.w500,
+                color: activa
+                    ? SistemaConstantes.colorAzulPrimario
+                    : Colors.black87,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // =====================================================
+  // MOBILE
+  // =====================================================
   Widget _layoutMovil(List<ProductoModel> productos) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         mijagaDePan(),
-
         const SizedBox(height: 10),
-
-        _bannerCategoria(total: productos.length, esMovil: true),
-
+        _bannerCategoria(
+          total: listaProductosPorCategoria.length,
+          esMovil: true,
+        ),
         const SizedBox(height: 14),
 
-        /// 🔥 NUEVO: categorias visibles
+        // Chips de categorías horizontales (como ya tenías)
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
             children: widget.categorias.map((c) {
               final activa = c.seoUrl == widget.categoriaActiva.seoUrl;
-
               return Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: InkWell(
@@ -172,6 +301,11 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
           ),
         ),
 
+        const SizedBox(height: 20),
+
+        // ✅ NUEVO: subcategorías con íconos
+        _seccionSubcategorias(esMovil: true),
+
         const SizedBox(height: 18),
 
         CatalogoGridWidget(
@@ -183,34 +317,45 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     );
   }
 
-  /// =====================================================
-  /// DESKTOP
-  /// =====================================================
+  // =====================================================
+  // DESKTOP
+  // =====================================================
   Widget _layoutDesktop(List<ProductoModel> productos) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         mijagaDePan(),
-
         const SizedBox(height: 12),
-
-        _bannerCategoria(total: productos.length, esMovil: false),
-
+        _bannerCategoria(
+          total: listaProductosPorCategoria.length,
+          esMovil: false,
+        ),
         const SizedBox(height: 28),
 
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(width: 260, child: _panelCategoriasDesktop()),
+            // Panel izquierdo: categorías (sin cambios)
+            SizedBox(width: 260, child: _drawerCategoriasDesktop()),
 
             const SizedBox(width: 28),
 
+            // ✅ Lado derecho: subcategorías ARRIBA del grid
             Expanded(
-              child: CatalogoGridWidget(
-                productos: productos,
-                opcionesCantidad: opcionesCantidad,
-                cantidadInicial: 15,
-              ).animate().fadeIn(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _seccionSubcategorias(
+                    esMovil: false,
+                  ), // ✅ aquí, alineado con el grid
+                  const SizedBox(height: 20),
+                  CatalogoGridWidget(
+                    productos: productosFiltrados,
+                    opcionesCantidad: opcionesCantidad,
+                    cantidadInicial: 15,
+                  ).animate().fadeIn(),
+                ],
+              ),
             ),
           ],
         ),
@@ -218,18 +363,16 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     );
   }
 
-  /// =====================================================
-  /// BREADCRUMB
-  /// =====================================================
+  // =====================================================
+  // BREADCRUMB (sin cambios)
+  // =====================================================
   Widget mijagaDePan() {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       spacing: 6,
       children: [
         InkWell(
-          onTap: () {
-            context.go('/');
-          },
+          onTap: () => context.go('/'),
           child: const Text(
             'Inicio',
             style: TextStyle(
@@ -238,13 +381,11 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
             ),
           ),
         ),
-
         const Icon(
           Icons.chevron_right,
           size: 16,
           color: SistemaConstantes.colorTextoSuave,
         ),
-
         Text(
           widget.categoriaActiva.nombre,
           style: const TextStyle(
@@ -256,9 +397,9 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     );
   }
 
-  /// =====================================================
-  /// BANNER
-  /// =====================================================
+  // =====================================================
+  // BANNER (sin cambios, solo se usa listaProductosPorCategoria.length para el total real)
+  // =====================================================
   Widget _bannerCategoria({required int total, required bool esMovil}) {
     return Container(
       width: double.infinity,
@@ -269,9 +410,9 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color.fromARGB(255, 48, 119, 212), // azul tenue (inicio)
-            Color(0xFF1A3A8F), // azul medio
-            Color(0xFF0D1F5C), // azul oscuro (tu color actual)
+            Color.fromARGB(255, 48, 119, 212),
+            Color(0xFF1A3A8F),
+            Color(0xFF0D1F5C),
           ],
           stops: [0.0, 0.45, 1.0],
         ),
@@ -279,7 +420,6 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Tag superior
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
             decoration: BoxDecoration(
@@ -296,13 +436,10 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
               ),
             ),
           ),
-
           const SizedBox(height: 10),
-
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              // Título + subtítulo
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -327,17 +464,13 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
                   ],
                 ),
               ),
-
-              // Stats a la derecha (solo desktop)
               if (!esMovil) ...[
                 _bannerEstadistico('$total', 'Productos'),
                 _dividerVertical(),
-                _bannerEstadistico('6', 'Marcas'),
+                _bannerEstadistico('${subCategorias.length}', 'Subcategorías'),
               ],
             ],
           ),
-
-          // Solo móvil: mostrar total abajo
           if (esMovil) ...[
             const SizedBox(height: 8),
             Text(
@@ -385,10 +518,10 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     );
   }
 
-  /// =====================================================
-  /// PANEL DESKTOP UX LIVIANO
-  /// =====================================================
-  Widget _panelCategoriasDesktop() {
+  // =====================================================
+  // PANEL DESKTOP (sin cambios)
+  // =====================================================
+  Widget _drawerCategoriasDesktop() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
@@ -400,7 +533,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Categorías',
+            'Filtros',
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w600,
@@ -408,16 +541,11 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
               letterSpacing: .2,
             ),
           ),
-
           const SizedBox(height: 10),
-
           Divider(color: Colors.grey.shade300, thickness: 1, height: 1),
-
           const SizedBox(height: 6),
-
           ...widget.categorias.map((c) {
             final activa = c.seoUrl == widget.categoriaActiva.seoUrl;
-
             return InkWell(
               onTap: () => _irCategoria(c),
               borderRadius: BorderRadius.circular(8),
@@ -465,9 +593,9 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     );
   }
 
-  /// =====================================================
-  /// DRAWER MOBILE
-  /// =====================================================
+  // =====================================================
+  // DRAWER MOBILE (sin cambios)
+  // =====================================================
   Widget _drawerCategorias() {
     return Drawer(
       child: SafeArea(
@@ -477,12 +605,10 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Categorías',
+                'Filtros',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
               ),
-
               const SizedBox(height: 16),
-
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -496,7 +622,6 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
                         activeColor: SistemaConstantes.colorAzulPrimario,
                         onChanged: (_) {
                           Navigator.pop(context);
-
                           _irCategoria(c);
                         },
                       );
@@ -511,14 +636,11 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
     );
   }
 
-  /// =====================================================
-  /// NAV
-  /// =====================================================
+  // =====================================================
+  // NAV
+  // =====================================================
   void _irCategoria(CategoriaModel c) {
-    if (c.seoUrl == widget.categoriaActiva.seoUrl) {
-      return;
-    }
-
+    if (c.seoUrl == widget.categoriaActiva.seoUrl) return;
     context.go(
       '/categoria/${c.seoUrl}',
       extra: CategoriaNavegacionModel(

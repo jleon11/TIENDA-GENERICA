@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/widgets/product_card.dart';
@@ -166,7 +167,9 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
                 badgeColor: item.cardColorEtiqueta,
                 inventarioLimitado: item.inventarioLimitado,
                 mostrarBotonCarrito: true,
-                onTap: () {},
+                onTap: () {
+                  GoRouter.of(context).go('/producto', extra: item);
+                },
                 onPressedAddAlCarrito: () {},
               );
             },

@@ -16,6 +16,10 @@ class ProductGridSection<T extends ContratoCardProducto>
   final double espaciado;
   final Alignment alineacion;
 
+  /// Scroll controller opcional. Si se pasa, al seleccionar un producto
+  /// la vista sube automáticamente al inicio para que el cambio sea visible.
+  final ScrollController? scrollController;
+
   const ProductGridSection({
     super.key,
     required this.titulo,
@@ -25,57 +29,44 @@ class ProductGridSection<T extends ContratoCardProducto>
     this.alturaItem = SistemaConstantes.cardNormalAlto,
     this.espaciado = 16,
     this.alineacion = Alignment.centerLeft,
+    this.scrollController,
   });
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// 🔵 TITULO
           Text(titulo, style: SistemaConstantes.tituloSeccion),
-
           const SizedBox(height: SistemaConstantes.espacioMD),
-
-          /// 🔥 GRID SIN CONTENEDOR EXTERNO
           GridGenerico<T>(
             items: items,
-
             filas: filas,
-
             anchoItem: anchoItem,
-
             alturaItem: alturaItem,
-
             espaciado: espaciado,
-
             alineacion: alineacion,
-
             itemBuilder: (_, item) {
               return ProductCard(
                 nombre: item.nombre,
-
                 sku: item.codigo,
-
                 precioActual: item.precioActual,
-
                 precioAnterior: item.mostrarDescuento
                     ? item.precioAnterior
                     : null,
-
                 imagen: item.cardImagen,
-
                 badgeTexto: item.cardEtiqueta,
-
                 badgeColor: item.cardColorEtiqueta,
-
                 inventarioLimitado: item.inventarioLimitado,
-
                 mostrarBotonCarrito: item.mostrarBotonCarrito,
                 onTap: () {
+                  scrollController?.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeOut,
+                  );
+
                   GoRouter.of(context).go('/producto', extra: item);
                 },
               );
