@@ -6,6 +6,7 @@ import 'package:tienda_motos/helpers/icono_categoria_helper.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DrawerTienda extends StatelessWidget {
   final List<CategoriaModel> categorias;
@@ -65,32 +66,47 @@ class DrawerTienda extends StatelessWidget {
 
                 _contactFA(
                   FontAwesomeIcons.squareWhatsapp,
-                  'WhatsApp: 8402-1743',
+                  'WhatsApp: 6298-4141',
                   iconColor: Colors.green,
+                  url: Uri(
+                    scheme: 'https',
+                    host: 'wa.me',
+                    path: '/50662984141',
+                    queryParameters: {
+                      'text':
+                          'Hola, me interesa obtener más información sobre sus productos y accesorios.',
+                    },
+                  ).toString(),
                 ),
 
                 _contactFA(
                   FontAwesomeIcons.squareFacebook,
                   '@accesoriosgonzales',
                   iconColor: const Color(0xFF1877F2),
+                  url:
+                      'https://www.facebook.com/p/Accesorios-Gonz%C3%A1lez-61572541004954/',
                 ),
 
                 _contactFA(
                   FontAwesomeIcons.squareInstagram,
                   '@accesoriosgonzales',
                   iconColor: const Color(0xFFE1306C),
+                  url:
+                      'https://www.threads.com/@justinleon3695?xmt=AQF0G0gerjjgV-vjjpvoweWC2awIvB-u6HnvrMJMiKrprwk',
                 ),
 
                 _contactFA(
                   FontAwesomeIcons.tiktok,
                   '@accesoriosgonzales',
                   iconColor: Colors.black,
+                  url: 'https://www.tiktok.com/@tgcostarica',
                 ),
 
                 _contactFA(
                   FontAwesomeIcons.envelope,
                   'justinleon1111@gmail.com',
                   iconColor: const Color(0xFF1E478D),
+                  url: 'mailto:justinleon1111@gmail.com',
                 ),
               ],
             ),
@@ -186,22 +202,31 @@ Container(
     IconData icon,
     String texto, {
     Color iconColor = const Color(0xFF1E478D),
+    String? url,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        children: [
-          FaIcon(icon, color: iconColor, size: 22),
-
-          const SizedBox(width: 18),
-
-          Expanded(
-            child: Text(
-              texto,
-              style: const TextStyle(fontSize: 17, color: Colors.black87),
+    return InkWell(
+      onTap: url == null
+          ? null
+          : () async {
+              final uri = Uri.parse(url);
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            FaIcon(icon, color: iconColor, size: 22),
+            const SizedBox(width: 18),
+            Expanded(
+              child: Text(
+                texto,
+                style: const TextStyle(fontSize: 17, color: Colors.black87),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
