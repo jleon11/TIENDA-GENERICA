@@ -187,10 +187,30 @@ class FooterSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _red(FontAwesomeIcons.facebookF),
-              _red(FontAwesomeIcons.instagram),
-              _red(FontAwesomeIcons.tiktok),
-              _red(FontAwesomeIcons.whatsapp),
+              _red(
+                FontAwesomeIcons.facebookF,
+                'https://www.facebook.com/p/Accesorios-Gonz%C3%A1lez-61572541004954/',
+              ),
+              _red(
+                FontAwesomeIcons.instagram,
+                'https://www.threads.com/@justinleon3695?xmt=AQF0G0gerjjgV-vjjpvoweWC2awIvB-u6HnvrMJMiKrprwk',
+              ),
+              _red(
+                FontAwesomeIcons.tiktok,
+                'https://www.tiktok.com/@tgcostarica',
+              ),
+              _red(
+                FontAwesomeIcons.whatsapp,
+                Uri(
+                  scheme: 'https',
+                  host: 'wa.me',
+                  path: '/50662984141',
+                  queryParameters: {
+                    'text':
+                        'Hola, me interesa obtener más información sobre sus productos y accesorios.',
+                  },
+                ).toString(),
+              ),
             ],
           ),
         ],
@@ -198,17 +218,25 @@ class FooterSection extends StatelessWidget {
     );
   }
 
-  Widget _red(IconData icono) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 6),
-      width: 46,
-      height: 46,
-      decoration: BoxDecoration(
-        color: Colors.white10,
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white12),
+  Widget _red(IconData icono, String url) {
+    return GestureDetector(
+      onTap: () async {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 6),
+        width: 46,
+        height: 46,
+        decoration: BoxDecoration(
+          color: Colors.white10,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white12),
+        ),
+        child: Center(child: FaIcon(icono, color: Colors.white, size: 18)),
       ),
-      child: Center(child: FaIcon(icono, color: Colors.white, size: 18)),
     );
   }
 
