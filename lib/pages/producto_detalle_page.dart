@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/models/subcategoria_model.dart';
+import 'package:tienda_motos/providers/carrito_provider.dart';
 import 'package:tienda_motos/sections/boletin_informativo_section.dart';
 import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
 import 'package:tienda_motos/widgets/galeria_producto.dart';
+import 'package:tienda_motos/sections/carrito_drawer.dart';
 import 'package:tienda_motos/widgets/general_components/migaja_de_pan.dart';
 import 'package:tienda_motos/widgets/producto_detalle/panel_compra_producto.dart';
 import 'package:tienda_motos/widgets/producto_detalle/tabs_infoProducto_widget.dart';
@@ -196,6 +199,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      endDrawer: const CarritoDrawer(),
 
       body: SafeArea(
         child: SingleChildScrollView(
@@ -262,6 +266,19 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                                     cantidad: cantidad,
                                     onSumar: _sumarCantidad,
                                     onRestar: _restarCantidad,
+                                    onAgregarAlCarrito: () {
+                                      context.read<CarritoProvider>().agregar(
+                                        producto,
+                                      );
+                                      Scaffold.of(context).openEndDrawer();
+                                      Future.delayed(
+                                        const Duration(seconds: 3),
+                                        () {
+                                          if (context.mounted)
+                                            Navigator.of(context).maybePop();
+                                        },
+                                      );
+                                    },
                                   ),
                                 ],
                               )
@@ -290,6 +307,19 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                                       cantidad: cantidad,
                                       onSumar: _sumarCantidad,
                                       onRestar: _restarCantidad,
+                                      onAgregarAlCarrito: () {
+                                        context.read<CarritoProvider>().agregar(
+                                          producto,
+                                        );
+                                        Scaffold.of(context).openEndDrawer();
+                                        Future.delayed(
+                                          const Duration(seconds: 3),
+                                          () {
+                                            if (context.mounted)
+                                              Navigator.of(context).maybePop();
+                                          },
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],

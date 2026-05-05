@@ -8,6 +8,7 @@ class PanelCompraProductoWidget extends StatelessWidget {
   final int cantidad;
   final VoidCallback onSumar;
   final VoidCallback onRestar;
+  final VoidCallback? onAgregarAlCarrito;
 
   const PanelCompraProductoWidget({
     super.key,
@@ -15,6 +16,7 @@ class PanelCompraProductoWidget extends StatelessWidget {
     required this.cantidad,
     required this.onSumar,
     required this.onRestar,
+    this.onAgregarAlCarrito,
   });
 
   @override
@@ -147,7 +149,7 @@ class PanelCompraProductoWidget extends StatelessWidget {
                 width: pantallaPequena ? double.infinity : 250,
                 height: 58,
                 child: ElevatedButton(
-                  onPressed: producto.agotado ? null : () {},
+                  onPressed: producto.agotado ? null : onAgregarAlCarrito,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE51F2B),
                     foregroundColor: Colors.white,

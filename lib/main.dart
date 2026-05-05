@@ -7,7 +7,7 @@ import 'package:tienda_motos/sections/header_section.dart';
 import 'package:tienda_motos/routes/app_router.dart';
 import 'package:tienda_motos/services/categoria_services.dart';
 import 'package:tienda_motos/widgets/drawer_tienda.dart';
-import 'package:tienda_motos/widgets/general_components/carrito_drawer.dart';
+import 'package:tienda_motos/sections/carrito_drawer.dart';
 
 void main() {
   //usePathUrlStrategy(); // 🔥 quita el #
@@ -129,7 +129,7 @@ class _LayoutPrincipalState extends State<LayoutPrincipal> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: DrawerTienda(categorias: categorias),
-      endDrawer: const CarritoDrawer(), // 👈 agregar esto
+      endDrawer: const CarritoDrawer(), 
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),

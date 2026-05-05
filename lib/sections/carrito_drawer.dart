@@ -67,93 +67,104 @@ class CarritoDrawer extends StatelessWidget {
                     separatorBuilder: (_, __) => const Divider(),
                     itemBuilder: (_, i) {
                       final item = carrito.items[i];
-                      return Row(
-                        children: [
-                          /// IMAGEN
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              item.producto.imagenPrincipal,
-                              width: 60,
-                              height: 60,
-                              fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => const Icon(
-                                Icons.image_not_supported,
-                                size: 40,
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            /// IMAGEN MÁS GRANDE
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                item.producto.imagenPrincipal,
+                                width: 90, // 👈 era 60, ahora 90
+                                height: 90, // 👈 era 60, ahora 90
+                                fit: BoxFit.contain,
+                                errorBuilder: (_, __, ___) => const Icon(
+                                  Icons.image_not_supported,
+                                  size: 50,
+                                ),
                               ),
                             ),
-                          ),
 
-                          const SizedBox(width: 12),
+                            const SizedBox(width: 14),
 
-                          /// INFO
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item.producto.nombre,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '₡ ${item.producto.precioActual}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w900,
-                                    color: SistemaConstantes.colorAzulPrimario,
-                                  ),
-                                ),
-
-                                /// CANTIDAD
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.remove, size: 16),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: () =>
-                                          carrito.decrementar(item.producto.id),
+                            /// INFO
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.producto.nombre,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 14, // 👈 era 13
+                                      fontWeight: FontWeight.w700,
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                      ),
-                                      child: Text(
-                                        '${item.cantidad}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    '₡ ${item.producto.precioActual}',
+                                    style: const TextStyle(
+                                      fontSize: 15, // 👈 era 14
+                                      fontWeight: FontWeight.w900,
+                                      color:
+                                          SistemaConstantes.colorAzulPrimario,
+                                    ),
+                                  ),
+
+                                  /// CANTIDAD
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.remove,
+                                          size: 18,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(),
+                                        onPressed: () => carrito.decrementar(
+                                          item.producto.id,
                                         ),
                                       ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.add, size: 16),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: () =>
-                                          carrito.agregar(item.producto),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        child: Text(
+                                          '${item.cantidad}',
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.add, size: 18),
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(),
+                                        onPressed: () =>
+                                            carrito.agregar(item.producto),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
 
-                          /// ELIMINAR
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete_outline,
-                              color: Colors.red,
-                              size: 20,
+                            /// ELIMINAR
+                            IconButton(
+                              icon: const Icon(
+                                Icons.delete_outline,
+                                color: Colors.red,
+                                size: 22,
+                              ),
+                              onPressed: () =>
+                                  carrito.eliminar(item.producto.id),
                             ),
-                            onPressed: () => carrito.eliminar(item.producto.id),
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     },
                   ),
