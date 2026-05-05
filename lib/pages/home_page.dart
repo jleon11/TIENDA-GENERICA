@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/helpers/icono_categoria_helper.dart';
-import 'package:tienda_motos/main.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
+import 'package:tienda_motos/providers/carrito_provider.dart';
 
 class HeaderTienda extends StatelessWidget {
   const HeaderTienda({super.key});
@@ -113,11 +115,53 @@ class HeaderTienda extends StatelessWidget {
 
                 if (!esMovil) const SizedBox(width: 12),
 
-                /// CARRITO
-                _iconoHeader(
-                  icono: Icons.shopping_cart_outlined,
-                  color: Colors.red,
-                  badge: true,
+                // Reemplaza el _iconoHeader del carrito por:
+                Builder(
+                  builder: (context) => Consumer<CarritoProvider>(
+                    builder: (context, carrito, _) => GestureDetector(
+                      onTap: () => Scaffold.of(context).openEndDrawer(),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            width: 42,
+                            height: 42,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border: Border.all(color: Colors.grey.shade300),
+                            ),
+                            child: const Icon(
+                              Icons.shopping_cart_outlined,
+                              color: Colors.red,
+                              size: 22,
+                            ),
+                          ),
+                          if (carrito.totalItems > 0)
+                            Positioned(
+                              right: -2,
+                              top: -2,
+                              child: Container(
+                                width: 18,
+                                height: 18,
+                                decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  '${carrito.totalItems}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
 
                 if (esTablet) const SizedBox(width: 6),

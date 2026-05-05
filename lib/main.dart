@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
+import 'package:tienda_motos/providers/carrito_provider.dart';
 import 'package:tienda_motos/sections/header_section.dart';
 import 'package:tienda_motos/routes/app_router.dart';
 import 'package:tienda_motos/services/categoria_services.dart';
 import 'package:tienda_motos/widgets/drawer_tienda.dart';
+import 'package:tienda_motos/widgets/general_components/carrito_drawer.dart';
 
 void main() {
   //usePathUrlStrategy(); // 🔥 quita el #
-  runApp(const MyApp());
+  //runApp(const MyApp());
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CarritoProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -119,6 +129,7 @@ class _LayoutPrincipalState extends State<LayoutPrincipal> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: DrawerTienda(categorias: categorias),
+      endDrawer: const CarritoDrawer(), // 👈 agregar esto
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
+import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/providers/carrito_provider.dart';
 import 'package:tienda_motos/widgets/general_components/generic_grid.dart';
 import 'package:tienda_motos/widgets/general_components/contrato_card_producto.dart';
 import 'package:tienda_motos/widgets/product_card.dart';
@@ -68,6 +71,15 @@ class ProductGridSection<T extends ContratoCardProducto>
                   );
 
                   GoRouter.of(context).go('/producto', extra: item);
+                },
+                onPressedAddAlCarrito: () {
+                  if (item is ProductoModel) {
+                    context.read<CarritoProvider>().agregar(item);
+                    Scaffold.of(context).openEndDrawer();
+                    Future.delayed(const Duration(seconds: 3), () {
+                      if (context.mounted) Navigator.of(context).maybePop();
+                    });
+                  }
                 },
               );
             },

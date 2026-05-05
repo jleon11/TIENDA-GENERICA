@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/providers/carrito_provider.dart';
 import 'package:tienda_motos/widgets/product_card.dart';
 
 class PromoSection extends StatefulWidget {
@@ -24,7 +26,6 @@ class PromoSection extends StatefulWidget {
 
 class _PromoSectionState extends State<PromoSection> {
   late final PageController _pageController;
-
   int paginaActual = 0;
 
   @override
@@ -47,7 +48,6 @@ class _PromoSectionState extends State<PromoSection> {
 
   double calcularAnchoCard(double width) {
     if (width < 700) return width * 0.88;
-
     return SistemaConstantes.cardNormalAncho;
   }
 
@@ -56,28 +56,21 @@ class _PromoSectionState extends State<PromoSection> {
     int cantidad,
   ) {
     final paginas = <List<ProductoModel>>[];
-
     for (int i = 0; i < items.length; i += cantidad) {
       final fin = (i + cantidad > items.length) ? items.length : i + cantidad;
-
       paginas.add(items.sublist(i, fin));
     }
-
     return paginas;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.items.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (widget.items.isEmpty) return const SizedBox.shrink();
 
     final width = MediaQuery.of(context).size.width;
-
     final itemsVista = calcularItemsPorVista(width);
     final cardWidth = calcularAnchoCard(width);
     final alto = SistemaConstantes.cardNormalAlto;
-
     final paginas = dividirPaginas(widget.items, itemsVista);
 
     return SizedBox(
@@ -85,9 +78,7 @@ class _PromoSectionState extends State<PromoSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// TITULO
           Text(widget.titulo, style: SistemaConstantes.tituloSeccion),
-
           const SizedBox(height: SistemaConstantes.espacioMD),
 
           /// SLIDER
@@ -96,11 +87,7 @@ class _PromoSectionState extends State<PromoSection> {
             child: PageView.builder(
               controller: _pageController,
               itemCount: paginas.length,
-              onPageChanged: (index) {
-                setState(() {
-                  paginaActual = index;
-                });
-              },
+              onPageChanged: (index) => setState(() => paginaActual = index),
               itemBuilder: (context, paginaIndex) {
                 final pagina = paginas[paginaIndex];
 
@@ -112,23 +99,32 @@ class _PromoSectionState extends State<PromoSection> {
                       return SizedBox(
                         width: cardWidth,
                         height: alto,
-                        child: ProductCard(
-                          nombre: producto.nombre,
-                          sku: producto.codigo,
-                          precioActual: producto.precio.toString(),
-                          precioAnterior: producto.precioAnteriorValor
-                              ?.toString(),
-                          imagen: producto.imagenes.isNotEmpty
-                              ? producto.imagenes.first
-                              : '',
-                          badgeTexto: widget.badgeTexto,
-                          badgeColor: widget.badgeColor,
-                          inventarioLimitado: producto.stock <= 3,
-                          onTap: () => {
-                            GoRouter.of(
-                              context,
+
+                        /// 👇 Builder para tener el Scaffold accesible
+                        child: Builder(
+                          builder: (ctx) => ProductCard(
+                            nombre: producto.nombre,
+                            sku: producto.codigo,
+                            precioActual: producto.precio.toString(),
+                            precioAnterior: producto.precioAnteriorValor
+                                ?.toString(),
+                            imagen: producto.imagenes.isNotEmpty
+                                ? producto.imagenes.first
+                                : '',
+                            badgeTexto: widget.badgeTexto,
+                            badgeColor: widget.badgeColor,
+                            inventarioLimitado: producto.stock <= 3,
+                            onTap: () => GoRouter.of(
+                              ctx,
                             ).go('/producto', extra: producto),
-                          },
+                            onPressedAddAlCarrito: () {
+                              ctx.read<CarritoProvider>().agregar(producto);
+                              Scaffold.of(ctx).openEndDrawer();
+                              Future.delayed(const Duration(seconds: 3), () {
+                                if (ctx.mounted) Navigator.of(ctx).maybePop();
+                              });
+                            },
+                          ),
                         ),
                       );
                     }).toList(),
@@ -145,15 +141,12 @@ class _PromoSectionState extends State<PromoSection> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(paginas.length, (index) {
               final activo = paginaActual == index;
-
               return GestureDetector(
-                onTap: () {
-                  _pageController.animateToPage(
-                    index,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                  );
-                },
+                onTap: () => _pageController.animateToPage(
+                  index,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOut,
+                ),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   margin: const EdgeInsets.symmetric(horizontal: 4),
