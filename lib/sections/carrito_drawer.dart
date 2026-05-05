@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -167,6 +168,7 @@ class CarritoDrawer extends StatelessWidget {
           ),
 
           /// FOOTER
+          /// FOOTER
           if (carrito.items.isNotEmpty)
             Container(
               padding: const EdgeInsets.all(20),
@@ -205,32 +207,30 @@ class CarritoDrawer extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  // VER CARRITO - comentado para MVP
-                  // SizedBox(
-                  //   width: double.infinity,
-                  //   child: OutlinedButton(
-                  //     onPressed: () {},
-                  //     child: const Text('VER CARRITO'),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 10),
-
-                  /// BOTÓN WHATSAPP
+                  /// BOTÓN SECUNDARIO - PROFORMA
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () => _enviarWhatsapp(carrito),
-                      icon: const Icon(Icons.chat, color: Colors.white),
+                    child: OutlinedButton.icon(
+                      onPressed: () => _generarProforma(context, carrito),
+                      icon: FaIcon(
+                        FontAwesomeIcons.filePdf,
+                        color: SistemaConstantes.colorAzulPrimario,
+                        size: 18,
+                      ),
+
                       label: const Text(
-                        'CONSULTAR POR WHATSAPP',
+                        'Descargar Proforma',
                         style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
+                          color: SistemaConstantes.colorAzulPrimario,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
                         ),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF25D366),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(
+                          color: SistemaConstantes.colorAzulPrimario,
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 13),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -240,25 +240,28 @@ class CarritoDrawer extends StatelessWidget {
 
                   const SizedBox(height: 10),
 
-                  /// BOTÓN PDF PROFORMA
+                  /// BOTÓN PRINCIPAL - WHATSAPP
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () => _generarProforma(context, carrito),
-                      icon: const Icon(
-                        Icons.picture_as_pdf,
+                      onPressed: () => _enviarWhatsapp(carrito),
+                      icon: const FaIcon(
+                        FontAwesomeIcons.whatsapp,
                         color: Colors.white,
+                        size: 20,
                       ),
+
                       label: const Text(
-                        'DESCARGAR PROFORMA',
+                        'Finalizar por WhatsApp',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
+                          fontSize: 15,
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: SistemaConstantes.colorAzulPrimario,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        backgroundColor: const Color(0xFF25D366),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -275,15 +278,17 @@ class CarritoDrawer extends StatelessWidget {
 
   Future<void> _enviarWhatsapp(CarritoProvider carrito) async {
     final buffer = StringBuffer();
-    buffer.writeln('Hola! Me interesa hacer un pedido 🛒');
+    buffer.writeln('Hola, me interesa realizar el siguiente pedido:');
     buffer.writeln('');
+
     for (final item in carrito.items) {
-      buffer.writeln(
-        '• ${item.producto.nombre} x${item.cantidad} — ₡${item.producto.precioActual}',
-      );
+      buffer.writeln('• ${item.producto.nombre}');
+      buffer.writeln('  Código: ${item.producto.codigo}');
+      buffer.writeln('  Cantidad: ${item.cantidad}');
+      buffer.writeln('');
     }
-    buffer.writeln('');
-    buffer.writeln('Total: ₡${carrito.totalPrecio.toStringAsFixed(2)}');
+
+    buffer.writeln('Quedo atento a su confirmación y disponibilidad.');
 
     final uri = Uri(
       scheme: 'https',
