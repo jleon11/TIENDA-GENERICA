@@ -408,92 +408,321 @@ class CarritoDrawer extends StatelessWidget {
         ),
       );
     }
-    // ─────────────────────────────────────────────────────────────
 
+    // ─────────────────────────────────────────────────────────────
     pdf.addPage(
-      pw.Page(
+      pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
+
         margin: const pw.EdgeInsets.all(32),
-        build: (pw.Context ctx) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
+
+        build: (pw.Context ctx) => [
+          /// HEADER
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+
             children: [
-              /// HEADER
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+
                 children: [
-                  pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Text(
-                        'ACCESORIOS GONZÁLEZ',
-                        style: pw.TextStyle(
-                          font: fontBold,
-                          fontSize: 22,
-                          color: azul,
-                        ),
-                      ),
-                      pw.Text(
-                        'Tu tienda confiable en accesorios y repuestos',
-                        style: pw.TextStyle(
-                          font: fontRegular,
-                          fontSize: 10,
-                          color: gris,
-                        ),
-                      ),
-                    ],
-                  ),
-                  pw.Container(
-                    padding: const pw.EdgeInsets.all(12),
-                    decoration: pw.BoxDecoration(
-                      border: pw.Border.all(color: azul),
-                      borderRadius: pw.BorderRadius.circular(8),
+                  pw.Text(
+                    'ACCESORIOS GONZÁLEZ',
+
+                    style: pw.TextStyle(
+                      font: fontBold,
+                      fontSize: 22,
+                      color: azul,
                     ),
-                    child: pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.end,
-                      children: [
-                        pw.Row(
-                          children: [
-                            pw.Text(
-                              'PROFORMA  ',
-                              style: pw.TextStyle(
-                                font: fontBold,
-                                color: azul,
-                                fontSize: 13,
-                              ),
-                            ),
-                            pw.Text(
-                              numeroProforma,
-                              style: pw.TextStyle(font: fontBold, fontSize: 13),
-                            ),
-                          ],
-                        ),
-                        pw.SizedBox(height: 4),
-                        pw.Text(
-                          'Fecha: $fecha',
-                          style: pw.TextStyle(
-                            font: fontRegular,
-                            fontSize: 11,
-                            color: gris,
-                          ),
-                        ),
-                      ],
+                  ),
+
+                  pw.Text(
+                    'Tu tienda confiable en accesorios y repuestos',
+
+                    style: pw.TextStyle(
+                      font: fontRegular,
+                      fontSize: 10,
+                      color: gris,
                     ),
                   ),
                 ],
               ),
 
-              pw.SizedBox(height: 20),
-              pw.Divider(color: azul, thickness: 2),
-              pw.SizedBox(height: 16),
+              pw.Container(
+                padding: const pw.EdgeInsets.all(12),
 
-              pw.Text(
-                'FACTURA PROFORMA',
-                style: pw.TextStyle(font: fontBold, fontSize: 16, color: azul),
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(color: azul),
+
+                  borderRadius: pw.BorderRadius.circular(8),
+                ),
+
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.end,
+
+                  children: [
+                    pw.Row(
+                      children: [
+                        pw.Text(
+                          'PROFORMA  ',
+
+                          style: pw.TextStyle(
+                            font: fontBold,
+                            color: azul,
+                            fontSize: 13,
+                          ),
+                        ),
+
+                        pw.Text(
+                          numeroProforma,
+
+                          style: pw.TextStyle(font: fontBold, fontSize: 13),
+                        ),
+                      ],
+                    ),
+
+                    pw.SizedBox(height: 4),
+
+                    pw.Text(
+                      'Fecha: $fecha',
+
+                      style: pw.TextStyle(
+                        font: fontRegular,
+                        fontSize: 11,
+                        color: gris,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              pw.SizedBox(height: 4),
+            ],
+          ),
+
+          pw.SizedBox(height: 20),
+
+          pw.Divider(color: azul, thickness: 2),
+
+          pw.SizedBox(height: 16),
+
+          pw.Text(
+            'FACTURA PROFORMA',
+
+            style: pw.TextStyle(font: fontBold, fontSize: 16, color: azul),
+          ),
+
+          pw.SizedBox(height: 4),
+
+          pw.Text(
+            'Gracias por su preferencia. A continuación el detalle de su cotización.',
+
+            style: pw.TextStyle(font: fontRegular, fontSize: 10, color: gris),
+          ),
+
+          pw.SizedBox(height: 16),
+
+          /// TABLA
+          pw.Table(
+            border: pw.TableBorder.all(
+              color: PdfColor.fromHex('#E5E7EB'),
+              width: 0.5,
+            ),
+
+            columnWidths: {
+              0: const pw.FixedColumnWidth(30),
+              1: const pw.FixedColumnWidth(200),
+              2: const pw.FixedColumnWidth(60),
+              3: const pw.FixedColumnWidth(40),
+              4: const pw.FixedColumnWidth(80),
+              5: const pw.FixedColumnWidth(80),
+            },
+
+            children: [
+              pw.TableRow(
+                decoration: pw.BoxDecoration(color: azul),
+
+                children: [
+                  celdaHeader('#'),
+                  celdaHeader('Producto'),
+                  celdaHeader('Código'),
+                  celdaHeader('Cant.'),
+                  celdaHeader('Precio Unit.'),
+                  celdaHeader('Subtotal'),
+                ],
+              ),
+
+              ...carrito.items.asMap().entries.map((entry) {
+                final idx = entry.key;
+                final item = entry.value;
+
+                final subtotal = item.producto.precio * item.cantidad;
+
+                final fondo = idx % 2 == 0 ? PdfColors.white : grisFondo;
+
+                return pw.TableRow(
+                  decoration: pw.BoxDecoration(color: fondo),
+
+                  children: [
+                    celda('${idx + 1}', center: true),
+
+                    celda(item.producto.nombre),
+
+                    celda(item.producto.codigo, center: true),
+
+                    celda('${item.cantidad}', center: true),
+
+                    celda(
+                      '₡${item.producto.precio.toStringAsFixed(2)}',
+                      center: true,
+                    ),
+
+                    celda(
+                      '₡${subtotal.toStringAsFixed(2)}',
+                      center: true,
+                      bold: true,
+                    ),
+                  ],
+                );
+              }),
+            ],
+          ),
+
+          pw.SizedBox(height: 20),
+
+          /// OBSERVACIONES + TOTALES
+          pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+
+            children: [
+              pw.Expanded(
+                flex: 5,
+
+                child: pw.Container(
+                  padding: const pw.EdgeInsets.all(12),
+
+                  decoration: pw.BoxDecoration(
+                    color: azulClaro,
+
+                    borderRadius: pw.BorderRadius.circular(8),
+                  ),
+
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+
+                    children: [
+                      pw.Text(
+                        'OBSERVACIONES',
+
+                        style: pw.TextStyle(
+                          font: fontBold,
+                          color: azul,
+                          fontSize: 11,
+                        ),
+                      ),
+
+                      pw.SizedBox(height: 8),
+
+                      obs('Precios sujetos a cambio sin previo aviso.'),
+
+                      obs('Esta proforma no tiene validez fiscal.'),
+
+                      obs('Cotización válida por 3 días.'),
+
+                      obs('No incluye costos de envío.'),
+                    ],
+                  ),
+                ),
+              ),
+
+              pw.SizedBox(width: 16),
+
+              pw.Expanded(
+                flex: 4,
+
+                child: pw.Column(
+                  children: [
+                    filaTotal(
+                      'Subtotal',
+                      '₡${carrito.totalPrecio.toStringAsFixed(2)}',
+
+                      grisColor: gris,
+                    ),
+
+                    filaTotal(
+                      'Descuento',
+                      '- ₡0.00',
+
+                      grisColor: gris,
+                      colorValor: rojo,
+                    ),
+
+                    pw.SizedBox(height: 4),
+
+                    pw.Container(
+                      padding: const pw.EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
+
+                      decoration: pw.BoxDecoration(
+                        color: azul,
+
+                        borderRadius: pw.BorderRadius.circular(6),
+                      ),
+
+                      child: pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+
+                        children: [
+                          pw.Text(
+                            'TOTAL',
+
+                            style: pw.TextStyle(
+                              font: fontBold,
+                              color: PdfColors.white,
+                              fontSize: 13,
+                            ),
+                          ),
+
+                          pw.Text(
+                            '₡${carrito.totalPrecio.toStringAsFixed(2)}',
+
+                            style: pw.TextStyle(
+                              font: fontBold,
+                              color: PdfColors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          pw.SizedBox(height: 16),
+
+          pw.Center(
+            child: pw.Text(
+              'Gracias por su preferencia',
+
+              style: pw.TextStyle(font: fontItalic, color: gris, fontSize: 11),
+            ),
+          ),
+
+          /// FOOTER
+          pw.Divider(color: PdfColor.fromHex('#E5E7EB')),
+
+          pw.SizedBox(height: 8),
+
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+
+            children: [
               pw.Text(
-                'Gracias por su preferencia. A continuación el detalle de su cotización.',
+                '+506 6298-4141',
+
                 style: pw.TextStyle(
                   font: fontRegular,
                   fontSize: 10,
@@ -501,207 +730,30 @@ class CarritoDrawer extends StatelessWidget {
                 ),
               ),
 
-              pw.SizedBox(height: 16),
+              pw.Text(
+                'ventas@accesorios.com',
 
-              /// TABLA
-              pw.Table(
-                border: pw.TableBorder.all(
-                  color: PdfColor.fromHex('#E5E7EB'),
-                  width: 0.5,
-                ),
-                columnWidths: {
-                  0: const pw.FixedColumnWidth(30),
-                  1: const pw.FixedColumnWidth(200),
-                  2: const pw.FixedColumnWidth(60),
-                  3: const pw.FixedColumnWidth(40),
-                  4: const pw.FixedColumnWidth(80),
-                  5: const pw.FixedColumnWidth(80),
-                },
-                children: [
-                  pw.TableRow(
-                    decoration: pw.BoxDecoration(color: azul),
-                    children: [
-                      celdaHeader('#'),
-                      celdaHeader('Producto'),
-                      celdaHeader('Código'),
-                      celdaHeader('Cant.'),
-                      celdaHeader('Precio Unit.'),
-                      celdaHeader('Subtotal'),
-                    ],
-                  ),
-                  ...carrito.items.asMap().entries.map((entry) {
-                    final idx = entry.key;
-                    final item = entry.value;
-                    final subtotal = item.producto.precio * item.cantidad;
-                    final fondo = idx % 2 == 0 ? PdfColors.white : grisFondo;
-
-                    return pw.TableRow(
-                      decoration: pw.BoxDecoration(color: fondo),
-                      children: [
-                        celda('${idx + 1}', center: true),
-                        celda(item.producto.nombre),
-                        celda(item.producto.codigo, center: true),
-                        celda('${item.cantidad}', center: true),
-                        celda(
-                          '₡${item.producto.precio.toStringAsFixed(2)}',
-                          center: true,
-                        ),
-                        celda(
-                          '₡${subtotal.toStringAsFixed(2)}',
-                          center: true,
-                          bold: true,
-                        ),
-                      ],
-                    );
-                  }),
-                ],
-              ),
-
-              pw.SizedBox(height: 20),
-
-              /// OBSERVACIONES + TOTALES
-              pw.Row(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Expanded(
-                    flex: 5,
-                    child: pw.Container(
-                      padding: const pw.EdgeInsets.all(12),
-                      decoration: pw.BoxDecoration(
-                        color: azulClaro,
-                        borderRadius: pw.BorderRadius.circular(8),
-                      ),
-                      child: pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: [
-                          pw.Text(
-                            'OBSERVACIONES',
-                            style: pw.TextStyle(
-                              font: fontBold,
-                              color: azul,
-                              fontSize: 11,
-                            ),
-                          ),
-                          pw.SizedBox(height: 8),
-                          obs('Precios sujetos a cambio sin previo aviso.'),
-                          obs('Esta proforma no tiene validez fiscal.'),
-                          obs('Cotización válida por 3 días.'),
-                          obs('No incluye costos de envío.'),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  pw.SizedBox(width: 16),
-
-                  pw.Expanded(
-                    flex: 4,
-                    child: pw.Column(
-                      children: [
-                        filaTotal(
-                          'Subtotal',
-                          '₡${carrito.totalPrecio.toStringAsFixed(2)}',
-                          grisColor: gris,
-                        ),
-                        filaTotal(
-                          'Descuento',
-                          '- ₡0.00',
-                          grisColor: gris,
-                          colorValor: rojo,
-                        ),
-                        // filaTotal('Impuesto (0%)', '₡0.00', grisColor: gris),
-                        // filaTotal('Envío', '₡0.00', grisColor: gris),
-                        pw.SizedBox(height: 4),
-                        pw.Container(
-                          padding: const pw.EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 10,
-                          ),
-                          decoration: pw.BoxDecoration(
-                            color: azul,
-                            borderRadius: pw.BorderRadius.circular(6),
-                          ),
-                          child: pw.Row(
-                            mainAxisAlignment:
-                                pw.MainAxisAlignment.spaceBetween,
-                            children: [
-                              pw.Text(
-                                'TOTAL',
-                                style: pw.TextStyle(
-                                  font: fontBold,
-                                  color: PdfColors.white,
-                                  fontSize: 13,
-                                ),
-                              ),
-                              pw.Text(
-                                '₡${carrito.totalPrecio.toStringAsFixed(2)}',
-                                style: pw.TextStyle(
-                                  font: fontBold,
-                                  color: PdfColors.white,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-
-              pw.SizedBox(height: 16),
-              pw.Center(
-                child: pw.Text(
-                  'Gracias por su preferencia',
-                  style: pw.TextStyle(
-                    font: fontItalic,
-                    color: gris, // 👈 gris en lugar de rojo
-                    fontSize: 11,
-                  ),
+                style: pw.TextStyle(
+                  font: fontRegular,
+                  fontSize: 10,
+                  color: gris,
                 ),
               ),
 
-              pw.Spacer(),
+              pw.Text(
+                'Limón, Costa Rica',
 
-              /// PIE DE PÁGINA
-              pw.Divider(color: PdfColor.fromHex('#E5E7EB')),
-              pw.SizedBox(height: 8),
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
-                children: [
-                  pw.Text(
-                    '+506 6298-4141',
-                    style: pw.TextStyle(
-                      font: fontRegular,
-                      fontSize: 10,
-                      color: gris,
-                    ),
-                  ),
-                  pw.Text(
-                    'ventas@accesorios.com',
-                    style: pw.TextStyle(
-                      font: fontRegular,
-                      fontSize: 10,
-                      color: gris,
-                    ),
-                  ),
-                  pw.Text(
-                    'Limón, Costa Rica',
-                    style: pw.TextStyle(
-                      font: fontRegular,
-                      fontSize: 10,
-                      color: gris,
-                    ),
-                  ),
-                ],
+                style: pw.TextStyle(
+                  font: fontRegular,
+                  fontSize: 10,
+                  color: gris,
+                ),
               ),
             ],
-          );
-        },
+          ),
+        ],
       ),
     );
-
     await Printing.layoutPdf(
       onLayout: (format) async => pdf.save(),
       name: 'Proforma_$numeroProforma.pdf',
