@@ -256,18 +256,35 @@ class FooterSection extends StatelessWidget {
 
         const SizedBox(height: 18),
 
-        OutlinedButton.icon(
-          onPressed: abrirMaps,
-          icon: const Icon(Icons.map_outlined, color: Colors.white, size: 18),
-          label: const Text(
-            'Abrir en Maps',
-            style: TextStyle(color: Colors.white),
-          ),
-          style: OutlinedButton.styleFrom(
-            side: const BorderSide(color: Colors.white24),
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+        SizedBox(
+          width: 210,
+
+          child: OutlinedButton.icon(
+            onPressed: abrirMaps,
+
+            icon: const Icon(Icons.map_outlined, color: Colors.white, size: 18),
+
+            label: const Text(
+              'Abrir en Maps',
+
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+
+              side: const BorderSide(color: Colors.white24),
+
+              backgroundColor: Colors.white.withOpacity(0.04),
+
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
             ),
           ),
         ),
