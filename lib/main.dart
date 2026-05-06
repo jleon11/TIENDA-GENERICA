@@ -1,18 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import 'package:forui/forui.dart';
 import 'package:provider/provider.dart';
-import 'package:tienda_motos/constants/constantes_sistema.dart';
+
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/providers/carrito_provider.dart';
-import 'package:tienda_motos/sections/header_section.dart';
 import 'package:tienda_motos/routes/app_router.dart';
+import 'package:tienda_motos/sections/carrito_drawer.dart';
+import 'package:tienda_motos/sections/header_section.dart';
 import 'package:tienda_motos/services/categoria_services.dart';
 import 'package:tienda_motos/widgets/drawer_tienda.dart';
-import 'package:tienda_motos/sections/carrito_drawer.dart';
 
 void main() {
-  //usePathUrlStrategy(); // 🔥 quita el #
-  //runApp(const MyApp());
-
   runApp(
     ChangeNotifierProvider(
       create: (_) => CarritoProvider(),
@@ -26,66 +26,33 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// FORUI THEME
+    final theme =
+        const <TargetPlatform>{
+          TargetPlatform.android,
+          TargetPlatform.iOS,
+          TargetPlatform.fuchsia,
+        }.contains(defaultTargetPlatform)
+        ? FThemes.neutral.light.touch
+        : FThemes.neutral.light.desktop;
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'Tienda Motos',
+
+      title: 'Accesorios Gonzales',
 
       routerConfig: appRouter,
 
-      theme: ThemeData(
-        useMaterial3: true,
+      /// MATERIAL ← FORUI bridge
+      theme: theme.toApproximateMaterialTheme(),
 
-        scaffoldBackgroundColor: Colors.white,
+      builder: (_, child) {
+        return FTheme(
+          data: theme,
 
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: SistemaConstantes.colorAzulPrimario,
-        ),
-
-        fontFamily: 'Arial',
-
-        dividerColor: Colors.grey.shade200,
-
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          centerTitle: false,
-          surfaceTintColor: Colors.white,
-        ),
-
-        cardTheme: CardThemeData(
-          elevation: 0,
-          color: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: Colors.white,
-
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 12,
-          ),
-
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.grey.shade300),
-          ),
-
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.grey.shade300),
-          ),
-
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
-              color: SistemaConstantes.colorAzulPrimario,
-              width: 1.5,
-            ),
-          ),
-        ),
-      ),
+          child: FToaster(child: FTooltipGroup(child: child!)),
+        );
+      },
     );
   }
 }
@@ -107,7 +74,7 @@ class _LayoutPrincipalState extends State<LayoutPrincipal> {
   @override
   void initState() {
     super.initState();
-
+ 
     cargarCategorias();
   }
 
@@ -128,11 +95,15 @@ class _LayoutPrincipalState extends State<LayoutPrincipal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
+
       drawer: DrawerTienda(categorias: categorias),
-      endDrawer: const CarritoDrawer(), 
+
+      endDrawer: const CarritoDrawer(),
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
+
         child: Builder(builder: (context) => const HeaderTienda()),
       ),
 

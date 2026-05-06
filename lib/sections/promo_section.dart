@@ -70,7 +70,7 @@ class _PromoSectionState extends State<PromoSection> {
     final width = MediaQuery.of(context).size.width;
     final itemsVista = calcularItemsPorVista(width);
     final cardWidth = calcularAnchoCard(width);
-    final alto = SistemaConstantes.cardNormalAlto;
+    final alto = SistemaConstantes.cardGrandeAlto;
     final paginas = dividirPaginas(widget.items, itemsVista);
 
     return SizedBox(

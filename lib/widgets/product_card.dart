@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:forui/forui.dart';
 
 import 'package:tienda_motos/constants/constantes_sistema.dart';
-import 'package:tienda_motos/widgets/general_components/hover_button.dart';
 
 class ProductCard extends StatefulWidget {
   final String nombre;
@@ -37,10 +37,10 @@ class ProductCard extends StatefulWidget {
   });
 
   @override
-  State<ProductCard> createState() => _ProductCardState();
+  State<ProductCard> createState() => _ProductCardForuiState();
 }
 
-class _ProductCardState extends State<ProductCard> {
+class _ProductCardForuiState extends State<ProductCard> {
   bool hover = false;
 
   bool get tieneDescuento =>
@@ -48,26 +48,6 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
-    final Color borde = hover
-        ? SistemaConstantes.colorAzulPrimario
-        : SistemaConstantes.colorBorde;
-
-    final sombra = hover
-        ? [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 18,
-              offset: const Offset(0, 10),
-            ),
-          ]
-        : [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ];
-
     return MouseRegion(
       cursor: SystemMouseCursors.click,
 
@@ -86,184 +66,309 @@ class _ProductCardState extends State<ProductCard> {
       child: GestureDetector(
         onTap: widget.onTap,
 
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOut,
+        child: AnimatedScale(
+          scale: hover ? 1.015 : 1,
 
-          padding: SistemaConstantes.paddingCard,
+          duration: const Duration(milliseconds: 180),
 
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(SistemaConstantes.radioSM),
-            border: Border.all(color: borde),
-            boxShadow: sombra,
-          ),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
 
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              /// TOP
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (widget.badgeTexto.trim().isNotEmpty)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: widget.badgeColor,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Text(
-                        widget.badgeTexto,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
+            curve: Curves.easeOut,
+
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(hover ? 0.08 : 0.04),
+
+                  blurRadius: hover ? 28 : 18,
+
+                  spreadRadius: -8,
+
+                  offset: const Offset(0, 14),
+                ),
+              ],
+            ),
+
+            child: FCard.raw(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
+
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+
+                  crossAxisAlignment: CrossAxisAlignment.center,
+
+                  children: [
+                    /// TOP
+                    Row(
+                      children: [
+                        if (widget.badgeTexto.trim().isNotEmpty)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+
+                            decoration: BoxDecoration(
+                              color: widget.badgeColor,
+
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+
+                            child: Text(
+                              widget.badgeTexto,
+
+                              style: const TextStyle(
+                                color: Colors.white,
+
+                                fontSize: 10,
+
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+
+                        const Spacer(),
+
+                        Icon(
+                          Icons.favorite_border,
+                          size: 20,
+                          color: Colors.grey.shade500,
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 22),
+
+                    /// IMAGEN
+                    Center(
+                      child: AnimatedScale(
+                        scale: hover ? 1.04 : 1,
+
+                        duration: const Duration(milliseconds: 220),
+
+                        curve: Curves.easeOut,
+
+                        child: SizedBox(
+                          height: 200,
+
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+
+                            child: Image.network(
+                              widget.imagen,
+
+                              fit: BoxFit.contain,
+
+                              errorBuilder: (_, __, ___) => const Icon(
+                                Icons.image_not_supported,
+
+                                size: 60,
+
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
 
-                  const Spacer(),
+                    const SizedBox(height: 24),
 
-                  Icon(
-                    Icons.favorite_border,
-                    size: 18,
-                    color: Colors.grey.shade500,
-                  ),
-                ],
-              ),
+                    /// TITULO
+                    Text(
+                      widget.nombre,
 
-              const SizedBox(height: 12),
+                      maxLines: 2,
 
-              /// IMAGEN
-              Expanded(
-                child: AnimatedScale(
-                  scale: hover ? 1.04 : 1,
-                  duration: const Duration(milliseconds: 220),
-                  curve: Curves.easeOut,
+                      overflow: TextOverflow.ellipsis,
 
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Image.network(
-                      widget.imagen,
-                      fit: BoxFit.contain,
-                      /*
-                      loadingBuilder: (_, child, progress) {
-                        if (progress == null) return child;
+                      style: const TextStyle(
+                        fontSize: 17,
 
-                        return const Center(
-                          child: SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        );
-                      },
-                      */
-                      errorBuilder: (_, __, ___) => const Icon(
-                        Icons.image_not_supported,
-                        size: 60,
-                        color: Colors.grey,
+                        fontWeight: FontWeight.w700,
+
+                        color: SistemaConstantes.colorTexto,
+
+                        height: 1.35,
                       ),
                     ),
-                  ),
-                ),
-              ),
 
-              const SizedBox(height: 14),
+                    const SizedBox(height: 10),
 
-              /// SKU
-              Text(
-                widget.sku,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.grey.shade500,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+                    /// SKU
+                    Text(
+                      widget.sku,
 
-              const SizedBox(height: 8),
+                      maxLines: 1,
 
-              /// NOMBRE
-              SizedBox(
-                height: 40,
-                child: Text(
-                  widget.nombre,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    color: SistemaConstantes.colorTexto,
-                    height: 1.3,
-                  ),
-                ),
-              ),
+                      overflow: TextOverflow.ellipsis,
 
-              /// PRECIOS
-              if (tieneDescuento)
-                Text(
-                  '₡ ${widget.precioAnterior!}',
-                  style: const TextStyle(
-                    decoration: TextDecoration.lineThrough,
-                    color: Colors.grey,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                      style: TextStyle(
+                        fontSize: 12,
 
-              if (tieneDescuento) const SizedBox(height: 4),
+                        color: Colors.grey.shade600,
 
-              Text(
-                '₡ ${widget.precioActual}',
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  color: SistemaConstantes.colorAzulPrimario,
-                ),
-              ),
-
-              const SizedBox(height: 14),
-
-              /// BOTÓN
-              if (widget.mostrarBotonCarrito)
-                SizedBox(
-                  width: double.infinity,
-                  child: HoverButton(
-                    texto: 'Añadir al carrito',
-                    onPressed: widget.onPressedAddAlCarrito ?? () {},
-                    backgroundColor: Colors.transparent,
-                    hoverColor: SistemaConstantes.colorSecundario,
-                    textColor: SistemaConstantes.colorSecundario,
-                    hoverTextColor: Colors.white,
-                    borderColor: SistemaConstantes.colorSecundario,
-                    icon: Icons.shopping_cart_outlined,
-                  ),
-                ),
-
-              /*
-
-              if (widget.inventarioLimitado)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    '⚠ Últimas unidades disponibles',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.orange.shade800,
-                      fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                ),
 
-                */
-            ],
+                    const SizedBox(height: 20),
+
+                    /// PRECIO ANTERIOR
+                    if (tieneDescuento)
+                      Text(
+                        '₡ ${widget.precioAnterior!}',
+
+                        style: TextStyle(
+                          decoration: TextDecoration.lineThrough,
+
+                          color: Colors.grey.shade500,
+
+                          fontSize: 13,
+
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+
+                    if (tieneDescuento) const SizedBox(height: 6),
+
+                    if (!tieneDescuento)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+
+                        children: [
+                          Container(
+                            width: 7,
+                            height: 7,
+
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF22C55E),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+
+                          const SizedBox(width: 6),
+
+                          Text(
+                            'En stock',
+
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                    if (!tieneDescuento) const SizedBox(height: 6),
+
+                    /// PRECIO
+                    Text(
+                      '₡ ${widget.precioActual}',
+
+                      style: const TextStyle(
+                        fontSize: 17,
+
+                        fontWeight: FontWeight.w900,
+
+                        color: SistemaConstantes.colorAzulPrimario,
+
+                        height: 1.1,
+                      ),
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    /// BOTON
+                    /// ===============================================
+                    /// OPCIÓN 1 — AZUL SÓLIDO (RECOMENDADA)
+                    /// ===============================================
+                    if (widget.mostrarBotonCarrito) const Spacer(),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 46,
+
+                      child: Container(
+                        width: double.infinity,
+                        height: 46,
+
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            SistemaConstantes.radioMD,
+                          ),
+
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+
+                            colors: [
+                              SistemaConstantes.colorAzulPrimario,
+
+                              SistemaConstantes.colorAzulPrimario.withOpacity(
+                                0.78,
+                              ),
+                            ],
+                          ),
+
+                          boxShadow: [
+                            BoxShadow(
+                              color: SistemaConstantes.colorAzulPrimario
+                                  .withOpacity(0.18),
+
+                              blurRadius: 12,
+
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+
+                        child: Material(
+                          color: Colors.transparent,
+
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(
+                              SistemaConstantes.radioMD,
+                            ),
+
+                            onTap: widget.onPressedAddAlCarrito,
+
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+
+                              children: const [
+                                Icon(
+                                  Icons.shopping_cart_outlined,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+
+                                SizedBox(width: 8),
+
+                                Text(
+                                  'Añadir al carrito',
+
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),

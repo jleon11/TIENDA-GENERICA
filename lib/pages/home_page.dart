@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                         titulo: 'PROMO DEL MES',
                         items: listaProductosPromoDelMesHome,
                         badgeTexto: 'Promo del mes',
-                        badgeColor: Colors.red,
+                        badgeColor: SistemaConstantes.colorAzulPrimario,
                       ),
 
                       const SizedBox(height: SistemaConstantes.espacioSeccion),
@@ -157,8 +157,8 @@ class _HomePageState extends State<HomePage> {
                         titulo: 'LOS MÁS BUSCADOS',
                         items: listaProductosMasBuscadosHome,
                         filas: 2,
-                        anchoItem: 260,
-                        alturaItem: 430,
+                        anchoItem: SistemaConstantes.cardNormalAncho,
+                        alturaItem: SistemaConstantes.cardGrandeAlto,
                         espaciado: 8,
                       ),
 

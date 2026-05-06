@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/models/subcategoria_model.dart';
@@ -215,7 +216,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
 
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 1280),
+                    constraints: const BoxConstraints(maxWidth: 1400),
 
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,8 +341,8 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                           titulo: 'MÁS PRODUCTOS PARA EXPLORAR',
                           items: masBuscados,
                           filas: 2,
-                          anchoItem: 260,
-                          alturaItem: 430,
+                          anchoItem: SistemaConstantes.cardNormalAncho,
+                          alturaItem: SistemaConstantes.cardGrandeAlto,
                           espaciado: 8,
                           scrollController: _scrollController,
                         ),

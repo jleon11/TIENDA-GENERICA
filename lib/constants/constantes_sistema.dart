@@ -5,7 +5,7 @@ class SistemaConstantes {
 
   /*Tamaños de pantalla dinamicas y demas caracteristicas*/
 
-  static const double anchoMaximoContenido = 1200;
+  static const double anchoMaximoContenido = 1400;
   static const double anchoMaximoHeader = 1400;
 
   static const double mobile = 768;
@@ -193,14 +193,14 @@ class SistemaConstantes {
 
   /*CARDS*/
 
-  static const double cardSmallAncho = 220;
-  static const double cardSmallAlto = 380;
+  static const double cardSmallAncho = 240;
+  static const double cardSmallAlto = 360;
 
   /// CARD NORMAL
-  static const double cardNormalAncho = 260;
-  static const double cardNormalAlto = 430;
+  static const double cardNormalAncho = 320;
+  static const double cardNormalAlto = 470;
 
   /// CARD HERO
-  static const double cardGrandeAncho = 300;
-  static const double cardGrandeAlto = 500;
+  static const double cardGrandeAncho = 360;
+  static const double cardGrandeAlto = 505;
 }
