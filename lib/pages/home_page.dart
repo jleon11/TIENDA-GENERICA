@@ -1,11 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/helpers/icono_categoria_helper.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/providers/busqueda_productos_provider.dart';
 import 'package:tienda_motos/sections/boletin_informativo_section.dart';
 import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
@@ -26,17 +28,11 @@ class _HomePageState extends State<HomePage> {
   final ProductoService productoService = ProductoService();
 
   List<CategoriaModel> listaCategorias = [];
-
   List<CategoriaModel> listaCategoriasHome = [];
-
   List<ProductoModel> listaProductos = [];
-
   List<ProductoModel> listaProductosPromoDelMesHome = [];
-
   List<ProductoModel> listaProductosMasBuscadosHome = [];
-
   List<ProductoModel> listaProductosMasVendidosHome = [];
-
   bool cargandoProductos = true;
 
   @override
@@ -93,6 +89,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final textoBusqueda = context.watch<BusquedaProductosProvider>().textoBusqueda;
+    List<ProductoModel> productosFiltrados = listaProductos;
 
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(

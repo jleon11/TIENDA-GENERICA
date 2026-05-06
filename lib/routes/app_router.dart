@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tienda_motos/main.dart';
-import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/pages/home_page.dart';
 import 'package:tienda_motos/pages/producto_detalle_page.dart';
