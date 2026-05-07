@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 
 import 'package:tienda_motos/providers/carrito_provider.dart';
+import 'package:tienda_motos/providers/favoritos_provider.dart';
 
 import 'package:tienda_motos/routes/app_router.dart';
 
@@ -25,6 +26,8 @@ void main() {
         /// CARRITO
         /// ==========================================
         ChangeNotifierProvider(create: (_) => CarritoProvider()),
+
+        ChangeNotifierProvider(create: (_) => FavoritosProvider()),
       ],
 
       child: const MyApp(),

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
+import 'package:provider/provider.dart';
 
 import 'package:tienda_motos/constants/constantes_sistema.dart';
+import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/providers/favoritos_provider.dart';
 
 class ProductCard extends StatefulWidget {
   final String nombre;
@@ -21,6 +24,8 @@ class ProductCard extends StatefulWidget {
   final VoidCallback? onPressedAddAlCarrito;
   final VoidCallback? onTap;
 
+  final ProductoModel producto; // 👈 agrega esto
+
   const ProductCard({
     super.key,
     required this.nombre,
@@ -34,6 +39,7 @@ class ProductCard extends StatefulWidget {
     this.mostrarBotonCarrito = true,
     this.onPressedAddAlCarrito,
     this.onTap,
+    required this.producto,
   });
 
   @override
@@ -133,10 +139,20 @@ class _ProductCardForuiState extends State<ProductCard> {
 
                         const Spacer(),
 
-                        Icon(
-                          Icons.favorite_border,
-                          size: 20,
-                          color: Colors.grey.shade500,
+                        Consumer<FavoritosProvider>(
+                          builder: (context, favs, _) {
+                            final esFav = favs.esFavorito(widget.producto.id);
+                            return GestureDetector(
+                              onTap: () => favs.toggleFavorito(widget.producto),
+                              child: Icon(
+                                esFav ? Icons.favorite : Icons.favorite_border,
+                                size: 20,
+                                color: esFav
+                                    ? Colors.red
+                                    : Colors.grey.shade500,
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),

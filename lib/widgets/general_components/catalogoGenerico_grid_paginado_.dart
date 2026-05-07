@@ -171,6 +171,7 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
                   GoRouter.of(context).go('/producto', extra: item);
                 },
                 onPressedAddAlCarrito: () {},
+                producto: item, // 👈
               );
             },
           ),

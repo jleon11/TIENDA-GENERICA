@@ -81,6 +81,7 @@ class ProductGridSection<T extends ContratoCardProducto>
                     });
                   }
                 },
+                producto: item as ProductoModel,
               );
             },
           ),

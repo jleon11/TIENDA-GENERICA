@@ -124,6 +124,7 @@ class _PromoSectionState extends State<PromoSection> {
                                 if (ctx.mounted) Navigator.of(ctx).maybePop();
                               });
                             },
+                            producto: producto, // 👈
                           ),
                         ),
                       );

@@ -6,6 +6,8 @@ import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 
 import 'package:tienda_motos/providers/carrito_provider.dart';
+import 'package:tienda_motos/providers/favoritos_provider.dart';
+import 'package:tienda_motos/sections/favoritos_drawer.dart';
 
 import 'package:tienda_motos/services/producto_services.dart';
 
@@ -210,8 +212,84 @@ class _HeaderTiendaState extends State<HeaderTienda> {
                 /// =====================================
                 /// FAVORITOS
                 /// =====================================
+                /// =====================================
+                /// FAVORITOS
+                /// =====================================
                 if (!esMovil)
-                  _iconoHeader(icono: Icons.favorite_border, color: Colors.red),
+                  Builder(
+                    builder: (context) => Consumer<FavoritosProvider>(
+                      builder: (context, favs, _) {
+                        return GestureDetector(
+                          onTap: () {
+                            showGeneralDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              barrierLabel: '',
+                              barrierColor: Colors.black54,
+                              transitionDuration: const Duration(
+                                milliseconds: 250,
+                              ),
+                              pageBuilder: (_, __, ___) => Align(
+                                alignment: Alignment.centerRight,
+                                child: const FavoritosDrawer(),
+                              ),
+                              transitionBuilder: (_, anim, __, child) {
+                                return SlideTransition(
+                                  position: Tween(
+                                    begin: const Offset(1, 0),
+                                    end: Offset.zero,
+                                  ).animate(anim),
+                                  child: child,
+                                );
+                              },
+                            );
+                          },
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Container(
+                                width: 42,
+                                height: 42,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.red,
+                                  size: 22,
+                                ),
+                              ),
+                              if (favs.total > 0)
+                                Positioned(
+                                  right: -2,
+                                  top: -2,
+                                  child: Container(
+                                    width: 18,
+                                    height: 18,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '${favs.total}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
 
                 if (!esMovil) const SizedBox(width: 12),
 

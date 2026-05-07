@@ -703,11 +703,40 @@ class CarritoDrawer extends StatelessWidget {
 
           pw.SizedBox(height: 16),
 
+          /*
           pw.Center(
             child: pw.Text(
               'Gracias por su preferencia',
-
               style: pw.TextStyle(font: fontItalic, color: gris, fontSize: 11),
+            ),
+          ),
+
+          pw.SizedBox(height: 4),*/
+          pw.Center(
+            child: pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.center,
+              children: [
+                pw.Text(
+                  'Generado desde: ',
+                  style: pw.TextStyle(
+                    font: fontItalic,
+                    color: gris,
+                    fontSize: 11,
+                  ),
+                ),
+                pw.UrlLink(
+                  destination: 'https://mundohonda.cr/',
+                  child: pw.Text(
+                    'https://mundohonda.cr/',
+                    style: pw.TextStyle(
+                      font: fontItalic,
+                      color: azul,
+                      fontSize: 11,
+                      decoration: pw.TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 
@@ -754,9 +783,11 @@ class CarritoDrawer extends StatelessWidget {
         ],
       ),
     );
-    await Printing.layoutPdf(
-      onLayout: (format) async => pdf.save(),
-      name: 'Proforma_$numeroProforma.pdf',
+
+    final bytes = await pdf.save();
+    await Printing.sharePdf(
+      bytes: bytes,
+      filename: 'Proforma_$numeroProforma.pdf',
     );
   }
 }
