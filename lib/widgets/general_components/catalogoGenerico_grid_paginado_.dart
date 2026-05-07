@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 import 'package:tienda_motos/providers/carrito_provider.dart';
+import 'package:tienda_motos/widgets/general_components/generic_grid.dart';
 import 'package:tienda_motos/widgets/product_card.dart';
 
 class CatalogoGridWidget extends StatefulWidget {
@@ -25,6 +26,7 @@ class CatalogoGridWidget extends StatefulWidget {
 class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
   int paginaActual = 1;
   late int productosPorPagina;
+  String ordenSeleccionado = 'Recomendado';
 
   final List<String> opcionesOrden = const [
     'Recomendado',
@@ -34,12 +36,25 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
     'Nombre Z-A',
   ];
 
-  String ordenSeleccionado = 'Recomendado';
-
   @override
   void initState() {
     super.initState();
     productosPorPagina = widget.cantidadInicial;
+  }
+
+  List<ProductoModel> get _productosOrdenados {
+    final lista = [...widget.productos];
+    switch (ordenSeleccionado) {
+      case 'Precio menor':
+        lista.sort((a, b) => a.precio.compareTo(b.precio));
+      case 'Precio mayor':
+        lista.sort((a, b) => b.precio.compareTo(a.precio));
+      case 'Nombre A-Z':
+        lista.sort((a, b) => a.nombre.compareTo(b.nombre));
+      case 'Nombre Z-A':
+        lista.sort((a, b) => b.nombre.compareTo(a.nombre));
+    }
+    return lista;
   }
 
   @override
@@ -47,40 +62,27 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
     final width = MediaQuery.of(context).size.width;
     final esMobile = width < 768;
 
-    final productosOrdenados = _obtenerProductosOrdenados();
-    final totalProductos = productosOrdenados.length;
+    final ordenados = _productosOrdenados;
+    final total = ordenados.length;
+    final totalPaginas = total == 0 ? 1 : (total / productosPorPagina).ceil();
 
-    final totalPaginas = totalProductos == 0
-        ? 1
-        : (totalProductos / productosPorPagina).ceil();
+    // Corrige página si quedó fuera de rango al cambiar filtros
+    if (paginaActual > totalPaginas) paginaActual = totalPaginas;
 
-    if (paginaActual > totalPaginas) {
-      paginaActual = totalPaginas;
-    }
-
-    final inicio = totalProductos == 0
-        ? 0
-        : (paginaActual - 1) * productosPorPagina;
-
-    final fin = totalProductos == 0
-        ? 0
-        : (inicio + productosPorPagina > totalProductos
-              ? totalProductos
-              : inicio + productosPorPagina);
-
-    final productosPagina = totalProductos == 0
+    final inicio = total == 0 ? 0 : (paginaActual - 1) * productosPorPagina;
+    final fin = (inicio + productosPorPagina).clamp(0, total);
+    final pagina = total == 0
         ? <ProductoModel>[]
-        : productosOrdenados.sublist(inicio, fin);
+        : ordenados.sublist(inicio, fin);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ENCABEZADO
+        // ── ENCABEZADO ──────────────────────────────────────────
         esMobile
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Fila 1: Ordenar (ocupa todo el ancho)
                   Row(
                     children: [
                       const Text(
@@ -95,10 +97,7 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
                       Expanded(child: _dropdownOrdenCompacto()),
                     ],
                   ),
-
                   const SizedBox(height: 8),
-
-                  // Fila 2: Mostrar + dropdown + contador
                   Row(
                     children: [
                       const Text(
@@ -113,9 +112,7 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
                       _dropdownCantidad(),
                       const Spacer(),
                       Text(
-                        totalProductos == 0
-                            ? '0 de 0'
-                            : '${inicio + 1}–$fin de $totalProductos',
+                        total == 0 ? '0 de 0' : '${inicio + 1}–$fin de $total',
                         style: const TextStyle(
                           fontSize: 12,
                           color: SistemaConstantes.colorGris,
@@ -127,7 +124,6 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Wrap(
                     spacing: 14,
@@ -153,9 +149,9 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
                     ],
                   ),
                   Text(
-                    totalProductos == 0
+                    total == 0
                         ? 'Productos: 0 de 0'
-                        : 'Productos: ${inicio + 1} - $fin de $totalProductos',
+                        : 'Productos: ${inicio + 1} - $fin de $total',
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ],
@@ -163,8 +159,8 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
 
         const SizedBox(height: 20),
 
-        // GRID
-        if (productosPagina.isEmpty)
+        // ── GRID ────────────────────────────────────────────────
+        if (pagina.isEmpty)
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
@@ -194,48 +190,39 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
             ),
           )
         else
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: productosPagina.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: _obtenerColumnas(width),
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: _aspectRatio(width),
+          // ✅ Usa GridGenerico — sin aspectRatio, sin conflictos de altura
+          GridGenerico<ProductoModel>(
+            items: pagina,
+            espaciado: 12,
+            anchoMaximoContenedor: esMobile ? null : width - 210,
+
+            itemBuilder: (ctx, item) => Builder(
+              builder: (ctx) => ProductCard(
+                nombre: item.nombre,
+                sku: item.codigo,
+                precioActual: item.precio.toStringAsFixed(2),
+                precioAnterior: item.precioAnteriorValor?.toStringAsFixed(2),
+                imagen: item.imagenPrincipal,
+                badgeTexto: item.cardEtiqueta,
+                badgeColor: item.cardColorEtiqueta,
+                inventarioLimitado: item.inventarioLimitado,
+                mostrarBotonCarrito: true,
+                producto: item,
+                onTap: () => GoRouter.of(ctx).go('/producto', extra: item),
+                onPressedAddAlCarrito: () {
+                  ctx.read<CarritoProvider>().agregar(item);
+                  Scaffold.of(ctx).openEndDrawer();
+                  Future.delayed(const Duration(seconds: 3), () {
+                    if (ctx.mounted) Navigator.of(ctx).maybePop();
+                  });
+                },
+              ),
             ),
-            itemBuilder: (context, index) {
-              final item = productosPagina[index];
-              return Builder(
-                builder: (ctx) => ProductCard(
-                  nombre: item.nombre,
-                  sku: item.codigo,
-                  precioActual: item.precio.toStringAsFixed(2),
-                  precioAnterior: item.precioAnteriorValor?.toStringAsFixed(2),
-                  imagen: item.imagenPrincipal,
-                  badgeTexto: item.cardEtiqueta,
-                  badgeColor: item.cardColorEtiqueta,
-                  inventarioLimitado: item.inventarioLimitado,
-                  mostrarBotonCarrito: true,
-                  producto: item,
-                  onTap: () {
-                    GoRouter.of(ctx).go('/producto', extra: item);
-                  },
-                  onPressedAddAlCarrito: () {
-                    ctx.read<CarritoProvider>().agregar(item);
-                    Scaffold.of(ctx).openEndDrawer();
-                    Future.delayed(const Duration(seconds: 3), () {
-                      if (ctx.mounted) Navigator.of(ctx).maybePop();
-                    });
-                  },
-                ),
-              );
-            },
           ),
 
         const SizedBox(height: 28),
 
-        // PAGINADOR
+        // ── PAGINADOR ───────────────────────────────────────────
         if (totalPaginas > 1)
           Center(
             child: Wrap(
@@ -248,8 +235,8 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
                       : null,
                   icon: const Icon(Icons.chevron_left),
                 ),
-                ...List.generate(totalPaginas, (index) {
-                  final page = index + 1;
+                ...List.generate(totalPaginas, (i) {
+                  final page = i + 1;
                   final activa = page == paginaActual;
                   return InkWell(
                     onTap: () => setState(() => paginaActual = page),
@@ -293,36 +280,7 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
     );
   }
 
-  List<ProductoModel> _obtenerProductosOrdenados() {
-    final lista = [...widget.productos];
-    switch (ordenSeleccionado) {
-      case 'Precio menor':
-        lista.sort((a, b) => a.precio.compareTo(b.precio));
-        break;
-      case 'Precio mayor':
-        lista.sort((a, b) => b.precio.compareTo(a.precio));
-        break;
-      case 'Nombre A-Z':
-        lista.sort((a, b) => a.nombre.compareTo(b.nombre));
-        break;
-      case 'Nombre Z-A':
-        lista.sort((a, b) => b.nombre.compareTo(a.nombre));
-        break;
-    }
-    return lista;
-  }
-
-  int _obtenerColumnas(double width) {
-    if (width < 768) return 2; // mobile: siempre 2
-    if (width < 1100) return 2; // tablet: 2
-    return 3; // desktop: 3
-  }
-
-  double _aspectRatio(double width) {
-    if (width < 768) return 0.54; // era 0.58
-    if (width < 1100) return 0.66;
-    return 0.64;
-  }
+  // ── DROPDOWNS ───────────────────────────────────────────────
 
   Widget _dropdownOrdenCompacto() {
     return Container(
@@ -340,13 +298,13 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
             fontSize: 13,
             color: SistemaConstantes.colorTexto,
           ),
-          items: opcionesOrden.map((e) {
-            return DropdownMenuItem<String>(value: e, child: Text(e));
-          }).toList(),
-          onChanged: (value) {
-            if (value == null) return;
+          items: opcionesOrden
+              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .toList(),
+          onChanged: (v) {
+            if (v == null) return;
             setState(() {
-              ordenSeleccionado = value;
+              ordenSeleccionado = v;
               paginaActual = 1;
             });
           },
@@ -355,34 +313,34 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
     );
   }
 
-  Widget _dropdownCantidad() {
-    return DropdownButton<int>(
-      value: productosPorPagina,
+  Widget _dropdownOrden() {
+    return DropdownButton<String>(
+      value: ordenSeleccionado,
       underline: const SizedBox(),
-      items: widget.opcionesCantidad.map((e) {
-        return DropdownMenuItem<int>(value: e, child: Text('$e'));
-      }).toList(),
-      onChanged: (value) {
-        if (value == null) return;
+      items: opcionesOrden
+          .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+          .toList(),
+      onChanged: (v) {
+        if (v == null) return;
         setState(() {
-          productosPorPagina = value;
+          ordenSeleccionado = v;
           paginaActual = 1;
         });
       },
     );
   }
 
-  Widget _dropdownOrden() {
-    return DropdownButton<String>(
-      value: ordenSeleccionado,
+  Widget _dropdownCantidad() {
+    return DropdownButton<int>(
+      value: productosPorPagina,
       underline: const SizedBox(),
-      items: opcionesOrden.map((e) {
-        return DropdownMenuItem<String>(value: e, child: Text(e));
-      }).toList(),
-      onChanged: (value) {
-        if (value == null) return;
+      items: widget.opcionesCantidad
+          .map((e) => DropdownMenuItem(value: e, child: Text('$e')))
+          .toList(),
+      onChanged: (v) {
+        if (v == null) return;
         setState(() {
-          ordenSeleccionado = value;
+          productosPorPagina = v;
           paginaActual = 1;
         });
       },
