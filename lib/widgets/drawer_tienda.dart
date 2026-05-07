@@ -330,7 +330,7 @@ class DrawerTienda extends StatelessWidget {
         border: Border(top: BorderSide(color: Colors.grey.shade200)),
       ),
       child: const Text(
-        '© 2025 Accesorios González',
+        '© 2026 Accesorios González',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 11,
