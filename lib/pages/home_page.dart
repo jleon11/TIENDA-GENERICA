@@ -7,7 +7,6 @@ import 'package:tienda_motos/helpers/icono_categoria_helper.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
-import 'package:tienda_motos/providers/busqueda_productos_provider.dart';
 import 'package:tienda_motos/sections/boletin_informativo_section.dart';
 import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
@@ -89,8 +88,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final textoBusqueda = context.watch<BusquedaProductosProvider>().textoBusqueda;
-    List<ProductoModel> productosFiltrados = listaProductos;
 
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(

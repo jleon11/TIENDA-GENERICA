@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/producto_model.dart';
 
-import 'package:tienda_motos/providers/busqueda_productos_provider.dart';
 import 'package:tienda_motos/providers/carrito_provider.dart';
 
 import 'package:tienda_motos/services/producto_services.dart';
@@ -18,8 +18,6 @@ class HeaderTienda extends StatefulWidget {
 
 class _HeaderTiendaState extends State<HeaderTienda> {
   final ProductoService productoService = ProductoService();
-
-  final FocusNode buscadorFocus = FocusNode();
 
   List<ProductoModel> listaProductos = [];
 
@@ -43,24 +41,6 @@ class _HeaderTiendaState extends State<HeaderTienda> {
     super.initState();
 
     cargarProductos();
-
-    /// ==========================================
-    /// CERRAR RESULTADOS SI PIERDE FOCUS
-    /// ==========================================
-    buscadorFocus.addListener(() {
-      if (!buscadorFocus.hasFocus) {
-        if (mounted) {
-          context.read<BusquedaProductosProvider>().limpiar();
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    buscadorFocus.dispose();
-
-    super.dispose();
   }
 
   @override
@@ -71,411 +51,245 @@ class _HeaderTiendaState extends State<HeaderTienda> {
 
     final esTablet = width >= 900 && width < 1300;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
+    return Material(
+      elevation: 2,
+      color: Colors.white,
 
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: SistemaConstantes.anchoMaximoHeader,
+          ),
 
-      child: Material(
-        elevation: 2,
-        color: Colors.white,
+          child: Container(
+            height: SistemaConstantes.altoHeader,
 
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: SistemaConstantes.anchoMaximoHeader,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: esMovil ? 12 : 24),
 
-            child: Container(
-              height: SistemaConstantes.altoHeader,
+            child: Row(
+              children: [
+                /// =====================================
+                /// MENU
+                /// =====================================
+                IconButton(
+                  icon: const Icon(Icons.menu, size: 28),
 
-              padding: EdgeInsets.symmetric(horizontal: esMovil ? 12 : 24),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                ),
 
-              child: Row(
-                children: [
-                  /// =====================================
-                  /// MENU
-                  /// =====================================
-                  IconButton(
-                    icon: const Icon(Icons.menu, size: 28),
+                const SizedBox(width: 10),
 
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
+                /// =====================================
+                /// LOGO
+                /// =====================================
+                InkWell(
+                  onTap: () {},
+
+                  child: Image.asset(
+                    'assets/imagenes/logo-accesoriosGonzales-fondoBlanco.png',
+
+                    height: esMovil ? 52 : 68,
+
+                    fit: BoxFit.contain,
+                  ),
+                ),
+
+                const SizedBox(width: 18),
+
+                /// =====================================
+                /// BUSCADOR
+                /// =====================================
+                Expanded(
+                  child: Autocomplete<ProductoModel>(
+                    optionsBuilder: (TextEditingValue textEditingValue) {
+                      if (textEditingValue.text.isEmpty) return [];
+                      final texto = textEditingValue.text.toLowerCase().trim();
+                      return listaProductos.where(
+                        (p) =>
+                            p.nombre.toLowerCase().contains(texto) ||
+                            p.codigo.toLowerCase().contains(texto) ||
+                            p.marca.toLowerCase().contains(texto),
+                      );
+                    },
+                    displayStringForOption: (p) => p.nombre,
+                    onSelected: (p) {
+                      GoRouter.of(context).go('/producto', extra: p);
+                    },
+                    fieldViewBuilder:
+                        (context, controller, focusNode, onSubmitted) {
+                          return Container(
+                            height: 46,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: SistemaConstantes.colorAzulPrimario,
+                              ),
+                              borderRadius: BorderRadius.circular(28),
+                            ),
+                            child: Row(
+                              children: [
+                                const SizedBox(width: 14),
+                                const Icon(
+                                  Icons.search,
+                                  size: 20,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: TextField(
+                                    controller: controller,
+                                    focusNode: focusNode,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Buscar productos...',
+                                      border: InputBorder.none,
+                                      isDense: true,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                    optionsViewBuilder: (context, onSelected, options) {
+                      return Align(
+                        alignment: Alignment.topLeft,
+                        child: Material(
+                          elevation: 8,
+                          borderRadius: BorderRadius.circular(18),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxHeight: 420),
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              itemCount: options.length,
+                              separatorBuilder: (_, __) => Divider(
+                                height: 1,
+                                color: Colors.grey.shade200,
+                              ),
+                              itemBuilder: (_, index) {
+                                final p = options.elementAt(index);
+                                return ListTile(
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      p.imagenPrincipal,
+                                      width: 62,
+                                      height: 62,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (_, __, ___) => Icon(
+                                        Icons.image_not_supported_outlined,
+                                        color: Colors.grey.shade400,
+                                      ),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    p.nombre,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                      color:
+                                          SistemaConstantes.colorAzulPrimario,
+                                    ),
+                                  ),
+                                  onTap: () => onSelected(p),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      );
                     },
                   ),
+                ),
+                const SizedBox(width: 16),
 
-                  const SizedBox(width: 10),
+                /// =====================================
+                /// FAVORITOS
+                /// =====================================
+                if (!esMovil)
+                  _iconoHeader(icono: Icons.favorite_border, color: Colors.red),
 
-                  /// =====================================
-                  /// LOGO
-                  /// =====================================
-                  InkWell(
-                    onTap: () {},
+                if (!esMovil) const SizedBox(width: 12),
 
-                    child: Image.asset(
-                      'assets/imagenes/logo-accesoriosGonzales-fondoBlanco.png',
+                /// =====================================
+                /// CARRITO
+                /// =====================================
+                Builder(
+                  builder: (context) => Consumer<CarritoProvider>(
+                    builder: (context, carrito, _) {
+                      return GestureDetector(
+                        onTap: () {
+                          Scaffold.of(context).openEndDrawer();
+                        },
 
-                      height: esMovil ? 52 : 68,
-
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-
-                  const SizedBox(width: 18),
-
-                  /// =====================================
-                  /// BUSCADOR
-                  /// =====================================
-                  Expanded(
-                    child: Consumer<BusquedaProductosProvider>(
-                      builder: (context, busqueda, _) {
-                        return Stack(
+                        child: Stack(
                           clipBehavior: Clip.none,
 
                           children: [
-                            /// =========================
-                            /// INPUT
-                            /// =========================
                             Container(
-                              height: 46,
+                              width: 42,
+                              height: 42,
 
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(50),
 
-                                border: Border.all(
-                                  color: SistemaConstantes.colorAzulPrimario,
-                                ),
-
-                                borderRadius: BorderRadius.circular(28),
+                                border: Border.all(color: Colors.grey.shade300),
                               ),
 
-                              child: Row(
-                                children: [
-                                  const SizedBox(width: 14),
+                              child: const Icon(
+                                Icons.shopping_cart_outlined,
 
-                                  const Icon(
-                                    Icons.search,
+                                color: Colors.red,
 
-                                    size: 20,
-
-                                    color: Colors.grey,
-                                  ),
-
-                                  const SizedBox(width: 10),
-
-                                  Expanded(
-                                    child: TextField(
-                                      focusNode: buscadorFocus,
-
-                                      onChanged: (value) {
-                                        context
-                                            .read<BusquedaProductosProvider>()
-                                            .buscarProductos(
-                                              texto: value,
-
-                                              productos: listaProductos,
-                                            );
-                                      },
-
-                                      decoration: const InputDecoration(
-                                        hintText: 'Buscar productos...',
-
-                                        border: InputBorder.none,
-
-                                        isDense: true,
-                                      ),
-                                    ),
-                                  ),
-
-                                  Container(
-                                    height: 46,
-
-                                    width: esMovil ? 44 : 54,
-
-                                    decoration: const BoxDecoration(
-                                      color:
-                                          SistemaConstantes.colorAzulPrimario,
-
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(28),
-
-                                        bottomRight: Radius.circular(28),
-                                      ),
-                                    ),
-
-                                    child: IconButton(
-                                      icon: const Icon(
-                                        Icons.arrow_forward,
-
-                                        color: Colors.white,
-
-                                        size: 20,
-                                      ),
-
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                ],
+                                size: 22,
                               ),
                             ),
 
-                            /// =========================
-                            /// RESULTADOS
-                            /// =========================
-                            if (busqueda.mostrarResultados)
+                            if (carrito.totalItems > 0)
                               Positioned(
-                                top: 56,
+                                right: -2,
 
-                                left: 0,
-                                right: 0,
+                                top: -2,
 
-                                child: Material(
-                                  color: Colors.transparent,
+                                child: Container(
+                                  width: 18,
 
-                                  child: Container(
-                                    constraints: const BoxConstraints(
-                                      maxHeight: 420,
-                                    ),
+                                  height: 18,
 
-                                    decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+
+                                    shape: BoxShape.circle,
+                                  ),
+
+                                  alignment: Alignment.center,
+
+                                  child: Text(
+                                    '${carrito.totalItems}',
+
+                                    style: const TextStyle(
                                       color: Colors.white,
 
-                                      borderRadius: BorderRadius.circular(18),
+                                      fontSize: 10,
 
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.08),
-
-                                          blurRadius: 18,
-
-                                          offset: const Offset(0, 6),
-                                        ),
-                                      ],
+                                      fontWeight: FontWeight.bold,
                                     ),
-
-                                    child: busqueda.resultados.isEmpty
-                                        ? SizedBox(
-                                            height: 90,
-
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-
-                                              children: [
-                                                Icon(
-                                                  Icons.search_off_rounded,
-
-                                                  size: 22,
-
-                                                  color: Colors.grey.shade400,
-                                                ),
-
-                                                const SizedBox(width: 10),
-
-                                                Text(
-                                                  'No encontramos coincidencias para "${busqueda.textoBusqueda}"',
-
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-
-                                                    fontWeight: FontWeight.w500,
-
-                                                    color: Colors.grey.shade600,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : ListView.separated(
-                                            shrinkWrap: true,
-
-                                            physics:
-                                                const BouncingScrollPhysics(),
-
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 8,
-                                            ),
-
-                                            itemCount:
-                                                busqueda.resultados.length,
-
-                                            separatorBuilder: (_, __) =>
-                                                Divider(
-                                                  height: 1,
-
-                                                  color: Colors.grey.shade200,
-                                                ),
-
-                                            itemBuilder: (_, index) {
-                                              final p =
-                                                  busqueda.resultados[index];
-
-                                              return ListTile(
-                                                contentPadding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 14,
-
-                                                      vertical: 8,
-                                                    ),
-
-                                                leading: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-
-                                                  child: Image.network(
-                                                    p.imagenPrincipal,
-
-                                                    width: 62,
-
-                                                    height: 62,
-
-                                                    fit: BoxFit.contain,
-
-                                                    errorBuilder:
-                                                        (_, __, ___) => Icon(
-                                                          Icons
-                                                              .image_not_supported_outlined,
-
-                                                          color: Colors
-                                                              .grey
-                                                              .shade400,
-                                                        ),
-                                                  ),
-                                                ),
-
-                                                title: Text(
-                                                  p.nombre,
-
-                                                  maxLines: 1,
-
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w600,
-
-                                                    fontSize: 15,
-
-                                                    color: SistemaConstantes
-                                                        .colorAzulPrimario,
-                                                  ),
-                                                ),
-
-                                                onTap: () {
-                                                  FocusScope.of(
-                                                    context,
-                                                  ).unfocus();
-
-                                                  busqueda.limpiar();
-
-                                                  // navegar producto
-                                                },
-                                              );
-                                            },
-                                          ),
                                   ),
                                 ),
                               ),
                           ],
-                        );
-                      },
-                    ),
+                        ),
+                      );
+                    },
                   ),
+                ),
 
-                  const SizedBox(width: 16),
-
-                  /// =====================================
-                  /// FAVORITOS
-                  /// =====================================
-                  if (!esMovil)
-                    _iconoHeader(
-                      icono: Icons.favorite_border,
-
-                      color: Colors.red,
-                    ),
-
-                  if (!esMovil) const SizedBox(width: 12),
-
-                  /// =====================================
-                  /// CARRITO
-                  /// =====================================
-                  Builder(
-                    builder: (context) => Consumer<CarritoProvider>(
-                      builder: (context, carrito, _) {
-                        return GestureDetector(
-                          onTap: () {
-                            Scaffold.of(context).openEndDrawer();
-                          },
-
-                          child: Stack(
-                            clipBehavior: Clip.none,
-
-                            children: [
-                              Container(
-                                width: 42,
-                                height: 42,
-
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                  ),
-                                ),
-
-                                child: const Icon(
-                                  Icons.shopping_cart_outlined,
-
-                                  color: Colors.red,
-
-                                  size: 22,
-                                ),
-                              ),
-
-                              if (carrito.totalItems > 0)
-                                Positioned(
-                                  right: -2,
-
-                                  top: -2,
-
-                                  child: Container(
-                                    width: 18,
-
-                                    height: 18,
-
-                                    decoration: const BoxDecoration(
-                                      color: Colors.red,
-
-                                      shape: BoxShape.circle,
-                                    ),
-
-                                    alignment: Alignment.center,
-
-                                    child: Text(
-                                      '${carrito.totalItems}',
-
-                                      style: const TextStyle(
-                                        color: Colors.white,
-
-                                        fontSize: 10,
-
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-
-                  if (esTablet) const SizedBox(width: 6),
-                ],
-              ),
+                if (esTablet) const SizedBox(width: 6),
+              ],
             ),
           ),
         ),

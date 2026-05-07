@@ -5,7 +5,6 @@ import 'package:forui/forui.dart';
 import 'package:provider/provider.dart';
 
 import 'package:tienda_motos/models/categoria_model.dart';
-import 'package:tienda_motos/providers/busqueda_productos_provider.dart';
 
 import 'package:tienda_motos/providers/carrito_provider.dart';
 
@@ -26,11 +25,6 @@ void main() {
         /// CARRITO
         /// ==========================================
         ChangeNotifierProvider(create: (_) => CarritoProvider()),
-
-        /// ==========================================
-        /// BUSQUEDA GLOBAL
-        /// ==========================================
-        ChangeNotifierProvider(create: (_) => BusquedaProductosProvider()),
       ],
 
       child: const MyApp(),

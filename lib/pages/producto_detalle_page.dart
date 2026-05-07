@@ -270,6 +270,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                                     onAgregarAlCarrito: () {
                                       context.read<CarritoProvider>().agregar(
                                         producto,
+                                        cantidad: cantidad,
                                       );
                                       Scaffold.of(context).openEndDrawer();
                                       Future.delayed(
@@ -311,6 +312,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                                       onAgregarAlCarrito: () {
                                         context.read<CarritoProvider>().agregar(
                                           producto,
+                                          cantidad: cantidad,
                                         );
                                         Scaffold.of(context).openEndDrawer();
                                         Future.delayed(

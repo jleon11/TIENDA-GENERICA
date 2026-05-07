@@ -18,13 +18,13 @@ class CarritoProvider extends ChangeNotifier {
   double get totalPrecio =>
       _items.fold(0, (sum, i) => sum + (i.producto.precio * i.cantidad));
 
-  void agregar(ProductoModel producto) {
+  void agregar(ProductoModel producto, {int cantidad = 1}) {
     final index = _items.indexWhere((i) => i.producto.id == producto.id);
 
     if (index >= 0) {
-      _items[index].cantidad++;
+      _items[index].cantidad += cantidad;
     } else {
-      _items.add(CarritoItem(producto: producto));
+      _items.add(CarritoItem(producto: producto, cantidad: cantidad));
     }
 
     notifyListeners();
