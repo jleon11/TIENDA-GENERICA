@@ -87,7 +87,9 @@ class _HeaderTiendaState extends State<HeaderTienda> {
                 /// LOGO
                 /// =====================================
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    context.go('/');
+                  },
 
                   child: Image.asset(
                     'assets/imagenes/logo-accesoriosGonzales-fondoBlanco.png',

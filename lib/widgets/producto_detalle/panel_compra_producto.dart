@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/providers/favoritos_provider.dart';
 import 'package:tienda_motos/widgets/producto_detalle/precio_producto.dart';
 import 'package:tienda_motos/widgets/producto_detalle/selector_cantidad.dart';
 
@@ -26,6 +28,10 @@ class PanelCompraProductoWidget extends StatelessWidget {
     final double ancho = MediaQuery.of(context).size.width;
 
     final bool pantallaPequena = ancho < 1100;
+
+    final esFavorito = context.watch<FavoritosProvider>().esFavorito(
+      producto.id,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,20 +173,33 @@ class PanelCompraProductoWidget extends StatelessWidget {
 
             InkWell(
               borderRadius: BorderRadius.circular(30),
-              onTap: () {},
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              onTap: () {
+                context.read<FavoritosProvider>().toggleFavorito(producto);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.favorite_border, color: Color(0xFFE51F2B)),
-                    SizedBox(width: 6),
+                    Icon(
+                      esFavorito ? Icons.favorite : Icons.favorite_border,
+                      color: const Color(0xFFE51F2B),
+                    ),
+
+                    const SizedBox(width: 6),
+
                     Text(
-                      'Añadir a tu lista',
+                      esFavorito ? 'Agregado a favoritos' : 'Añadir a tu lista',
+
                       style: TextStyle(
                         fontSize: 16,
-                        color: Color(0xFF1F2937),
-                        fontWeight: FontWeight.w500,
+                        color: esFavorito
+                            ? const Color(0xFFE51F2B)
+                            : const Color(0xFF1F2937),
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],

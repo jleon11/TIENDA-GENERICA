@@ -161,23 +161,24 @@ class FavoritosDrawer extends StatelessWidget {
 
                   SizedBox(
                     width: double.infinity,
-                    child: OutlinedButton.icon(
+                    child: ElevatedButton.icon(
                       onPressed: () => _generarPdfFavoritos(context, favs),
                       icon: const FaIcon(
                         FontAwesomeIcons.filePdf,
-                        color: Colors.red,
+                        color: Colors.white,
                         size: 18,
                       ),
                       label: const Text(
                         'Descargar lista de deseos',
                         style: TextStyle(
-                          color: Colors.red,
+                          color: Colors.white,
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
                         ),
                       ),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.red),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 13),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -192,9 +193,10 @@ class FavoritosDrawer extends StatelessWidget {
                     child: ElevatedButton.icon(
                       onPressed: () {
                         final carrito = context.read<CarritoProvider>();
+
                         favs.enviarTodosAlCarrito(carrito);
+
                         Navigator.of(context).pop();
-                        Scaffold.of(context).openEndDrawer();
                       },
                       icon: const Icon(
                         Icons.shopping_cart_outlined,
