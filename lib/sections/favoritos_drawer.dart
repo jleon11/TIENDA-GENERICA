@@ -5,6 +5,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
+import 'package:tienda_motos/providers/carrito_provider.dart';
 import 'package:tienda_motos/providers/favoritos_provider.dart';
 
 class FavoritosDrawer extends StatelessWidget {
@@ -178,6 +179,39 @@ class FavoritosDrawer extends StatelessWidget {
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.red),
                         padding: const EdgeInsets.symmetric(vertical: 13),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        final carrito = context.read<CarritoProvider>();
+                        favs.enviarTodosAlCarrito(carrito);
+                        Navigator.of(context).pop();
+                        Scaffold.of(context).openEndDrawer();
+                      },
+                      icon: const Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      label: const Text(
+                        'Enviar todo al carrito',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 15,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: SistemaConstantes.colorAzulPrimario,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),

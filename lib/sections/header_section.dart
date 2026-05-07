@@ -54,7 +54,7 @@ class _HeaderTiendaState extends State<HeaderTienda> {
     final esTablet = width >= 900 && width < 1300;
 
     return Material(
-      elevation: 2,
+      elevation: 0,
       color: Colors.white,
 
       child: Center(
@@ -92,7 +92,8 @@ class _HeaderTiendaState extends State<HeaderTienda> {
                   child: Image.asset(
                     'assets/imagenes/logo-accesoriosGonzales-fondoBlanco.png',
 
-                    height: esMovil ? 52 : 68,
+                    //height: esMovil ? 52 : 68,
+                    height: esMovil ? 68 : 90, // antes era 52 : 68
 
                     fit: BoxFit.contain,
                   ),

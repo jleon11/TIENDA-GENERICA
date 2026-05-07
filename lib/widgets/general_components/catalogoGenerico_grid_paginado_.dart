@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
 import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/providers/carrito_provider.dart';
 import 'package:tienda_motos/widgets/product_card.dart';
 
 class CatalogoGridWidget extends StatefulWidget {
@@ -157,21 +159,30 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
             itemBuilder: (context, index) {
               final item = productosPagina[index];
 
-              return ProductCard(
-                nombre: item.nombre,
-                sku: item.codigo,
-                precioActual: item.precio.toStringAsFixed(2),
-                precioAnterior: item.precioAnteriorValor?.toStringAsFixed(2),
-                imagen: item.imagenPrincipal,
-                badgeTexto: item.cardEtiqueta,
-                badgeColor: item.cardColorEtiqueta,
-                inventarioLimitado: item.inventarioLimitado,
-                mostrarBotonCarrito: true,
-                onTap: () {
-                  GoRouter.of(context).go('/producto', extra: item);
-                },
-                onPressedAddAlCarrito: () {},
-                producto: item, // 👈
+              return Builder(
+                // 👈
+                builder: (ctx) => ProductCard(
+                  nombre: item.nombre,
+                  sku: item.codigo,
+                  precioActual: item.precio.toStringAsFixed(2),
+                  precioAnterior: item.precioAnteriorValor?.toStringAsFixed(2),
+                  imagen: item.imagenPrincipal,
+                  badgeTexto: item.cardEtiqueta,
+                  badgeColor: item.cardColorEtiqueta,
+                  inventarioLimitado: item.inventarioLimitado,
+                  mostrarBotonCarrito: true,
+                  producto: item,
+                  onTap: () {
+                    GoRouter.of(ctx).go('/producto', extra: item);
+                  },
+                  onPressedAddAlCarrito: () {
+                    ctx.read<CarritoProvider>().agregar(item);
+                    Scaffold.of(ctx).openEndDrawer(); // 👈 usa ctx
+                    Future.delayed(const Duration(seconds: 3), () {
+                      if (ctx.mounted) Navigator.of(ctx).maybePop();
+                    });
+                  },
+                ),
               );
             },
           ),

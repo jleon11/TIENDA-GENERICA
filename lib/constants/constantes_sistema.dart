@@ -58,7 +58,7 @@ class SistemaConstantes {
   // ALTURAS
   // ==================================
 
-  static const double altoHeader = 80;
+  static const double altoHeader = 90;
 
   static const double altoBoton = 42;
 
