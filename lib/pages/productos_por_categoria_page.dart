@@ -307,6 +307,7 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
           opcionesCantidad: opcionesCantidad,
           cantidadInicial: 15,
         ).animate().fadeIn(),
+        
       ],
     );
   }

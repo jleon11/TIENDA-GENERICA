@@ -45,6 +45,7 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final esMobile = width < 768;
 
     final productosOrdenados = _obtenerProductosOrdenados();
     final totalProductos = productosOrdenados.length;
@@ -74,48 +75,95 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /// TOP BAR
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Wrap(
-              spacing: 14,
-              runSpacing: 10,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                const Text(
-                  'Ordenar por:',
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-                _dropdownOrden(),
+        // ENCABEZADO
+        esMobile
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Fila 1: Ordenar (ocupa todo el ancho)
+                  Row(
+                    children: [
+                      const Text(
+                        'Ordenar:',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: SistemaConstantes.colorTexto,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(child: _dropdownOrdenCompacto()),
+                    ],
+                  ),
 
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Mostrar:',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(width: 8),
-                    _dropdownCantidad(),
-                  ],
-                ),
-              ],
-            ),
+                  const SizedBox(height: 8),
 
-            Text(
-              totalProductos == 0
-                  ? 'Productos: 0 de 0'
-                  : 'Productos: ${inicio + 1} - $fin de $totalProductos',
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
+                  // Fila 2: Mostrar + dropdown + contador
+                  Row(
+                    children: [
+                      const Text(
+                        'Mostrar:',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: SistemaConstantes.colorTexto,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      _dropdownCantidad(),
+                      const Spacer(),
+                      Text(
+                        totalProductos == 0
+                            ? '0 de 0'
+                            : '${inicio + 1}–$fin de $totalProductos',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: SistemaConstantes.colorGris,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Wrap(
+                    spacing: 14,
+                    runSpacing: 10,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      const Text(
+                        'Ordenar por:',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      _dropdownOrden(),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'Mostrar:',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(width: 8),
+                          _dropdownCantidad(),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Text(
+                    totalProductos == 0
+                        ? 'Productos: 0 de 0'
+                        : 'Productos: ${inicio + 1} - $fin de $totalProductos',
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
 
         const SizedBox(height: 20),
 
-        /// GRID
+        // GRID
         if (productosPagina.isEmpty)
           Container(
             width: double.infinity,
@@ -152,15 +200,13 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
             itemCount: productosPagina.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: _obtenerColumnas(width),
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
               childAspectRatio: _aspectRatio(width),
             ),
             itemBuilder: (context, index) {
               final item = productosPagina[index];
-
               return Builder(
-                // 👈
                 builder: (ctx) => ProductCard(
                   nombre: item.nombre,
                   sku: item.codigo,
@@ -177,7 +223,7 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
                   },
                   onPressedAddAlCarrito: () {
                     ctx.read<CarritoProvider>().agregar(item);
-                    Scaffold.of(ctx).openEndDrawer(); // 👈 usa ctx
+                    Scaffold.of(ctx).openEndDrawer();
                     Future.delayed(const Duration(seconds: 3), () {
                       if (ctx.mounted) Navigator.of(ctx).maybePop();
                     });
@@ -189,7 +235,7 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
 
         const SizedBox(height: 28),
 
-        /// PAGINADOR
+        // PAGINADOR
         if (totalPaginas > 1)
           Center(
             child: Wrap(
@@ -198,24 +244,15 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
               children: [
                 IconButton(
                   onPressed: paginaActual > 1
-                      ? () {
-                          setState(() {
-                            paginaActual--;
-                          });
-                        }
+                      ? () => setState(() => paginaActual--)
                       : null,
                   icon: const Icon(Icons.chevron_left),
                 ),
                 ...List.generate(totalPaginas, (index) {
                   final page = index + 1;
                   final activa = page == paginaActual;
-
                   return InkWell(
-                    onTap: () {
-                      setState(() {
-                        paginaActual = page;
-                      });
-                    },
+                    onTap: () => setState(() => paginaActual = page),
                     child: Container(
                       width: 42,
                       height: 42,
@@ -245,11 +282,7 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
                 }),
                 IconButton(
                   onPressed: paginaActual < totalPaginas
-                      ? () {
-                          setState(() {
-                            paginaActual++;
-                          });
-                        }
+                      ? () => setState(() => paginaActual++)
                       : null,
                   icon: const Icon(Icons.chevron_right),
                 ),
@@ -262,7 +295,6 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
 
   List<ProductoModel> _obtenerProductosOrdenados() {
     final lista = [...widget.productos];
-
     switch (ordenSeleccionado) {
       case 'Precio menor':
         lista.sort((a, b) => a.precio.compareTo(b.precio));
@@ -277,20 +309,50 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
         lista.sort((a, b) => b.nombre.compareTo(a.nombre));
         break;
     }
-
     return lista;
   }
 
   int _obtenerColumnas(double width) {
-    if (width < 700) return 1;
-    if (width < 1100) return 2;
-    return 3;
+    if (width < 768) return 2; // mobile: siempre 2
+    if (width < 1100) return 2; // tablet: 2
+    return 3; // desktop: 3
   }
 
   double _aspectRatio(double width) {
-    if (width < 700) return 0.72;
+    if (width < 768) return 0.54; // era 0.58
     if (width < 1100) return 0.66;
     return 0.64;
+  }
+
+  Widget _dropdownOrdenCompacto() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        border: Border.all(color: SistemaConstantes.colorBorde),
+        borderRadius: BorderRadius.circular(SistemaConstantes.radioSM),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: ordenSeleccionado,
+          isExpanded: true,
+          icon: const Icon(Icons.expand_more, size: 18),
+          style: const TextStyle(
+            fontSize: 13,
+            color: SistemaConstantes.colorTexto,
+          ),
+          items: opcionesOrden.map((e) {
+            return DropdownMenuItem<String>(value: e, child: Text(e));
+          }).toList(),
+          onChanged: (value) {
+            if (value == null) return;
+            setState(() {
+              ordenSeleccionado = value;
+              paginaActual = 1;
+            });
+          },
+        ),
+      ),
+    );
   }
 
   Widget _dropdownCantidad() {
@@ -302,7 +364,6 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
       }).toList(),
       onChanged: (value) {
         if (value == null) return;
-
         setState(() {
           productosPorPagina = value;
           paginaActual = 1;
@@ -320,7 +381,6 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
       }).toList(),
       onChanged: (value) {
         if (value == null) return;
-
         setState(() {
           ordenSeleccionado = value;
           paginaActual = 1;
