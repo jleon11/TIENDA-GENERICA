@@ -18,21 +18,29 @@ class GridGenerico<T> extends StatelessWidget {
     this.anchoMaximoContenedor,
     this.columnasDesktop = 3, // 👈 default 3, no rompe nada existente
   });
-
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(
+      context,
+    ).size.width; // 👈 ancho real de pantalla
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final anchoReal = constraints.maxWidth;
-        final anchoReferencia = anchoMaximoContenedor ?? anchoReal;
 
-        final esMobile = SistemaConstantes.esMovil(anchoReferencia);
+        final esMobile = SistemaConstantes.esMovil(
+          screenWidth,
+        ); // 👈 screenWidth
+        final esTablet =
+            screenWidth < SistemaConstantes.tablet; // 👈 screenWidth
 
         final double spacing = esMobile ? 10 : espaciado;
 
         final int columnas = esMobile
             ? 2
-            : columnasDesktop; // 👈 usa el parámetro
+            : esTablet
+            ? (columnasDesktop > 3 ? columnasDesktop - 1 : 2)
+            : columnasDesktop;
 
         final double anchoCard =
             (anchoReal - spacing * (columnas - 1)) / columnas;
