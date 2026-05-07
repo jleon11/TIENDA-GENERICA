@@ -49,7 +49,7 @@ class _HeaderTiendaState extends State<HeaderTienda> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    final esMovil = width < 900;
+    final esMovil = width < SistemaConstantes.mobile;
 
     final esTablet = width >= 900 && width < 1300;
 
@@ -86,20 +86,19 @@ class _HeaderTiendaState extends State<HeaderTienda> {
                 /// =====================================
                 /// LOGO
                 /// =====================================
-                InkWell(
-                  onTap: () {
-                    context.go('/');
-                  },
 
-                  child: Image.asset(
-                    'assets/imagenes/logo-accesoriosGonzales-fondoBlanco.png',
-
-                    //height: esMovil ? 52 : 68,
-                    height: esMovil ? 68 : 90, // antes era 52 : 68
-
-                    fit: BoxFit.contain,
+                // DESPUÉS
+                if (!esMovil) ...[
+                  InkWell(
+                    onTap: () => context.go('/'),
+                    child: Image.asset(
+                      'assets/imagenes/logo-accesoriosGonzales-fondoBlanco.png',
+                      height: 90,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 18),
+                ],
 
                 const SizedBox(width: 18),
 
@@ -218,83 +217,80 @@ class _HeaderTiendaState extends State<HeaderTienda> {
                 /// =====================================
                 /// FAVORITOS
                 /// =====================================
-                if (!esMovil)
-                  Builder(
-                    builder: (context) => Consumer<FavoritosProvider>(
-                      builder: (context, favs, _) {
-                        return GestureDetector(
-                          onTap: () {
-                            showGeneralDialog(
-                              context: context,
-                              barrierDismissible: true,
-                              barrierLabel: '',
-                              barrierColor: Colors.black54,
-                              transitionDuration: const Duration(
-                                milliseconds: 250,
+                Builder(
+                  builder: (context) => Consumer<FavoritosProvider>(
+                    builder: (context, favs, _) {
+                      return GestureDetector(
+                        onTap: () {
+                          showGeneralDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            barrierLabel: '',
+                            barrierColor: Colors.black54,
+                            transitionDuration: const Duration(
+                              milliseconds: 250,
+                            ),
+                            pageBuilder: (_, __, ___) => Align(
+                              alignment: Alignment.centerRight,
+                              child: const FavoritosDrawer(),
+                            ),
+                            transitionBuilder: (_, anim, __, child) {
+                              return SlideTransition(
+                                position: Tween(
+                                  begin: const Offset(1, 0),
+                                  end: Offset.zero,
+                                ).animate(anim),
+                                child: child,
+                              );
+                            },
+                          );
+                        },
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                border: Border.all(color: Colors.grey.shade300),
                               ),
-                              pageBuilder: (_, __, ___) => Align(
-                                alignment: Alignment.centerRight,
-                                child: const FavoritosDrawer(),
+                              child: const Icon(
+                                Icons.favorite_border,
+                                color: Colors.red,
+                                size: 22,
                               ),
-                              transitionBuilder: (_, anim, __, child) {
-                                return SlideTransition(
-                                  position: Tween(
-                                    begin: const Offset(1, 0),
-                                    end: Offset.zero,
-                                  ).animate(anim),
-                                  child: child,
-                                );
-                              },
-                            );
-                          },
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              Container(
-                                width: 42,
-                                height: 42,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
+                            ),
+                            if (favs.total > 0)
+                              Positioned(
+                                right: -2,
+                                top: -2,
+                                child: Container(
+                                  width: 18,
+                                  height: 18,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
                                   ),
-                                ),
-                                child: const Icon(
-                                  Icons.favorite_border,
-                                  color: Colors.red,
-                                  size: 22,
-                                ),
-                              ),
-                              if (favs.total > 0)
-                                Positioned(
-                                  right: -2,
-                                  top: -2,
-                                  child: Container(
-                                    width: 18,
-                                    height: 18,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${favs.total}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '${favs.total}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
+                ),
 
-                if (!esMovil) const SizedBox(width: 12),
+                const SizedBox(width: 12),
 
                 /// =====================================
                 /// CARRITO
