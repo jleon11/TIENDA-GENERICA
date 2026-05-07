@@ -136,7 +136,11 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
           activa: subCategoriaSeleccionada?.id == sub.id,
           iconSize: iconSize,
           fontSize: fontSize,
-          onTap: () => setState(() => subCategoriaSeleccionada = sub),
+          onTap: () => setState(() {
+            subCategoriaSeleccionada = subCategoriaSeleccionada?.id == sub.id
+                ? null // ya estaba seleccionada → deseleccionar
+                : sub;
+          }),
         ),
       ),
     ];

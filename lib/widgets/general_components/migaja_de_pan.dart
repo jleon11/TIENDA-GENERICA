@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tienda_motos/constants/constantes_sistema.dart';
 
 class MigaDePan extends StatelessWidget {
   final List<MigaDePanItem> items;
@@ -17,7 +16,6 @@ class MigaDePan extends StatelessWidget {
 
       widgets.add(
         esUltimo
-            // Último ítem → no clickeable, color gris
             ? Text(
                 item.label,
                 style: const TextStyle(
@@ -26,18 +24,20 @@ class MigaDePan extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               )
-            // Ítems anteriores → clickeables, azul con subrayado
-            : GestureDetector(
-                onTap: item.ruta != null
-                    ? () => GoRouter.of(context).go(item.ruta!)
-                    : null,
-                child: Text(
-                  item.label,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF1E478D),
-                    fontWeight: FontWeight.w600,
-                    decoration: TextDecoration.underline,
+            : MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: item.ruta != null
+                      ? () => GoRouter.of(context).go(item.ruta!)
+                      : null,
+                  child: Text(
+                    item.label,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF1E478D),
+                      fontWeight: FontWeight.w600,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ),
               ),
@@ -58,10 +58,9 @@ class MigaDePan extends StatelessWidget {
   }
 }
 
-/// Modelo simple para cada nivel del breadcrumb
 class MigaDePanItem {
   final String label;
-  final String? ruta; // null = no navegable
+  final String? ruta;
 
   const MigaDePanItem({required this.label, this.ruta});
 }
