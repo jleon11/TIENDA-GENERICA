@@ -40,14 +40,16 @@ class _PromoSectionState extends State<PromoSection> {
     super.dispose();
   }
 
+  // DESPUÉS
   int calcularItemsPorVista(double width) {
-    if (width < 700) return 1;
+    if (width < 700) return 2; // 2 cards en mobile
     if (width < 1100) return 3;
     return 4;
   }
 
   double calcularAnchoCard(double width) {
-    if (width < 700) return width * 0.88;
+    if (width < 700)
+      return (width - 32) / 2 - 4; // spacing de 8px entre 2 cards
     return SistemaConstantes.cardNormalAncho;
   }
 
@@ -70,7 +72,11 @@ class _PromoSectionState extends State<PromoSection> {
     final width = MediaQuery.of(context).size.width;
     final itemsVista = calcularItemsPorVista(width);
     final cardWidth = calcularAnchoCard(width);
-    final alto = SistemaConstantes.cardGrandeAlto;
+    // DESPUÉS
+    final alto = width < 700
+        ? SistemaConstantes.cardNormalAlto
+        : SistemaConstantes.cardGrandeAlto; // 505px en desktop
+
     final paginas = dividirPaginas(widget.items, itemsVista);
 
     return SizedBox(

@@ -203,4 +203,6 @@ class SistemaConstantes {
   /// CARD HERO
   static const double cardGrandeAncho = 360;
   static const double cardGrandeAlto = 505;
+
+  
 }
