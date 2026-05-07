@@ -342,9 +342,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                         ProductGridSection<ProductoModel>(
                           titulo: 'MÁS PRODUCTOS PARA EXPLORAR',
                           items: masBuscados,
-                          filas: 2,
-                          anchoItem: SistemaConstantes.cardNormalAncho,
-                          alturaItem: SistemaConstantes.cardGrandeAlto,
+                          cantidadMaxima: 12,
                           espaciado: 8,
                           scrollController: _scrollController,
                         ),

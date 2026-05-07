@@ -24,7 +24,7 @@ class ProductCard extends StatefulWidget {
   final VoidCallback? onPressedAddAlCarrito;
   final VoidCallback? onTap;
 
-  final ProductoModel producto; // 👈 agrega esto
+  final ProductoModel producto;
 
   const ProductCard({
     super.key,
@@ -43,351 +43,500 @@ class ProductCard extends StatefulWidget {
   });
 
   @override
-  State<ProductCard> createState() => _ProductCardForuiState();
+  State<ProductCard> createState() => _ProductCardState();
 }
 
-class _ProductCardForuiState extends State<ProductCard> {
+class _ProductCardState extends State<ProductCard> {
   bool hover = false;
 
   bool get tieneDescuento =>
-      widget.precioAnterior != null && widget.precioAnterior!.trim().isNotEmpty;
+      widget.precioAnterior != null &&
+      widget.precioAnterior!.trim().isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
+    final screenWidth = MediaQuery.of(context).size.width;
 
-      onEnter: (_) {
-        setState(() {
-          hover = true;
-        });
-      },
+    final esMobile = SistemaConstantes.esMovil(screenWidth);
 
-      onExit: (_) {
-        setState(() {
-          hover = false;
-        });
-      },
+    final cardHeight = SistemaConstantes.obtenerCardAlto(
+      screenWidth,
+    );
 
-      child: GestureDetector(
-        onTap: widget.onTap,
+    final cardWidth = SistemaConstantes.obtenerCardAncho(
+      screenWidth,
+    );
 
-        child: AnimatedScale(
-          scale: hover ? 1.015 : 1,
+    final double imageHeight = esMobile ? 110 : 200;
 
-          duration: const Duration(milliseconds: 180),
+    final double titleFont = esMobile ? 14 : 17;
 
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 220),
+    final double priceFont = esMobile ? 15 : 17;
 
-            curve: Curves.easeOut,
+    final double buttonHeight = esMobile ? 38 : 46;
 
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
+    return SizedBox(
+      width: cardWidth,
+      height: cardHeight,
 
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(hover ? 0.08 : 0.04),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
 
-                  blurRadius: hover ? 28 : 18,
+        onEnter: (_) {
+          if (!esMobile) {
+            setState(() => hover = true);
+          }
+        },
 
-                  spreadRadius: -8,
+        onExit: (_) {
+          if (!esMobile) {
+            setState(() => hover = false);
+          }
+        },
 
-                  offset: const Offset(0, 14),
+        child: GestureDetector(
+          onTap: widget.onTap,
+
+          child: AnimatedScale(
+            scale: hover ? 1.015 : 1,
+
+            duration: const Duration(milliseconds: 180),
+
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+
+              curve: Curves.easeOut,
+
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                  SistemaConstantes.radioLG,
                 ),
-              ],
-            ),
 
-            child: FCard.raw(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
-
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-
-                  crossAxisAlignment: CrossAxisAlignment.center,
-
-                  children: [
-                    /// TOP
-                    Row(
-                      children: [
-                        if (widget.badgeTexto.trim().isNotEmpty)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 7,
-                            ),
-
-                            decoration: BoxDecoration(
-                              color: widget.badgeColor,
-
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-
-                            child: Text(
-                              widget.badgeTexto,
-
-                              style: const TextStyle(
-                                color: Colors.white,
-
-                                fontSize: 12,
-
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-
-                        const Spacer(),
-
-                        Consumer<FavoritosProvider>(
-                          builder: (context, favs, _) {
-                            final esFav = favs.esFavorito(widget.producto.id);
-                            return GestureDetector(
-                              onTap: () => favs.toggleFavorito(widget.producto),
-                              child: Icon(
-                                esFav ? Icons.favorite : Icons.favorite_border,
-                                size: 20,
-                                color: esFav
-                                    ? Colors.red
-                                    : Colors.grey.shade500,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(
+                      hover ? 0.08 : 0.035,
                     ),
 
-                    const SizedBox(height: 22),
+                    blurRadius: hover ? 24 : 14,
 
-                    /// IMAGEN
-                    Center(
-                      child: AnimatedScale(
-                        scale: hover ? 1.04 : 1,
+                    spreadRadius: -8,
 
-                        duration: const Duration(milliseconds: 220),
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
 
-                        curve: Curves.easeOut,
+              child: FCard.raw(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    esMobile ? 10 : 16,
+                    esMobile ? 10 : 16,
+                    esMobile ? 10 : 16,
+                    esMobile ? 12 : 18,
+                  ),
 
-                        child: SizedBox(
-                          height: 200,
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.center,
 
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-
-                            child: Image.network(
-                              widget.imagen,
-
-                              fit: BoxFit.contain,
-
-                              errorBuilder: (_, __, ___) => const Icon(
-                                Icons.image_not_supported,
-
-                                size: 60,
-
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    /// TITULO
-                    Text(
-                      widget.nombre,
-
-                      maxLines: 2,
-
-                      overflow: TextOverflow.ellipsis,
-
-                      style: const TextStyle(
-                        fontSize: 17,
-
-                        fontWeight: FontWeight.w700,
-
-                        color: SistemaConstantes.colorTexto,
-
-                        height: 1.35,
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    /// SKU
-                    Text(
-                      widget.sku,
-
-                      maxLines: 1,
-
-                      overflow: TextOverflow.ellipsis,
-
-                      style: TextStyle(
-                        fontSize: 12,
-
-                        color: Colors.grey.shade600,
-
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    /// PRECIO ANTERIOR
-                    if (tieneDescuento)
-                      Text(
-                        '₡ ${widget.precioAnterior!}',
-
-                        style: TextStyle(
-                          decoration: TextDecoration.lineThrough,
-
-                          color: Colors.grey.shade500,
-
-                          fontSize: 13,
-
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-
-                    if (tieneDescuento) const SizedBox(height: 6),
-
-                    if (!tieneDescuento)
+                    children: [
+                      /// HEADER
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-
                         children: [
-                          Container(
-                            width: 7,
-                            height: 7,
+                          if (widget.badgeTexto
+                              .trim()
+                              .isNotEmpty)
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    esMobile ? 8 : 12,
 
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF22C55E),
-                              shape: BoxShape.circle,
+                                vertical:
+                                    esMobile ? 4 : 7,
+                              ),
+
+                              decoration: BoxDecoration(
+                                color: widget.badgeColor,
+
+                                borderRadius:
+                                    BorderRadius.circular(
+                                  20,
+                                ),
+                              ),
+
+                              child: Text(
+                                widget.badgeTexto,
+
+                                style: TextStyle(
+                                  color: Colors.white,
+
+                                  fontSize:
+                                      esMobile ? 9 : 12,
+
+                                  fontWeight:
+                                      FontWeight.w700,
+                                ),
+                              ),
                             ),
-                          ),
 
-                          const SizedBox(width: 6),
+                          const Spacer(),
 
-                          Text(
-                            'En stock',
+                          Consumer<FavoritosProvider>(
+                            builder: (
+                              context,
+                              favs,
+                              _,
+                            ) {
+                              final esFav =
+                                  favs.esFavorito(
+                                widget.producto.id,
+                              );
 
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                            ),
+                              return GestureDetector(
+                                onTap: () => favs
+                                    .toggleFavorito(
+                                  widget.producto,
+                                ),
+
+                                child: Icon(
+                                  esFav
+                                      ? Icons.favorite
+                                      : Icons
+                                          .favorite_border,
+
+                                  size:
+                                      esMobile ? 18 : 20,
+
+                                  color: esFav
+                                      ? Colors.red
+                                      : Colors.grey
+                                          .shade500,
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
 
-                    if (!tieneDescuento) const SizedBox(height: 6),
-
-                    /// PRECIO
-                    Text(
-                      '₡ ${widget.precioActual}',
-
-                      style: const TextStyle(
-                        fontSize: 17,
-
-                        fontWeight: FontWeight.w900,
-
-                        color: SistemaConstantes.colorAzulPrimario,
-
-                        height: 1.1,
+                      SizedBox(
+                        height: esMobile ? 10 : 22,
                       ),
-                    ),
 
-                    const SizedBox(height: 15),
+                      /// IMAGEN
+                      SizedBox(
+                        height: imageHeight,
 
-                    /// BOTON
-                    /// ===============================================
-                    /// OPCIÓN 1 — AZUL SÓLIDO (RECOMENDADA)
-                    /// ===============================================
-                    if (widget.mostrarBotonCarrito) const Spacer(),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.all(6),
 
-                    SizedBox(
-                      width: double.infinity,
-                      height: 46,
+                          child: Image.network(
+                            widget.imagen,
 
-                      child: Container(
-                        width: double.infinity,
-                        height: 46,
+                            fit: BoxFit.contain,
 
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            SistemaConstantes.radioMD,
+                            errorBuilder:
+                                (_, __, ___) => Icon(
+                              Icons
+                                  .image_not_supported,
+
+                              size:
+                                  esMobile ? 40 : 60,
+
+                              color: Colors.grey,
+                            ),
                           ),
+                        ),
+                      ),
 
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
+                      SizedBox(
+                        height: esMobile ? 12 : 22,
+                      ),
 
-                            colors: [
-                              SistemaConstantes.colorAzulPrimario,
+                      /// TITULO
+                      SizedBox(
+                        height: esMobile ? 40 : 52,
 
-                              SistemaConstantes.colorAzulPrimario.withOpacity(
-                                0.78,
+                        child: Center(
+                          child: Text(
+                            widget.nombre,
+
+                            maxLines: 2,
+
+                            overflow:
+                                TextOverflow.ellipsis,
+
+                            textAlign: TextAlign.center,
+
+                            style: TextStyle(
+                              fontSize: titleFont,
+
+                              fontWeight:
+                                  FontWeight.w700,
+
+                              color: SistemaConstantes
+                                  .colorTexto,
+
+                              height: 1.3,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: esMobile ? 6 : 10,
+                      ),
+
+                      /// SKU
+                      SizedBox(
+                        height: 18,
+
+                        child: Text(
+                          widget.sku,
+
+                          maxLines: 1,
+
+                          overflow:
+                              TextOverflow.ellipsis,
+
+                          style: TextStyle(
+                            fontSize:
+                                esMobile ? 10 : 12,
+
+                            color: Colors.grey.shade600,
+
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: esMobile ? 10 : 18,
+                      ),
+
+                      /// AREA PRECIO
+                      SizedBox(
+                        height: esMobile ? 52 : 62,
+
+                        child: Column(
+                          children: [
+                            if (tieneDescuento)
+                              Text(
+                                '₡ ${widget.precioAnterior!}',
+
+                                style: TextStyle(
+                                  decoration:
+                                      TextDecoration
+                                          .lineThrough,
+
+                                  color:
+                                      Colors.grey.shade500,
+
+                                  fontSize:
+                                      esMobile ? 10 : 13,
+
+                                  fontWeight:
+                                      FontWeight.w500,
+                                ),
                               ),
-                            ],
-                          ),
 
-                          boxShadow: [
-                            BoxShadow(
-                              color: SistemaConstantes.colorAzulPrimario
-                                  .withOpacity(0.18),
+                            if (!tieneDescuento)
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .center,
 
-                              blurRadius: 12,
+                                children: [
+                                  Container(
+                                    width: 6,
+                                    height: 6,
 
-                              offset: const Offset(0, 5),
+                                    decoration:
+                                        const BoxDecoration(
+                                      color: Color(
+                                        0xFF22C55E,
+                                      ),
+
+                                      shape:
+                                          BoxShape.circle,
+                                    ),
+                                  ),
+
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+
+                                  Text(
+                                    'En stock',
+
+                                    style: TextStyle(
+                                      color: Colors
+                                          .grey
+                                          .shade600,
+
+                                      fontSize: esMobile
+                                          ? 11
+                                          : 13,
+
+                                      fontWeight:
+                                          FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                            SizedBox(
+                              height: esMobile ? 4 : 6,
+                            ),
+
+                            Text(
+                              '₡ ${widget.precioActual}',
+
+                              textAlign:
+                                  TextAlign.center,
+
+                              style: TextStyle(
+                                fontSize: priceFont,
+
+                                fontWeight:
+                                    FontWeight.w900,
+
+                                color:
+                                    SistemaConstantes
+                                        .colorAzulPrimario,
+
+                                height: 1.1,
+                              ),
                             ),
                           ],
                         ),
+                      ),
 
-                        child: Material(
-                          color: Colors.transparent,
+                      const Spacer(),
 
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(
-                              SistemaConstantes.radioMD,
-                            ),
+                      /// BOTON
+                      if (widget.mostrarBotonCarrito)
+                        SizedBox(
+                          width: double.infinity,
 
-                            onTap: widget.onPressedAddAlCarrito,
+                          height: buttonHeight,
 
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(
+                                SistemaConstantes
+                                    .radioMD,
+                              ),
 
-                              children: const [
-                                Icon(
-                                  Icons.shopping_cart_outlined,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
+                              gradient:
+                                  LinearGradient(
+                                begin:
+                                    Alignment.centerLeft,
 
-                                SizedBox(width: 8),
+                                end: Alignment.centerRight,
 
-                                Text(
-                                  'Añadir al carrito',
+                                colors: [
+                                  SistemaConstantes
+                                      .colorAzulPrimario,
 
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14,
+                                  SistemaConstantes
+                                      .colorAzulPrimario
+                                      .withOpacity(0.82),
+                                ],
+                              ),
+
+                              boxShadow: [
+                                BoxShadow(
+                                  color:
+                                      SistemaConstantes
+                                          .colorAzulPrimario
+                                          .withOpacity(
+                                            0.15,
+                                          ),
+
+                                  blurRadius: 10,
+
+                                  offset:
+                                      const Offset(
+                                    0,
+                                    4,
                                   ),
                                 ),
                               ],
                             ),
+
+                            child: Material(
+                              color: Colors.transparent,
+
+                              child: InkWell(
+                                borderRadius:
+                                    BorderRadius.circular(
+                                  SistemaConstantes
+                                      .radioMD,
+                                ),
+
+                                onTap:
+                                    widget
+                                        .onPressedAddAlCarrito,
+
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment
+                                          .center,
+
+                                  children: [
+                                    Icon(
+                                      Icons
+                                          .shopping_cart_outlined,
+
+                                      color: Colors.white,
+
+                                      size: esMobile
+                                          ? 15
+                                          : 18,
+                                    ),
+
+                                    SizedBox(
+                                      width:
+                                          esMobile ? 5 : 8,
+                                    ),
+
+                                    Text(
+                                      esMobile
+                                          ? 'Añadir'
+                                          : 'Añadir al carrito',
+
+                                      style: TextStyle(
+                                        color: Colors.white,
+
+                                        fontWeight:
+                                            FontWeight
+                                                .w700,
+
+                                        fontSize:
+                                            esMobile
+                                                ? 11
+                                                : 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
       ),
-    ).animate().fadeIn(duration: const Duration(milliseconds: 350));
+    ).animate().fadeIn(
+          duration: const Duration(milliseconds: 350),
+        );
   }
 }

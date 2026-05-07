@@ -204,5 +204,15 @@ class SistemaConstantes {
   static const double cardGrandeAncho = 360;
   static const double cardGrandeAlto = 505;
 
-  
+  static double obtenerCardAlto(double width) {
+    if (width < mobile) return 360;
+    if (width < tablet) return 420;
+    return 510;
+  }
+
+  static double obtenerCardAncho(double width) {
+    if (width < mobile) return 170;
+    if (width < tablet) return 240;
+    return 300;
+  }
 }

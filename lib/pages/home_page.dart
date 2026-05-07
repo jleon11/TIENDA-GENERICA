@@ -151,9 +151,7 @@ class _HomePageState extends State<HomePage> {
                       ProductGridSection<ProductoModel>(
                         titulo: 'LOS MÁS BUSCADOS',
                         items: listaProductosMasBuscadosHome,
-                        filas: 2,
-                        anchoItem: SistemaConstantes.cardNormalAncho,
-                        alturaItem: SistemaConstantes.cardGrandeAlto,
+                        cantidadMaxima: 8,
                         espaciado: 8,
                       ),
 

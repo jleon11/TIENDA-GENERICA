@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tienda_motos/constants/constantes_sistema.dart';
 
 class GridGenerico<T> extends StatelessWidget {
   final List<T> items;
 
-  final double anchoItem;
-  final double alturaItem;
-
-  final int? filas;
+  final int? cantidadMaxima;
 
   final double espaciado;
 
@@ -18,14 +16,8 @@ class GridGenerico<T> extends StatelessWidget {
     super.key,
     required this.items,
     required this.itemBuilder,
-
-    this.anchoItem = 220,
-    this.alturaItem = 300,
-
-    this.filas,
-
+    this.cantidadMaxima,
     this.espaciado = 20,
-
     this.alineacion = Alignment.center,
   });
 
@@ -33,17 +25,22 @@ class GridGenerico<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final anchoDisponible = constraints.maxWidth;
+
+        final esMobile = SistemaConstantes.esMovil(anchoDisponible);
+
+        final anchoItem = SistemaConstantes.obtenerCardAncho(anchoDisponible);
+
+        final int columnas = esMobile
+            ? 2
+            : ((anchoDisponible + espaciado) / (anchoItem + espaciado))
+                  .floor()
+                  .clamp(1, 999);
+
         int cantidadMostrar = items.length;
 
-        /// =====================================================
-        /// CALCULAR COLUMNAS REALES DISPONIBLES
-        /// =====================================================
-        if (filas != null) {
-          final columnas = (constraints.maxWidth / (anchoItem + espaciado))
-              .floor()
-              .clamp(1, 999);
-
-          cantidadMostrar = (columnas * filas!).clamp(0, items.length);
+        if (cantidadMaxima != null) {
+          cantidadMostrar = cantidadMaxima!.clamp(0, items.length);
         }
 
         final itemsFiltrados = items.take(cantidadMostrar).toList();
@@ -57,12 +54,7 @@ class GridGenerico<T> extends StatelessWidget {
             runSpacing: espaciado,
 
             children: itemsFiltrados.map((item) {
-              return SizedBox(
-                width: anchoItem,
-                height: alturaItem,
-
-                child: itemBuilder(context, item),
-              );
+              return itemBuilder(context, item);
             }).toList(),
           ),
         );
