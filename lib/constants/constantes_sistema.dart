@@ -211,7 +211,7 @@ class SistemaConstantes {
   }
 
   static double obtenerCardAncho(double width) {
-    if (width < mobile) return 170;
+    if (width < mobile) return 200;
     if (width < tablet) return 240;
     return 300;
   }
