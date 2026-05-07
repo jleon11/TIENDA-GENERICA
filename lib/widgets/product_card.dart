@@ -114,8 +114,8 @@ class _ProductCardForuiState extends State<ProductCard> {
                         if (widget.badgeTexto.trim().isNotEmpty)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 5,
+                              horizontal: 12,
+                              vertical: 7,
                             ),
 
                             decoration: BoxDecoration(
@@ -130,7 +130,7 @@ class _ProductCardForuiState extends State<ProductCard> {
                               style: const TextStyle(
                                 color: Colors.white,
 
-                                fontSize: 10,
+                                fontSize: 12,
 
                                 fontWeight: FontWeight.w700,
                               ),
