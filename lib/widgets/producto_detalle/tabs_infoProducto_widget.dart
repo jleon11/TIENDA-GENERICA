@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tienda_motos/widgets/general_components/rich_text_strapi_widget.dart';
 
 class TabsInfoProductoWidget extends StatefulWidget {
   final dynamic descripcion;
@@ -20,30 +19,52 @@ class TabsInfoProductoWidget extends StatefulWidget {
 class _TabsInfoProductoWidgetState extends State<TabsInfoProductoWidget> {
   int tabActual = 0;
 
+  bool expandirInfoGeneral = true;
+
+  bool expandirDescripcion = true;
+
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    final esMobile = width < 768;
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 26),
+
+      padding: EdgeInsets.symmetric(
+        horizontal: esMobile ? 18 : 28,
+        vertical: esMobile ? 18 : 26,
+      ),
+
       decoration: BoxDecoration(
         color: Colors.white,
+
         borderRadius: BorderRadius.circular(22),
+
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.035),
+
             blurRadius: 20,
+
             offset: const Offset(0, 8),
           ),
         ],
       ),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+
         children: [
           Wrap(
             spacing: 28,
+
             runSpacing: 12,
+
             children: [
               _tab(titulo: 'Información del producto', index: 0),
+
               _tab(titulo: 'Instalaciones', index: 1),
             ],
           ),
@@ -56,7 +77,10 @@ class _TabsInfoProductoWidgetState extends State<TabsInfoProductoWidget> {
 
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 220),
-            child: tabActual == 0 ? _buildInformacion() : _buildInstalaciones(),
+
+            child: tabActual == 0
+                ? _buildInformacion(esMobile)
+                : _buildInstalaciones(),
           ),
         ],
       ),
@@ -72,15 +96,21 @@ class _TabsInfoProductoWidgetState extends State<TabsInfoProductoWidget> {
           tabActual = index;
         });
       },
+
       child: Column(
         mainAxisSize: MainAxisSize.min,
+
         crossAxisAlignment: CrossAxisAlignment.start,
+
         children: [
           Text(
             titulo,
+
             style: TextStyle(
               fontSize: 15,
+
               fontWeight: FontWeight.w700,
+
               color: activo ? const Color(0xFF1E478D) : Colors.black54,
             ),
           ),
@@ -89,10 +119,14 @@ class _TabsInfoProductoWidgetState extends State<TabsInfoProductoWidget> {
 
           AnimatedContainer(
             duration: const Duration(milliseconds: 220),
+
             height: 2.5,
+
             width: activo ? 70 : 0,
+
             decoration: BoxDecoration(
               color: const Color(0xFF1E478D),
+
               borderRadius: BorderRadius.circular(20),
             ),
           ),
@@ -101,41 +135,154 @@ class _TabsInfoProductoWidgetState extends State<TabsInfoProductoWidget> {
     );
   }
 
-  Widget _buildInformacion() {
+  Widget _buildInformacion(bool esMobile) {
+    final infoGeneralTexto = widget.infoGeneral?.toString() ?? '';
+
+    final descripcionTexto = widget.descripcion?.toString() ?? '';
+
     return Column(
       key: const ValueKey(0),
+
       crossAxisAlignment: CrossAxisAlignment.start,
+
       children: [
-        if (widget.infoGeneral != null) ...[
-          const Text(
-            'Información General',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-              color: Colors.black87,
-            ),
+        /// INFO GENERAL
+        if (infoGeneralTexto.trim().isNotEmpty) ...[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+            children: [
+              const Text(
+                'Información General',
+
+                style: TextStyle(
+                  fontSize: 20,
+
+                  fontWeight: FontWeight.w800,
+
+                  color: Colors.black87,
+                ),
+              ),
+
+              if (esMobile)
+                _botonExpandir(
+                  expandido: expandirInfoGeneral,
+
+                  onTap: () {
+                    setState(() {
+                      expandirInfoGeneral = !expandirInfoGeneral;
+                    });
+                  },
+                ),
+            ],
           ),
 
           const SizedBox(height: 18),
 
-          RichTextStrapiWidget(contenido: widget.infoGeneral),
+          if (!esMobile || expandirInfoGeneral)
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
 
-          const SizedBox(height: 26),
+              child: Text(
+                infoGeneralTexto,
+
+                style: const TextStyle(
+                  fontSize: 15,
+
+                  height: 1.8,
+
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+
+          const SizedBox(height: 32),
         ],
 
-        const Text(
-          'Descripción',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-            color: Colors.black87,
-          ),
+        /// DESCRIPCION
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+          children: [
+            const Text(
+              'Descripción',
+
+              style: TextStyle(
+                fontSize: 20,
+
+                fontWeight: FontWeight.w800,
+
+                color: Colors.black87,
+              ),
+            ),
+
+            if (esMobile)
+              _botonExpandir(
+                expandido: expandirDescripcion,
+
+                onTap: () {
+                  setState(() {
+                    expandirDescripcion = !expandirDescripcion;
+                  });
+                },
+              ),
+          ],
         ),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
 
-        RichTextStrapiWidget(contenido: widget.descripcion),
+        if (!esMobile || expandirDescripcion)
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+
+            child: Text(
+              descripcionTexto,
+
+              style: const TextStyle(
+                fontSize: 15,
+
+                height: 1.8,
+
+                color: Colors.black87,
+              ),
+            ),
+          ),
       ],
+    );
+  }
+
+  Widget _botonExpandir({
+    required bool expandido,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(50),
+
+      onTap: onTap,
+
+      child: AnimatedRotation(
+        turns: expandido ? 0.5 : 0,
+
+        duration: const Duration(milliseconds: 220),
+
+        child: Container(
+          padding: const EdgeInsets.all(6),
+
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+
+            shape: BoxShape.circle,
+          ),
+
+          child: const Icon(
+            Icons.keyboard_arrow_down_rounded,
+
+            size: 24,
+
+            color: Color(0xFF1E478D),
+          ),
+        ),
+      ),
     );
   }
 
@@ -156,13 +303,18 @@ Verifique funcionamiento después de instalar.
 
     return Column(
       key: const ValueKey(1),
+
       crossAxisAlignment: CrossAxisAlignment.start,
+
       children: [
         const Text(
           'Recomendaciones',
+
           style: TextStyle(
             fontSize: 20,
+
             fontWeight: FontWeight.w800,
+
             color: Colors.black87,
           ),
         ),
@@ -172,14 +324,19 @@ Verifique funcionamiento después de instalar.
         ...pasos.map(
           (item) => Padding(
             padding: const EdgeInsets.only(bottom: 16),
+
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+
               children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 3),
+
                   child: Icon(
                     Icons.check_circle,
+
                     size: 18,
+
                     color: Color(0xFF1E478D),
                   ),
                 ),
@@ -189,9 +346,12 @@ Verifique funcionamiento después de instalar.
                 Expanded(
                   child: Text(
                     item,
+
                     style: const TextStyle(
                       fontSize: 15,
+
                       height: 1.7,
+
                       color: Colors.black87,
                     ),
                   ),

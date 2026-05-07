@@ -135,20 +135,14 @@ class GaleriaProductoWidget extends StatelessWidget {
 
   Widget _botonNavegacion({required IconData icono}) {
     return Container(
-      width: 54,
-      height: 54,
+      width: 36,
+      height: 36,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white.withOpacity(0.88),
         shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        border: Border.all(color: Colors.black.withOpacity(0.10), width: 0.5),
       ),
-      child: Icon(icono, color: const Color(0xFF1E478D), size: 34),
+      child: Icon(icono, color: Colors.black54, size: 18),
     );
   }
 }

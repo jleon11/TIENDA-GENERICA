@@ -14,45 +14,56 @@ class MigaDePan extends StatelessWidget {
       final item = items[i];
       final esUltimo = i == items.length - 1;
 
-      widgets.add(
-        esUltimo
-            ? Text(
-                item.label,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500,
-                ),
-              )
-            : MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: item.ruta != null
-                      ? () => GoRouter.of(context).go(item.ruta!)
-                      : null,
-                  child: Text(
+      if (esUltimo) {
+        // Último item: nombre del producto, truncado
+        widgets.add(
+          Flexible(
+            child: Text(
+              item.label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Colors.grey,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        );
+      } else {
+        // Items intermedios: texto + separador en un solo widget
+        widgets.add(
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: item.ruta != null
+                  ? () => GoRouter.of(context).go(item.ruta!)
+                  : null,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
                     item.label,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       color: Color(0xFF1E478D),
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                       decoration: TextDecoration.underline,
                     ),
                   ),
-                ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.chevron_right, size: 14, color: Colors.grey),
+                ],
               ),
-      );
-
-      if (!esUltimo) {
-        widgets.add(
-          const Icon(Icons.chevron_right, size: 16, color: Colors.grey),
+            ),
+          ),
         );
       }
     }
 
-    return Wrap(
-      spacing: 6,
-      crossAxisAlignment: WrapCrossAlignment.center,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: widgets,
     );
   }
