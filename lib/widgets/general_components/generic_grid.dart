@@ -27,13 +27,10 @@ class GridGenerico<T> extends StatelessWidget {
         final anchoReferencia = anchoMaximoContenedor ?? anchoReal;
 
         final esMobile = SistemaConstantes.esMovil(anchoReferencia);
-        final esTablet = anchoReferencia < SistemaConstantes.tablet;
 
         final double spacing = esMobile ? 10 : espaciado;
 
         final int columnas = esMobile
-            ? 2
-            : esTablet
             ? 2
             : columnasDesktop; // 👈 usa el parámetro
 
