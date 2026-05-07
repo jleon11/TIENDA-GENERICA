@@ -8,8 +8,6 @@ class GridGenerico<T> extends StatelessWidget {
 
   final double espaciado;
 
-  final Alignment alineacion;
-
   final Widget Function(BuildContext, T) itemBuilder;
 
   const GridGenerico({
@@ -18,7 +16,6 @@ class GridGenerico<T> extends StatelessWidget {
     required this.itemBuilder,
     this.cantidadMaxima,
     this.espaciado = 20,
-    this.alineacion = Alignment.center,
   });
 
   @override
@@ -31,9 +28,11 @@ class GridGenerico<T> extends StatelessWidget {
 
         final anchoItem = SistemaConstantes.obtenerCardAncho(anchoDisponible);
 
+        final double spacing = esMobile ? 10 : espaciado;
+
         final int columnas = esMobile
             ? 2
-            : ((anchoDisponible + espaciado) / (anchoItem + espaciado))
+            : ((anchoDisponible + spacing) / (anchoItem + spacing))
                   .floor()
                   .clamp(1, 999);
 
@@ -45,18 +44,14 @@ class GridGenerico<T> extends StatelessWidget {
 
         final itemsFiltrados = items.take(cantidadMostrar).toList();
 
-        return Align(
-          alignment: alineacion,
+        return Wrap(
+          spacing: spacing,
 
-          child: Wrap(
-            spacing: espaciado,
+          runSpacing: spacing,
 
-            runSpacing: espaciado,
-
-            children: itemsFiltrados.map((item) {
-              return itemBuilder(context, item);
-            }).toList(),
-          ),
+          children: itemsFiltrados.map((item) {
+            return itemBuilder(context, item);
+          }).toList(),
         );
       },
     );

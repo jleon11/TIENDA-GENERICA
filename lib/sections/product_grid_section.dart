@@ -54,8 +54,6 @@ class ProductGridSection<T extends ContratoCardProducto>
 
             espaciado: espaciado,
 
-            alineacion: alineacion,
-
             itemBuilder: (_, item) {
               return ProductCard(
                 nombre: item.nombre,
