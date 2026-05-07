@@ -342,6 +342,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
                           titulo: 'MÁS PRODUCTOS PARA EXPLORAR',
                           items: masBuscados,
                           cantidadMaxima: 12,
+                          columnasDesktop: 4,
                           espaciado: 8,
                           scrollController: _scrollController,
                         ),

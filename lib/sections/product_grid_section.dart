@@ -24,6 +24,8 @@ class ProductGridSection<T extends ContratoCardProducto>
   /// Scroll controller opcional.
   final ScrollController? scrollController;
 
+  final int columnasDesktop;
+
   const ProductGridSection({
     super.key,
     required this.titulo,
@@ -32,6 +34,7 @@ class ProductGridSection<T extends ContratoCardProducto>
     this.espaciado = 16,
     this.alineacion = Alignment.centerLeft,
     this.scrollController,
+    required this.columnasDesktop,
   });
 
   @override
@@ -53,7 +56,7 @@ class ProductGridSection<T extends ContratoCardProducto>
             cantidadMaxima: cantidadMaxima,
 
             espaciado: espaciado,
-
+            columnasDesktop: columnasDesktop,
             itemBuilder: (_, item) {
               return ProductCard(
                 nombre: item.nombre,

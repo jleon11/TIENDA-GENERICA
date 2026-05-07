@@ -151,6 +151,7 @@ class _HomePageState extends State<HomePage> {
                         titulo: 'LOS MÁS BUSCADOS',
                         items: listaProductosMasBuscadosHome,
                         cantidadMaxima: 8,
+                        columnasDesktop: 4,
                         espaciado: 8,
                       ),
 

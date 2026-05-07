@@ -7,6 +7,7 @@ class GridGenerico<T> extends StatelessWidget {
   final double espaciado;
   final Widget Function(BuildContext, T) itemBuilder;
   final double? anchoMaximoContenedor;
+  final int columnasDesktop; // 👈 nuevo
 
   const GridGenerico({
     super.key,
@@ -15,6 +16,7 @@ class GridGenerico<T> extends StatelessWidget {
     this.cantidadMaxima,
     this.espaciado = 20,
     this.anchoMaximoContenedor,
+    this.columnasDesktop = 3, // 👈 default 3, no rompe nada existente
   });
 
   @override
@@ -29,14 +31,12 @@ class GridGenerico<T> extends StatelessWidget {
 
         final double spacing = esMobile ? 10 : espaciado;
 
-        // Columnas fijas por breakpoint — no calculadas
         final int columnas = esMobile
             ? 2
             : esTablet
             ? 2
-            : 3;
+            : columnasDesktop; // 👈 usa el parámetro
 
-        // Ancho de card = espacio real dividido en columnas exactas
         final double anchoCard =
             (anchoReal - spacing * (columnas - 1)) / columnas;
 
