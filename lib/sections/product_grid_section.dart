@@ -31,7 +31,7 @@ class ProductGridSection<T extends ContratoCardProducto>
     required this.titulo,
     required this.items,
     required this.cantidadMaxima,
-    this.espaciado = 16,
+    this.espaciado = 10,
     this.alineacion = Alignment.centerLeft,
     this.scrollController,
     required this.columnasDesktop,
