@@ -18,13 +18,21 @@ class IconosCategoriaHelper {
     'kitchen': Icons.kitchen,
     'local_shipping': Icons.local_shipping,
 
-    /// NUEVOS
+    // NUEVOS
     'chair_alt': Icons.chair_alt,
     'business_center': Icons.business_center,
     'security': Icons.security,
     'devices': Icons.devices,
     'videocam': Icons.videocam,
     'notifications_active': Icons.notifications_active,
+
+    // AGREGADOS
+    'devices_other': Icons.devices_other,
+    'smartphone': Icons.smartphone,
+    'yard': Icons.yard,
+    'chair': Icons.chair,
+    'build_circle': Icons.build_circle,
+    'computer': Icons.computer,
   };
 
   static IconData obtenerIcono(String? nombre) {

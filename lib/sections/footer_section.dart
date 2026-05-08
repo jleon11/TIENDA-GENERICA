@@ -114,7 +114,7 @@ class FooterSection extends StatelessWidget {
                             await launchUrl(emailLaunchUri);
                           },
                           child: const Text(
-                            'justinleon1111@gmail.com',
+                            'contact.justinleon@gmail.com',
                             style: TextStyle(
                               color: Colors.lightBlueAccent,
                               fontSize: 13,
