@@ -5,6 +5,7 @@ import 'package:forui/forui.dart';
 import 'package:provider/provider.dart';
 
 import 'package:tienda_motos/models/categoria_model.dart';
+import 'package:tienda_motos/models/subcategoria_model.dart';
 
 import 'package:tienda_motos/providers/carrito_provider.dart';
 import 'package:tienda_motos/providers/favoritos_provider.dart';
@@ -15,6 +16,7 @@ import 'package:tienda_motos/sections/carrito_drawer.dart';
 import 'package:tienda_motos/sections/header_section.dart';
 
 import 'package:tienda_motos/services/categoria_services.dart';
+import 'package:tienda_motos/services/subcategorias_services.dart';
 
 import 'package:tienda_motos/widgets/drawer_tienda.dart';
 
@@ -74,8 +76,8 @@ class MyApp extends StatelessWidget {
 }
 
 class LayoutPrincipal extends StatefulWidget {
-  final Widget Function(List<CategoriaModel>) childBuilder;
-
+  final Widget Function(List<CategoriaModel>, List<SubCategoriaModel>)
+  childBuilder;
   const LayoutPrincipal({super.key, required this.childBuilder});
 
   @override
@@ -84,19 +86,19 @@ class LayoutPrincipal extends StatefulWidget {
 
 class _LayoutPrincipalState extends State<LayoutPrincipal> {
   List<CategoriaModel> categorias = [];
+  List<SubCategoriaModel> subCategorias = [];
 
   bool cargandoCategorias = true;
+  bool cargandoSubCategorias = true;
 
   @override
   void initState() {
     super.initState();
 
     cargarCategorias();
+    cargarSubCategorias();
   }
 
-  /// ==========================================
-  /// CARGAR CATEGORIAS
-  /// ==========================================
   Future<void> cargarCategorias() async {
     try {
       categorias = await CategoriaService().obtenerCategorias();
@@ -107,6 +109,20 @@ class _LayoutPrincipalState extends State<LayoutPrincipal> {
     if (mounted) {
       setState(() {
         cargandoCategorias = false;
+      });
+    }
+  }
+
+  Future<void> cargarSubCategorias() async {
+    try {
+      subCategorias = await SubCategoriaService().obtenerTodasSubcategorias();
+    } catch (e) {
+      debugPrint('Error subCategorias: $e');
+    }
+
+    if (mounted) {
+      setState(() {
+        cargandoSubCategorias = false;
       });
     }
   }
@@ -138,9 +154,9 @@ class _LayoutPrincipalState extends State<LayoutPrincipal> {
       /// ==========================================
       /// BODY
       /// ==========================================
-      body: cargandoCategorias
+      body: cargandoCategorias || cargandoSubCategorias
           ? const Center(child: CircularProgressIndicator())
-          : widget.childBuilder(categorias),
+          : widget.childBuilder(categorias, subCategorias),
     );
   }
 }

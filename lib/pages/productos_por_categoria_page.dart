@@ -17,12 +17,15 @@ import 'package:tienda_motos/widgets/general_components/catalogoGenerico_grid_pa
 class ProductosPorCategoriaPage extends StatefulWidget {
   final CategoriaModel categoriaActiva;
   final List<CategoriaModel> categorias;
+  final List<SubCategoriaModel> subCategoriasGlobales;
+
   final String? subcategoriaPreFiltrado;
 
   const ProductosPorCategoriaPage({
     super.key,
     required this.categoriaActiva,
     required this.categorias,
+    required this.subCategoriasGlobales,
     this.subcategoriaPreFiltrado,
   });
 
@@ -51,13 +54,10 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
       listaProductosPorCategoria = await ProductoService()
           .productosPorCategoria(widget.categoriaActiva.seoUrl);
 
-      final mapa = <String, SubCategoriaModel>{};
-      for (final p in listaProductosPorCategoria) {
-        if (p.subcategoria != null) {
-          mapa[p.subcategoria!.id] = p.subcategoria!;
-        }
-      }
-      subCategorias = mapa.values.toList();
+      /// SUBCATEGORÍAS DESDE MEMORIA
+      subCategorias = widget.subCategoriasGlobales
+          .where((s) => s.categoria?.seoUrl == widget.categoriaActiva.seoUrl)
+          .toList();
 
       if (widget.subcategoriaPreFiltrado != null) {
         try {
@@ -72,7 +72,9 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
       debugPrint('Error cargando productos: $e');
     }
 
-    if (mounted) setState(() => cargandoProductos = false);
+    if (mounted) {
+      setState(() => cargandoProductos = false);
+    }
   }
 
   List<ProductoModel> get productosFiltradosCategoriaActiva {
@@ -307,7 +309,6 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
           opcionesCantidad: opcionesCantidad,
           cantidadInicial: 15,
         ).animate().fadeIn(),
-        
       ],
     );
   }

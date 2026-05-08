@@ -6,6 +6,7 @@ import 'package:tienda_motos/helpers/icono_categoria_helper.dart';
 import 'package:tienda_motos/models/categoria_model.dart';
 import 'package:tienda_motos/models/categoria_navegacion_model.dart';
 import 'package:tienda_motos/models/producto_model.dart';
+import 'package:tienda_motos/models/subcategoria_model.dart';
 import 'package:tienda_motos/sections/boletin_informativo_section.dart';
 import 'package:tienda_motos/sections/footer_section.dart';
 import 'package:tienda_motos/sections/product_grid_section.dart';
@@ -16,7 +17,13 @@ import 'package:tienda_motos/widgets/categoria_item.dart';
 
 class HomePage extends StatefulWidget {
   final List<CategoriaModel> categoriasGlobales;
-  const HomePage({super.key, required this.categoriasGlobales});
+  final List<SubCategoriaModel> subcategoriasGlobales;
+
+  const HomePage({
+    super.key,
+    required this.categoriasGlobales,
+    required this.subcategoriasGlobales,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();

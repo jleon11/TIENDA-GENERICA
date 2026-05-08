@@ -90,6 +90,12 @@ class _PromoSectionState extends State<PromoSection> {
 
     final paginas = dividirPaginas(widget.items, itemsVista);
 
+    final esMovil = width < SistemaConstantes.mobile;
+
+    /// 👇 ajuste para que en móvil sí llenen el ancho
+    final mobileCardWidth =
+        (width - (SistemaConstantes.paddingHorizontal(width) * 2) - 8) / 2;
+
     return SizedBox(
       width: double.infinity,
 
@@ -125,7 +131,7 @@ class _PromoSectionState extends State<PromoSection> {
 
                     children: pagina.map((producto) {
                       return SizedBox(
-                        width: cardWidth,
+                        width: esMovil ? mobileCardWidth : cardWidth,
 
                         child: Builder(
                           builder: (ctx) => ProductCard(

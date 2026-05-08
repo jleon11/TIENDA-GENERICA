@@ -106,7 +106,7 @@ class FooterSection extends StatelessWidget {
                           onTap: () async {
                             final Uri emailLaunchUri = Uri(
                               scheme: 'mailto',
-                              path: 'justinleon1111@gmail.com',
+                              path: 'contact.justinleon@gmail.com',
                               query:
                                   'subject=Hola Justin&body=Me interesa una página web',
                             );

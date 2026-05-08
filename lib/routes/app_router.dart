@@ -11,7 +11,10 @@ final GoRouter appRouter = GoRouter(
 
   errorBuilder: (context, state) {
     return LayoutPrincipal(
-      childBuilder: (categorias) => HomePage(categoriasGlobales: categorias),
+      childBuilder: (categorias, subcategorias) => HomePage(
+        categoriasGlobales: categorias,
+        subcategoriasGlobales: subcategorias,
+      ),
     );
   },
 
@@ -21,8 +24,10 @@ final GoRouter appRouter = GoRouter(
 
       builder: (context, state) {
         return LayoutPrincipal(
-          childBuilder: (categorias) =>
-              HomePage(categoriasGlobales: categorias),
+          childBuilder: (categorias, subcategorias) => HomePage(
+            categoriasGlobales: categorias,
+            subcategoriasGlobales: subcategorias,
+          ),
         );
       },
     ),
@@ -34,7 +39,7 @@ final GoRouter appRouter = GoRouter(
         final producto = state.extra as ProductoModel;
 
         return LayoutPrincipal(
-          childBuilder: (categorias) => ProductoDetallePage(
+          childBuilder: (categorias, subcategorias) => ProductoDetallePage(
             producto: producto,
             categoriasGlobales: categorias,
           ),
@@ -51,14 +56,17 @@ final GoRouter appRouter = GoRouter(
         return MaterialPage(
           key: ValueKey(state.uri.toString()),
           child: LayoutPrincipal(
-            childBuilder: (categorias) => ProductosPorCategoriaPage(
-              categoriaActiva: categorias.firstWhere(
-                (c) => c.seoUrl == catSeo,
-                orElse: () => categorias.first,
-              ),
-              categorias: categorias,
-              subcategoriaPreFiltrado: null,
-            ),
+            childBuilder: (categorias, subcategorias) =>
+                ProductosPorCategoriaPage(
+                  categoriaActiva: categorias.firstWhere(
+                    (c) => c.seoUrl == catSeo,
+                    orElse: () => categorias.first,
+                  ),
+                  categorias: categorias,
+                  subCategoriasGlobales: subcategorias,
+
+                  subcategoriaPreFiltrado: null,
+                ),
           ),
         );
       },
@@ -74,38 +82,22 @@ final GoRouter appRouter = GoRouter(
         return MaterialPage(
           key: ValueKey(state.uri.toString()),
           child: LayoutPrincipal(
-            childBuilder: (categorias) => ProductosPorCategoriaPage(
-              categoriaActiva: categorias.firstWhere(
-                (c) => c.seoUrl == catSeo,
-                orElse: () => categorias.first,
-              ),
-              categorias: categorias,
-              subcategoriaPreFiltrado: subcatSeo,
-            ),
+            childBuilder: (categorias, subcategorias) =>
+                ProductosPorCategoriaPage(
+                  categoriaActiva: categorias.firstWhere(
+                    (c) => c.seoUrl == catSeo,
+                    orElse: () => categorias.first,
+                  ),
+
+                  categorias: categorias,
+
+                  subCategoriasGlobales: subcategorias,
+
+                  subcategoriaPreFiltrado: null,
+                ),
           ),
         );
       },
     ),
-    /*
-    GoRoute(
-      path: '/categoria/:ruta',
-
-      pageBuilder: (context, state) {
-        final data = state.extra as CategoriaNavegacionModel;
-
-        return MaterialPage(
-          key: ValueKey(state.uri.toString()),
-
-          child: LayoutPrincipal(
-            childBuilder: (categorias) => ProductosPorCategoriaPage(
-              categoriaActiva: data.categoriaActiva,
-              categorias: categorias,
-            ),
-          ),
-        );
-      },
-    ),
-
-    */
   ],
 );
