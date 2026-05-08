@@ -59,6 +59,13 @@ class _ProductosPorCategoriaPageState extends State<ProductosPorCategoriaPage> {
           .where((s) => s.categoria?.seoUrl == widget.categoriaActiva.seoUrl)
           .toList();
 
+      subCategorias.sort((a, b) {
+        final ordenA = a.orden ?? 999999;
+        final ordenB = b.orden ?? 999999;
+
+        return ordenA.compareTo(ordenB);
+      });
+
       if (widget.subcategoriaPreFiltrado != null) {
         try {
           subCategoriaSeleccionada = subCategorias.firstWhere(
