@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tienda_motos/constants/constantes_sistema.dart';
 
 class CategoriaItem extends StatefulWidget {
   final String nombre;
@@ -25,13 +26,19 @@ class _CategoriaItemState extends State<CategoriaItem> {
   Widget build(BuildContext context) {
     final bool resaltado = widget.activa || hover;
 
+    final width = MediaQuery.of(context).size.width;
+
+    final esMovil = width < SistemaConstantes.mobile;
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
+
       onEnter: (_) {
         setState(() {
           hover = true;
         });
       },
+
       onExit: (_) {
         setState(() {
           hover = false;
@@ -44,23 +51,30 @@ class _CategoriaItemState extends State<CategoriaItem> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 220),
 
-          width: 125,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          width: esMovil ? 92 : 125,
+
+          padding: EdgeInsets.symmetric(
+            horizontal: esMovil ? 4 : 10,
+            vertical: esMovil ? 4 : 8,
+          ),
 
           child: Column(
             children: [
               AnimatedContainer(
                 duration: const Duration(milliseconds: 220),
 
-                width: 90,
-                height: 90,
+                width: esMovil ? 68 : 90,
+                height: esMovil ? 68 : 90,
 
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
 
                   color: resaltado ? const Color(0xFF1E478D) : Colors.white,
 
-                  border: Border.all(color: const Color(0xFF1E478D), width: 3),
+                  border: Border.all(
+                    color: const Color(0xFF1E478D),
+                    width: esMovil ? 2.2 : 3,
+                  ),
 
                   boxShadow: resaltado
                       ? [
@@ -75,22 +89,31 @@ class _CategoriaItemState extends State<CategoriaItem> {
 
                 child: Icon(
                   widget.icono,
-                  size: 38,
+
+                  size: esMovil ? 28 : 38,
+
                   color: resaltado ? Colors.white : const Color(0xFF1E478D),
                 ),
               ),
 
-              const SizedBox(height: 12),
+              SizedBox(height: esMovil ? 7 : 12),
 
               Text(
                 widget.nombre,
+
                 textAlign: TextAlign.center,
+
                 maxLines: 2,
+
                 overflow: TextOverflow.ellipsis,
+
                 style: TextStyle(
-                  fontSize: 14,
-                  height: 1.3,
+                  fontSize: esMovil ? 12 : 14,
+
+                  height: 1.2,
+
                   fontWeight: FontWeight.w700,
+
                   color: resaltado ? const Color(0xFF1E478D) : Colors.black87,
                 ),
               ),

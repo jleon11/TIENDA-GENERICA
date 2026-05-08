@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tienda_motos/constants/constantes_sistema.dart';
 
 class CategoriaSection<T> extends StatelessWidget {
   final String titulo;
@@ -19,27 +20,38 @@ class CategoriaSection<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    final esMovil = width < SistemaConstantes.mobile;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 40),
+      padding: EdgeInsets.symmetric(vertical: esMovil ? 20 : 40),
+
       child: Column(
         children: [
           /// 🔥 TITULO
           Text(
             titulo.toUpperCase(),
-            style: const TextStyle(
-              fontSize: 22,
+
+            textAlign: TextAlign.center,
+
+            style: TextStyle(
+              fontSize: esMovil ? 16 : 22,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1E478D),
+              color: const Color(0xFF1E478D),
             ),
           ),
 
-          const SizedBox(height: 30),
+          SizedBox(height: esMovil ? 18 : 30),
 
           /// 🔥 ITEMS
           Wrap(
-            spacing: espacioHorizontal,
-            runSpacing: espacioVertical,
+            spacing: esMovil ? 22 : espacioHorizontal,
+
+            runSpacing: esMovil ? 18 : espacioVertical,
+
             alignment: WrapAlignment.center,
+
             children: items.map((e) => itemBuilder(e)).toList(),
           ),
         ],
