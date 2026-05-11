@@ -89,7 +89,7 @@ class DrawerTienda extends StatelessWidget {
                     ),
                     _contactFA(
                       FontAwesomeIcons.envelope,
-                      'gonzalezaccesorios4@gmail.com',
+                      '@accesoriosgonzales',
                       iconColor: _azul,
                       url: 'mailto:gonzalezaccesorios4@gmail.com',
                     ),
