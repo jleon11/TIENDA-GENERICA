@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tienda_motos/constants/constantes_sistema.dart';
+import 'package:tienda_motos/services/subcriptor_services.dart';
+import 'package:flutter/foundation.dart';
 
 class BoletinInformativo extends StatefulWidget {
   const BoletinInformativo({super.key});
@@ -38,23 +40,69 @@ class _BoletinInformativoState extends State<BoletinInformativo> {
     return true;
   }
 
-  void _suscribirse() {
+  String obtenerPlataforma() {
+    if (kIsWeb) {
+      return 'web';
+    }
+
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return 'android';
+
+      case TargetPlatform.iOS:
+        return 'ios';
+
+      case TargetPlatform.windows:
+        return 'windows';
+
+      case TargetPlatform.macOS:
+        return 'macos';
+
+      case TargetPlatform.linux:
+        return 'linux';
+
+      default:
+        return 'unknown';
+    }
+  }
+
+  Future<void> _suscribirse() async {
     final correo = _correoController.text.trim();
+
+    /// Validar correo
     if (!_validarCorreo(correo)) return;
 
+    try {
+      /// Intentar registrar en Strapi
+      await SubcriptorService().crearSubcriptor(
+        correo: correo,
+        plataforma: obtenerPlataforma(),
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+
+      /// No mostramos error al usuario
+      /// para mantener una UX limpia
+    }
+
+    /// Limpiar input
     _correoController.clear();
+
     setState(() => _errorCorreo = null);
 
+    /// Mostrar alerta de éxito
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Cerrar',
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: const Duration(milliseconds: 400),
+
       pageBuilder: (_, __, ___) => _AlertSuscripcion(correo: correo),
+
       transitionBuilder: (_, anim, __, child) {
-        final curved =
-            CurvedAnimation(parent: anim, curve: Curves.easeOutBack);
+        final curved = CurvedAnimation(parent: anim, curve: Curves.easeOutBack);
+
         return ScaleTransition(
           scale: curved,
           child: FadeTransition(opacity: anim, child: child),
@@ -437,18 +485,12 @@ class _CheckPainter extends CustomPainter {
     if (drawn <= seg1) {
       final t = drawn / seg1;
       path.moveTo(p1.dx, p1.dy);
-      path.lineTo(
-        p1.dx + (p2.dx - p1.dx) * t,
-        p1.dy + (p2.dy - p1.dy) * t,
-      );
+      path.lineTo(p1.dx + (p2.dx - p1.dx) * t, p1.dy + (p2.dy - p1.dy) * t);
     } else {
       final t = (drawn - seg1) / seg2;
       path.moveTo(p1.dx, p1.dy);
       path.lineTo(p2.dx, p2.dy);
-      path.lineTo(
-        p2.dx + (p3.dx - p2.dx) * t,
-        p2.dy + (p3.dy - p2.dy) * t,
-      );
+      path.lineTo(p2.dx + (p3.dx - p2.dx) * t, p2.dy + (p3.dy - p2.dy) * t);
     }
 
     canvas.drawPath(path, paint);
