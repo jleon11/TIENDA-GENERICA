@@ -14,10 +14,10 @@ class ProductoModel implements ContratoCardProducto {
   final String descripcion;
 
   /// Precio actual de venta
-  final double precio;
+  final int precio;
 
   /// Precio anterior (para descuentos/ofertas)
-  final double? precioAnteriorValor;
+  final int? precioAnteriorValor;
 
   /// Cantidad disponible
   final int stock;
@@ -75,7 +75,7 @@ class ProductoModel implements ContratoCardProducto {
   bool get sinStock => stock <= 0;
 
   /// Dinero ahorrado
-  double get ahorro =>
+  int get ahorro =>
       precioAnteriorValor != null ? precioAnteriorValor! - precio : 0;
 
   /// Categoría principal heredada
@@ -89,10 +89,10 @@ class ProductoModel implements ContratoCardProducto {
   /// ==========================================
 
   @override
-  String get precioActual => precio.toStringAsFixed(2);
+  String get precioActual => precio.toString();
 
   @override
-  String? get precioAnterior => precioAnteriorValor?.toStringAsFixed(2);
+  String? get precioAnterior => precioAnteriorValor?.toString();
 
   @override
   String get cardImagen => imagenPrincipal;
@@ -130,11 +130,9 @@ class ProductoModel implements ContratoCardProducto {
 
       descripcion: item['descripcion'] ?? '',
 
-      precio: (item['precio'] ?? 0).toDouble(),
+      precio: item['precio'] ?? 0,
 
-      precioAnteriorValor: item['precioAnteriorValor'] != null
-          ? (item['precioAnteriorValor']).toDouble()
-          : null,
+      precioAnteriorValor: item['precioAnteriorValor'],
 
       stock: item['stock'] ?? item['existencias'] ?? 0,
 

@@ -275,7 +275,7 @@ class _ProductCardState extends State<ProductCard> {
                           children: [
                             if (tieneDescuento)
                               Text(
-                                '₡ ${double.tryParse(widget.precioAnterior!)?.toStringAsFixed(0) ?? widget.precioAnterior!}',
+                                '₡ ${widget.precioAnterior!}',
                                 style: TextStyle(
                                   decoration: TextDecoration.lineThrough,
 
@@ -322,7 +322,7 @@ class _ProductCardState extends State<ProductCard> {
                             SizedBox(height: esMobile ? 4 : 6),
 
                             Text(
-                              '₡ ${double.tryParse(widget.precioActual)?.toStringAsFixed(0) ?? widget.precioActual}',
+                              '₡ ${widget.precioActual}',
                               textAlign: TextAlign.center,
 
                               style: TextStyle(

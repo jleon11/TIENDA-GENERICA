@@ -189,11 +189,11 @@ class FooterSection extends StatelessWidget {
             children: [
               _red(
                 FontAwesomeIcons.facebookF,
-                'https://www.facebook.com/p/Accesorios-Gonz%C3%A1lez-61572541004954/',
+                'https://www.facebook.com/accesoriosgonza',
               ),
               _red(
                 FontAwesomeIcons.instagram,
-                'https://www.threads.com/@justinleon3695?xmt=AQF0G0gerjjgV-vjjpvoweWC2awIvB-u6HnvrMJMiKrprwk',
+                'https://www.instagram.com/tgcostarica',
               ),
               _red(
                 FontAwesomeIcons.tiktok,
@@ -250,9 +250,9 @@ class FooterSection extends StatelessWidget {
 
         _itemIcono(FontAwesomeIcons.whatsapp, '+506 8514 3464'),
 
-        _itemIcono(FontAwesomeIcons.envelope, 'ventas@accesorios.com'),
+        _itemIcono(FontAwesomeIcons.envelope, 'gonzalezaccesorios4@gmail.com'),
 
-        _itemIcono(FontAwesomeIcons.locationDot, 'Limón, Costa Rica'),
+        _itemIcono(FontAwesomeIcons.locationDot, 'Guápiles, Limón, Costa Rica'),
 
         const SizedBox(height: 18),
 
@@ -337,7 +337,7 @@ class FooterSection extends StatelessWidget {
       children: [
         _titulo('Ubicación'),
 
-        _item('Guapiles, Costa Rica'),
+        _item('Guápiles, Limón, Costa Rica'),
 
         const SizedBox(height: 12),
 
@@ -348,7 +348,7 @@ class FooterSection extends StatelessWidget {
             width: double.infinity,
             child: HtmlWidget('''
 <iframe
-src="https://www.google.com/maps?q=9.9800031,-83.0785235&z=17&output=embed"
+src="https://www.google.com/maps?q=10.2102000,-83.7590000&z=17&output=embed"
 width="100%"
 height="100%"
 style="border:0;"
@@ -363,7 +363,7 @@ loading="lazy">
 
   Future<void> abrirMaps() async {
     final url = Uri.parse(
-      'https://www.google.com/maps/search/?api=1&query=9.9800031,-83.0785235',
+      'https://www.google.com/maps/search/?api=1&query=10.2102000,-83.7590000',
     );
 
     if (await canLaunchUrl(url)) {

@@ -42,4 +42,5 @@ class IconosCategoriaHelper {
 
     return mapa[nombre.trim().toLowerCase()] ?? Icons.category;
   }
+
 }

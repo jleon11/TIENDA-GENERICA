@@ -95,11 +95,13 @@ class ProductGridSection<T extends ContratoCardProducto>
                   if (item is ProductoModel) {
                     context.read<CarritoProvider>().agregar(item);
 
-                    Scaffold.of(context).openEndDrawer();
+                    final scaffold = Scaffold.of(context);
+
+                    scaffold.openEndDrawer();
 
                     Future.delayed(const Duration(seconds: 3), () {
                       if (context.mounted) {
-                        Navigator.of(context).maybePop();
+                        Navigator.of(context, rootNavigator: true).maybePop();
                       }
                     });
                   }

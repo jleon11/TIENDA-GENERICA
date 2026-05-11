@@ -195,7 +195,7 @@ class CarritoDrawer extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '₡ ${carrito.totalPrecio.toStringAsFixed(2)}',
+                        '₡ ${carrito.totalPrecio}',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w900,
@@ -252,7 +252,7 @@ class CarritoDrawer extends StatelessWidget {
                       ),
 
                       label: const Text(
-                        'Finalizar por WhatsApp',
+                        'Continuar por WhatsApp',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
@@ -293,7 +293,7 @@ class CarritoDrawer extends StatelessWidget {
     final uri = Uri(
       scheme: 'https',
       host: 'wa.me',
-      path: '/50662984141',
+      path: '/50685143464',
       queryParameters: {'text': buffer.toString()},
     );
 
@@ -570,16 +570,9 @@ class CarritoDrawer extends StatelessWidget {
 
                     celda('${item.cantidad}', center: true),
 
-                    celda(
-                      '₡${item.producto.precio.toStringAsFixed(2)}',
-                      center: true,
-                    ),
+                    celda('₡${item.producto.precio}', center: true),
 
-                    celda(
-                      '₡${subtotal.toStringAsFixed(2)}',
-                      center: true,
-                      bold: true,
-                    ),
+                    celda('₡$subtotal', center: true, bold: true),
                   ],
                 );
               }),
@@ -642,7 +635,7 @@ class CarritoDrawer extends StatelessWidget {
                   children: [
                     filaTotal(
                       'Subtotal',
-                      '₡${carrito.totalPrecio.toStringAsFixed(2)}',
+                      '₡${carrito.totalPrecio}',
 
                       grisColor: gris,
                     ),
@@ -684,7 +677,7 @@ class CarritoDrawer extends StatelessWidget {
                           ),
 
                           pw.Text(
-                            '₡${carrito.totalPrecio.toStringAsFixed(2)}',
+                            '₡${carrito.totalPrecio}',
 
                             style: pw.TextStyle(
                               font: fontBold,
@@ -750,7 +743,7 @@ class CarritoDrawer extends StatelessWidget {
 
             children: [
               pw.Text(
-                '+506 6298-4141',
+                '+506 8514 3464',
 
                 style: pw.TextStyle(
                   font: fontRegular,
@@ -760,7 +753,7 @@ class CarritoDrawer extends StatelessWidget {
               ),
 
               pw.Text(
-                'ventas@accesorios.com',
+                'gonzalezaccesorios4@gmail.com',
 
                 style: pw.TextStyle(
                   font: fontRegular,
@@ -770,7 +763,7 @@ class CarritoDrawer extends StatelessWidget {
               ),
 
               pw.Text(
-                'Limón, Costa Rica',
+                'Guápiles, Limón, Costa Rica',
 
                 style: pw.TextStyle(
                   font: fontRegular,

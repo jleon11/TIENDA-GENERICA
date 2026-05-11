@@ -390,11 +390,7 @@ class FavoritosDrawer extends StatelessWidget {
                     celda('${idx + 1}', center: true),
                     celda(producto.nombre),
                     celda(producto.codigo, center: true),
-                    celda(
-                      '₡${producto.precio.toStringAsFixed(2)}',
-                      center: true,
-                      bold: true,
-                    ),
+                    celda('₡${producto.precio}', center: true, bold: true),
                   ],
                 );
               }),
@@ -463,7 +459,7 @@ class FavoritosDrawer extends StatelessWidget {
             mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
             children: [
               pw.Text(
-                '+506 6298-4141',
+                '+506 8514 3464',
                 style: pw.TextStyle(
                   font: fontRegular,
                   fontSize: 10,
@@ -471,7 +467,7 @@ class FavoritosDrawer extends StatelessWidget {
                 ),
               ),
               pw.Text(
-                'ventas@accesorios.com',
+                'gonzalezaccesorios4@gmail.com',
                 style: pw.TextStyle(
                   font: fontRegular,
                   fontSize: 10,
@@ -479,7 +475,7 @@ class FavoritosDrawer extends StatelessWidget {
                 ),
               ),
               pw.Text(
-                'Limón, Costa Rica',
+                'Guápiles, Limón, Costa Rica',
                 style: pw.TextStyle(
                   font: fontRegular,
                   fontSize: 10,
