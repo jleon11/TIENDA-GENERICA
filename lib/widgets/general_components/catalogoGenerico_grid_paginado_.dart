@@ -200,8 +200,8 @@ class _CatalogoGridWidgetState extends State<CatalogoGridWidget> {
               builder: (ctx) => ProductCard(
                 nombre: item.nombre,
                 sku: item.codigo,
-                precioActual: item.precio.toStringAsFixed(2),
-                precioAnterior: item.precioAnteriorValor?.toStringAsFixed(2),
+                precioActual: item.precio.toString(),
+                precioAnterior: item.precioAnteriorValor?.toString(),
                 imagen: item.imagenPrincipal,
                 badgeTexto: item.cardEtiqueta,
                 badgeColor: item.cardColorEtiqueta,
