@@ -204,7 +204,7 @@ class FooterSection extends StatelessWidget {
                 Uri(
                   scheme: 'https',
                   host: 'wa.me',
-                  path: '/50662984141',
+                  path: '/50685143464',
                   queryParameters: {
                     'text':
                         'Hola, me interesa obtener más información sobre sus productos y accesorios.',
