@@ -57,12 +57,12 @@ class DrawerTienda extends StatelessWidget {
                     _seccionLabel('CONTÁCTANOS'),
                     _contactFA(
                       FontAwesomeIcons.squareWhatsapp,
-                      'WhatsApp: 6298-4141',
+                      'WhatsApp: 8514-3464',
                       iconColor: const Color(0xFF25D366),
                       url: Uri(
                         scheme: 'https',
                         host: 'wa.me',
-                        path: '/50662984141',
+                        path: '/50685143464',
                         queryParameters: {
                           'text':
                               'Hola, me interesa obtener más información sobre sus productos y accesorios.',
@@ -73,15 +73,13 @@ class DrawerTienda extends StatelessWidget {
                       FontAwesomeIcons.squareFacebook,
                       '@accesoriosgonzales',
                       iconColor: const Color(0xFF1877F2),
-                      url:
-                          'https://www.facebook.com/p/Accesorios-Gonz%C3%A1lez-61572541004954/',
+                      url: 'https://www.facebook.com/accesoriosgonza',
                     ),
                     _contactFA(
                       FontAwesomeIcons.squareInstagram,
                       '@accesoriosgonzales',
                       iconColor: const Color(0xFFE1306C),
-                      url:
-                          'https://www.threads.com/@justinleon3695?xmt=AQF0G0gerjjgV-vjjpvoweWC2awIvB-u6HnvrMJMiKrprwk',
+                      url: 'https://www.instagram.com/tgcostarica',
                     ),
                     _contactFA(
                       FontAwesomeIcons.tiktok,
@@ -91,9 +89,9 @@ class DrawerTienda extends StatelessWidget {
                     ),
                     _contactFA(
                       FontAwesomeIcons.envelope,
-                      'justinleon1111@gmail.com',
+                      'gonzalezaccesorios4@gmail.com',
                       iconColor: _azul,
-                      url: 'mailto:justinleon1111@gmail.com',
+                      url: 'mailto:gonzalezaccesorios4@gmail.com',
                     ),
 
                     const SizedBox(height: 20),
