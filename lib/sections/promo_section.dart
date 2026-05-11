@@ -161,11 +161,16 @@ class _PromoSectionState extends State<PromoSection> {
                             onPressedAddAlCarrito: () {
                               ctx.read<CarritoProvider>().agregar(producto);
 
-                              Scaffold.of(ctx).openEndDrawer();
+                              final scaffold = Scaffold.of(ctx);
+
+                              scaffold.openEndDrawer();
 
                               Future.delayed(const Duration(seconds: 3), () {
                                 if (ctx.mounted) {
-                                  Navigator.of(ctx).maybePop();
+                                  Navigator.of(
+                                    ctx,
+                                    rootNavigator: true,
+                                  ).maybePop();
                                 }
                               });
                             },
