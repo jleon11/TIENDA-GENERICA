@@ -50,8 +50,7 @@ class _ProductCardState extends State<ProductCard> {
   bool hover = false;
 
   bool get tieneDescuento =>
-      widget.precioAnterior != null &&
-      widget.precioAnterior!.trim().isNotEmpty;
+      widget.precioAnterior != null && widget.precioAnterior!.trim().isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +58,9 @@ class _ProductCardState extends State<ProductCard> {
 
     final esMobile = SistemaConstantes.esMovil(screenWidth);
 
-    final cardHeight = SistemaConstantes.obtenerCardAlto(
-      screenWidth,
-    );
+    final cardHeight = SistemaConstantes.obtenerCardAlto(screenWidth);
 
-    final cardWidth = SistemaConstantes.obtenerCardAncho(
-      screenWidth,
-    );
+    final cardWidth = SistemaConstantes.obtenerCardAncho(screenWidth);
 
     final double imageHeight = esMobile ? 110 : 200;
 
@@ -108,15 +103,11 @@ class _ProductCardState extends State<ProductCard> {
               curve: Curves.easeOut,
 
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(
-                  SistemaConstantes.radioLG,
-                ),
+                borderRadius: BorderRadius.circular(SistemaConstantes.radioLG),
 
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(
-                      hover ? 0.08 : 0.035,
-                    ),
+                    color: Colors.black.withOpacity(hover ? 0.08 : 0.035),
 
                     blurRadius: hover ? 24 : 14,
 
@@ -137,32 +128,24 @@ class _ProductCardState extends State<ProductCard> {
                   ),
 
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
 
                     children: [
                       /// HEADER
                       Row(
                         children: [
-                          if (widget.badgeTexto
-                              .trim()
-                              .isNotEmpty)
+                          if (widget.badgeTexto.trim().isNotEmpty)
                             Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    esMobile ? 8 : 12,
+                                horizontal: esMobile ? 8 : 12,
 
-                                vertical:
-                                    esMobile ? 4 : 7,
+                                vertical: esMobile ? 4 : 7,
                               ),
 
                               decoration: BoxDecoration(
                                 color: widget.badgeColor,
 
-                                borderRadius:
-                                    BorderRadius.circular(
-                                  20,
-                                ),
+                                borderRadius: BorderRadius.circular(20),
                               ),
 
                               child: Text(
@@ -171,11 +154,9 @@ class _ProductCardState extends State<ProductCard> {
                                 style: TextStyle(
                                   color: Colors.white,
 
-                                  fontSize:
-                                      esMobile ? 9 : 12,
+                                  fontSize: esMobile ? 9 : 12,
 
-                                  fontWeight:
-                                      FontWeight.w700,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
@@ -183,35 +164,23 @@ class _ProductCardState extends State<ProductCard> {
                           const Spacer(),
 
                           Consumer<FavoritosProvider>(
-                            builder: (
-                              context,
-                              favs,
-                              _,
-                            ) {
-                              final esFav =
-                                  favs.esFavorito(
-                                widget.producto.id,
-                              );
+                            builder: (context, favs, _) {
+                              final esFav = favs.esFavorito(widget.producto.id);
 
                               return GestureDetector(
-                                onTap: () => favs
-                                    .toggleFavorito(
-                                  widget.producto,
-                                ),
+                                onTap: () =>
+                                    favs.toggleFavorito(widget.producto),
 
                                 child: Icon(
                                   esFav
                                       ? Icons.favorite
-                                      : Icons
-                                          .favorite_border,
+                                      : Icons.favorite_border,
 
-                                  size:
-                                      esMobile ? 18 : 20,
+                                  size: esMobile ? 18 : 20,
 
                                   color: esFav
                                       ? Colors.red
-                                      : Colors.grey
-                                          .shade500,
+                                      : Colors.grey.shade500,
                                 ),
                               );
                             },
@@ -219,30 +188,24 @@ class _ProductCardState extends State<ProductCard> {
                         ],
                       ),
 
-                      SizedBox(
-                        height: esMobile ? 10 : 22,
-                      ),
+                      SizedBox(height: esMobile ? 10 : 22),
 
                       /// IMAGEN
                       SizedBox(
                         height: imageHeight,
 
                         child: Padding(
-                          padding:
-                              const EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(6),
 
                           child: Image.network(
                             widget.imagen,
 
                             fit: BoxFit.contain,
 
-                            errorBuilder:
-                                (_, __, ___) => Icon(
-                              Icons
-                                  .image_not_supported,
+                            errorBuilder: (_, __, ___) => Icon(
+                              Icons.image_not_supported,
 
-                              size:
-                                  esMobile ? 40 : 60,
+                              size: esMobile ? 40 : 60,
 
                               color: Colors.grey,
                             ),
@@ -250,9 +213,7 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                       ),
 
-                      SizedBox(
-                        height: esMobile ? 12 : 22,
-                      ),
+                      SizedBox(height: esMobile ? 12 : 22),
 
                       /// TITULO
                       SizedBox(
@@ -264,19 +225,16 @@ class _ProductCardState extends State<ProductCard> {
 
                             maxLines: 2,
 
-                            overflow:
-                                TextOverflow.ellipsis,
+                            overflow: TextOverflow.ellipsis,
 
                             textAlign: TextAlign.center,
 
                             style: TextStyle(
                               fontSize: titleFont,
 
-                              fontWeight:
-                                  FontWeight.w700,
+                              fontWeight: FontWeight.w700,
 
-                              color: SistemaConstantes
-                                  .colorTexto,
+                              color: SistemaConstantes.colorTexto,
 
                               height: 1.3,
                             ),
@@ -284,9 +242,7 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                       ),
 
-                      SizedBox(
-                        height: esMobile ? 6 : 10,
-                      ),
+                      SizedBox(height: esMobile ? 6 : 10),
 
                       /// SKU
                       SizedBox(
@@ -297,12 +253,10 @@ class _ProductCardState extends State<ProductCard> {
 
                           maxLines: 1,
 
-                          overflow:
-                              TextOverflow.ellipsis,
+                          overflow: TextOverflow.ellipsis,
 
                           style: TextStyle(
-                            fontSize:
-                                esMobile ? 10 : 12,
+                            fontSize: esMobile ? 10 : 12,
 
                             color: Colors.grey.shade600,
 
@@ -311,9 +265,7 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                       ),
 
-                      SizedBox(
-                        height: esMobile ? 10 : 18,
-                      ),
+                      SizedBox(height: esMobile ? 10 : 18),
 
                       /// AREA PRECIO
                       SizedBox(
@@ -323,88 +275,62 @@ class _ProductCardState extends State<ProductCard> {
                           children: [
                             if (tieneDescuento)
                               Text(
-                                '₡ ${widget.precioAnterior!}',
-
+                                '₡ ${double.tryParse(widget.precioAnterior!)?.toStringAsFixed(0) ?? widget.precioAnterior!}',
                                 style: TextStyle(
-                                  decoration:
-                                      TextDecoration
-                                          .lineThrough,
+                                  decoration: TextDecoration.lineThrough,
 
-                                  color:
-                                      Colors.grey.shade500,
+                                  color: Colors.grey.shade500,
 
-                                  fontSize:
-                                      esMobile ? 10 : 13,
+                                  fontSize: esMobile ? 10 : 13,
 
-                                  fontWeight:
-                                      FontWeight.w500,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
 
                             if (!tieneDescuento)
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .center,
+                                mainAxisAlignment: MainAxisAlignment.center,
 
                                 children: [
                                   Container(
                                     width: 6,
                                     height: 6,
 
-                                    decoration:
-                                        const BoxDecoration(
-                                      color: Color(
-                                        0xFF22C55E,
-                                      ),
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFF22C55E),
 
-                                      shape:
-                                          BoxShape.circle,
+                                      shape: BoxShape.circle,
                                     ),
                                   ),
 
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
+                                  const SizedBox(width: 5),
 
                                   Text(
                                     'En stock',
 
                                     style: TextStyle(
-                                      color: Colors
-                                          .grey
-                                          .shade600,
+                                      color: Colors.grey.shade600,
 
-                                      fontSize: esMobile
-                                          ? 11
-                                          : 13,
+                                      fontSize: esMobile ? 11 : 13,
 
-                                      fontWeight:
-                                          FontWeight.w600,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
                               ),
 
-                            SizedBox(
-                              height: esMobile ? 4 : 6,
-                            ),
+                            SizedBox(height: esMobile ? 4 : 6),
 
                             Text(
-                              '₡ ${widget.precioActual}',
-
-                              textAlign:
-                                  TextAlign.center,
+                              '₡ ${double.tryParse(widget.precioActual)?.toStringAsFixed(0) ?? widget.precioActual}',
+                              textAlign: TextAlign.center,
 
                               style: TextStyle(
                                 fontSize: priceFont,
 
-                                fontWeight:
-                                    FontWeight.w900,
+                                fontWeight: FontWeight.w900,
 
-                                color:
-                                    SistemaConstantes
-                                        .colorAzulPrimario,
+                                color: SistemaConstantes.colorAzulPrimario,
 
                                 height: 1.1,
                               ),
@@ -424,45 +350,31 @@ class _ProductCardState extends State<ProductCard> {
 
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(
-                                SistemaConstantes
-                                    .radioMD,
+                              borderRadius: BorderRadius.circular(
+                                SistemaConstantes.radioMD,
                               ),
 
-                              gradient:
-                                  LinearGradient(
-                                begin:
-                                    Alignment.centerLeft,
+                              gradient: LinearGradient(
+                                begin: Alignment.centerLeft,
 
                                 end: Alignment.centerRight,
 
                                 colors: [
-                                  SistemaConstantes
-                                      .colorAzulPrimario,
+                                  SistemaConstantes.colorAzulPrimario,
 
-                                  SistemaConstantes
-                                      .colorAzulPrimario
+                                  SistemaConstantes.colorAzulPrimario
                                       .withOpacity(0.82),
                                 ],
                               ),
 
                               boxShadow: [
                                 BoxShadow(
-                                  color:
-                                      SistemaConstantes
-                                          .colorAzulPrimario
-                                          .withOpacity(
-                                            0.15,
-                                          ),
+                                  color: SistemaConstantes.colorAzulPrimario
+                                      .withOpacity(0.15),
 
                                   blurRadius: 10,
 
-                                  offset:
-                                      const Offset(
-                                    0,
-                                    4,
-                                  ),
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
@@ -471,54 +383,35 @@ class _ProductCardState extends State<ProductCard> {
                               color: Colors.transparent,
 
                               child: InkWell(
-                                borderRadius:
-                                    BorderRadius.circular(
-                                  SistemaConstantes
-                                      .radioMD,
+                                borderRadius: BorderRadius.circular(
+                                  SistemaConstantes.radioMD,
                                 ),
 
-                                onTap:
-                                    widget
-                                        .onPressedAddAlCarrito,
+                                onTap: widget.onPressedAddAlCarrito,
 
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment
-                                          .center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
 
                                   children: [
                                     Icon(
-                                      Icons
-                                          .shopping_cart_outlined,
+                                      Icons.shopping_cart_outlined,
 
                                       color: Colors.white,
 
-                                      size: esMobile
-                                          ? 15
-                                          : 18,
+                                      size: esMobile ? 15 : 18,
                                     ),
 
-                                    SizedBox(
-                                      width:
-                                          esMobile ? 5 : 8,
-                                    ),
+                                    SizedBox(width: esMobile ? 5 : 8),
 
                                     Text(
-                                      esMobile
-                                          ? 'Añadir'
-                                          : 'Añadir al carrito',
+                                      esMobile ? 'Añadir' : 'Añadir al carrito',
 
                                       style: TextStyle(
                                         color: Colors.white,
 
-                                        fontWeight:
-                                            FontWeight
-                                                .w700,
+                                        fontWeight: FontWeight.w700,
 
-                                        fontSize:
-                                            esMobile
-                                                ? 11
-                                                : 14,
+                                        fontSize: esMobile ? 11 : 14,
                                       ),
                                     ),
                                   ],
@@ -535,8 +428,6 @@ class _ProductCardState extends State<ProductCard> {
           ),
         ),
       ),
-    ).animate().fadeIn(
-          duration: const Duration(milliseconds: 350),
-        );
+    ).animate().fadeIn(duration: const Duration(milliseconds: 350));
   }
 }
