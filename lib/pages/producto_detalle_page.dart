@@ -47,7 +47,9 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precio: 5000,
       precioAnteriorValor: 7000,
       stock: 2,
-      imagenes: ['assets/imagenes/masbuscado1.jpg'],
+      imagenes: [
+        'https://www.shutterstock.com/image-photo/ankara-turkey-april-04-2012-260nw-214249696.jpg',
+      ],
       subcategoria: SubCategoriaModel(
         id: 'cat1',
         nombre: 'Juguetes',
@@ -66,7 +68,9 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precio: 250000,
       precioAnteriorValor: 270000,
       stock: 2,
-      imagenes: ['assets/imagenes/masbuscado2.jpg'],
+      imagenes: [
+        'https://images.pexels.com/photos/9100862/pexels-photo-9100862.jpeg',
+      ],
       subcategoria: SubCategoriaModel(
         id: 'subcat1',
         nombre: 'Consolas',
@@ -85,7 +89,9 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precio: 12000,
       precioAnteriorValor: 10000,
       stock: 10,
-      imagenes: ['assets/imagenes/masbuscado3.jpg'],
+      imagenes: [
+        'https://media.nidux.net/pull/599/800/3365/130896-product-6092bdc6ac4d5-11119-2.jpg',
+      ],
       subcategoria: SubCategoriaModel(
         id: 'subcat1',
         nombre: 'Tiendas',
@@ -103,7 +109,9 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precio: 70000,
       precioAnteriorValor: 80000,
       stock: 2,
-      imagenes: ['assets/imagenes/masbuscado4.jpg'],
+      imagenes: [
+        'https://images.pexels.com/photos/21773663/pexels-photo-21773663.jpeg',
+      ],
       subcategoria: SubCategoriaModel(
         id: 'subcat1',
         nombre: 'Audio',
@@ -122,7 +130,9 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precio: 16000,
       precioAnteriorValor: 18000,
       stock: 8,
-      imagenes: ['assets/imagenes/masbuscado5.jpg'],
+      imagenes: [
+        'https://images.pexels.com/photos/33629791/pexels-photo-33629791.jpeg',
+      ],
       subcategoria: SubCategoriaModel(
         id: 'subcat1',
         nombre: 'Juguetes',
@@ -140,7 +150,9 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precio: 7000,
       precioAnteriorValor: 9000,
       stock: 1,
-      imagenes: ['assets/imagenes/masbuscado6.jpg'],
+      imagenes: [
+        'https://images.pexels.com/photos/30979837/pexels-photo-30979837.jpeg',
+      ],
       subcategoria: SubCategoriaModel(
         id: 'subcat1',
         nombre: 'Juguetes',
@@ -159,7 +171,9 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precio: 19000,
       precioAnteriorValor: 23000,
       stock: 9,
-      imagenes: ['assets/imagenes/masbuscado7.jpg'],
+      imagenes: [
+        'https://images.pexels.com/photos/292999/pexels-photo-292999.jpeg',
+      ],
       subcategoria: SubCategoriaModel(
         id: 'subcat1',
         nombre: 'Zapatos',
@@ -177,7 +191,9 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       precio: 25000,
       precioAnteriorValor: 27000,
       stock: 2,
-      imagenes: ['assets/imagenes/masbuscado8.jpg'],
+      imagenes: [
+        'https://images.pexels.com/photos/16947117/pexels-photo-16947117.jpeg',
+      ],
       subcategoria: SubCategoriaModel(
         id: 'subcat1',
         nombre: 'Zapatos',

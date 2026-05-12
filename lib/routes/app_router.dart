@@ -36,7 +36,37 @@ final GoRouter appRouter = GoRouter(
       path: '/producto',
 
       builder: (context, state) {
-        final producto = state.extra as ProductoModel;
+        final extra = state.extra;
+
+        // ======================================================
+        // PARCHE TEMPORAL MVP WEB
+        // ======================================================
+        // Si el usuario entra directamente a:
+        //
+        //   /#/producto
+        //
+        // state.extra llega null porque GoRouter no conserva
+        // objetos entre refresh o navegación directa.
+        //
+        // SOLUCIÓN FUTURA:
+        // Migrar a rutas tipo:
+        //
+        //   /producto/:id
+        //
+        // y cargar el producto desde backend/API.
+        // ======================================================
+
+        if (extra == null || extra is! ProductoModel) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.go('/');
+          });
+
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final producto = extra;
 
         return LayoutPrincipal(
           childBuilder: (categorias, subcategorias) => ProductoDetallePage(
@@ -46,6 +76,21 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
+    /*
+    GoRoute(
+      path: '/producto',
+
+      builder: (context, state) {
+        final producto = state.extra as ProductoModel;
+
+        return LayoutPrincipal(
+          childBuilder: (categorias, subcategorias) => ProductoDetallePage(
+            producto: producto,
+            categoriasGlobales: categorias,
+          ),
+        );
+      },
+    ),*/
 
     /// CATEGORÍA PADRE → /categoria/tecnologia
     GoRoute(
